@@ -1,0 +1,51 @@
+<beans xmlns="http://www.springframework.org/schema/beans" 
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:context="http://www.springframework.org/schema/context"
+	xmlns:oauth="http://www.springframework.org/schema/security/oauth2" 
+	xmlns:security="http://www.springframework.org/schema/security"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans
+	http://www.springframework.org/schema/beans/spring-beans-4.0.xsd
+	http://www.springframework.org/schema/security
+	http://www.springframework.org/schema/security/spring-security-4.0.xsd
+	http://www.springframework.org/schema/security/oauth2 
+	http://www.springframework.org/schema/security/spring-security-oauth2-2.0.xsd  
+	http://www.springframework.org/schema/context 
+	http://www.springframework.org/schema/context/spring-context-4.0.xsd">
+
+	<security:authentication-manager>
+        <security:authentication-provider>
+            <security:user-service id="userService">
+                <security:user name="sameen" password="lubna" authorities="ROLE_USER" />
+            </security:user-service>
+        </security:authentication-provider>
+    </security:authentication-manager>
+	
+    <security:http create-session="stateless" use-expressions="true">
+
+        <security:intercept-url pattern="/**"
+                                access="hasAnyRole('ROLE_USER')" />
+        <security:http-basic />
+        <security:csrf disabled="true"/>
+    </security:http>       
+        
+</beans>
+      
+	<!--  <http create-session="stateless" use-expressions="true">
+        <intercept-url pattern="/**" access="hasRole('ROLE_USER')" />
+        <http-basic/>
+        <intercept-url pattern="/home" access="permitAll" />
+        <intercept-url pattern="/admin**" access="hasRole('ADMIN')" />
+        <intercept-url pattern="/dba**" access="hasRole('ADMIN') and hasRole('DBA')" />
+        <form-login  authentication-failure-url="/Access_Denied" />
+    </http>
+  
+    <authentication-manager >
+        <authentication-provider>
+            <user-service>
+                <user name="sameen"  password="lubna"  authorities="ROLE_USER" />
+            </user-service>
+        </authentication-provider>
+    </authentication-manager>
+ </beans>     
+	 -->
+      
