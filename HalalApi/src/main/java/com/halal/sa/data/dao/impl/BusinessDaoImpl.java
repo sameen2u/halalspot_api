@@ -4,12 +4,14 @@ package com.halal.sa.data.dao.impl;
 import static org.springframework.data.mongodb.core.aggregation.Aggregation.*;
 
 import org.apache.commons.lang.StringUtils;
+import org.bson.types.ObjectId;
 import org.springframework.data.mongodb.core.aggregation.Aggregation;
 import org.springframework.data.mongodb.core.aggregation.AggregationResults;
 
 import static org.springframework.data.mongodb.core.aggregation.Aggregation.sort;
 
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
@@ -31,9 +33,11 @@ import org.springframework.data.mongodb.core.query.TextQuery;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.halal.sa.common.ApplicationConstant;
 import com.halal.sa.data.dao.BusinessDao;
 import com.halal.sa.data.entities.Business;
 import com.halal.sa.service.ThirdPartyService;
+import com.mongodb.AggregationOutput;
 import com.mongodb.BasicDBObject;
 import com.mongodb.DBObject;
 
@@ -62,55 +66,58 @@ public class BusinessDaoImpl implements BusinessDao{
 		// TODO Auto-generated method stub
 	}
 	
-	/**
-	 * This is the main method returns the list of business based on the address and keyword if passed 
-	 */
-	public List searchBusiness(String keyword, String address, int distance) {
-		List businessIds = null;
-		double longitude;
-		double latitude;
-		if(StringUtils.isNotEmpty(keyword)){
-			businessIds = searchBusinessByKeyword(keyword);
-		}
-		Map<String,Double> map = thirdPartyService.getLongiLatitude(address);
-		if(map.size() >0){
-			longitude = map.get("lng");
-			latitude = map.get("lat");
-			return searchBusinessByLocation(longitude, latitude, distance, businessIds);
-		}
-		return null;		
+	public List businessCountByKeyword(String keyword, List ids) {
+		return ids;
+	}
+	
+	public List searchBusinessByKeyword(String keyword, List ids, int skip) {
+//		TextCriteria criteria = TextCriteria.forDefaultLanguage().matching(keyword);
+//		Query query = TextQuery.queryText(criteria);
+//		List<Business> businesses = mongoTemplate.find(query,Business.class);
 		
-		/*// TODO 6371 km or 3959 miles
-		Query query = new Query();
-		//always pass radius as 2.0 or 4.0 to get proper response
-		Circle circle = new Circle(73.847465    ,18.530822, 3.0 /6371);
-		Sphere sphere = new Sphere(circle);
-//		List<Business> businesses = mongoTemplate.find(query(where("location").withinSphere(circle)), Business.class);
-		List<Business> businesses = mongoTemplate.find(query.addCriteria(Criteria.where("address.location").within(sphere)),Business.class);
-		return businesses;*/
+//		Aggregation  aggregation;
+//		aggregation = newAggregation(Aggregation.match(Criteria.where("_id").in(ids)));
+		
+		int recordLimit = ApplicationConstant.BUSINESS_RECORDS_PER_PAGE;
+		int extraPaginationrecord = ApplicationConstant.BUSINESS_PAGINATION_EXTRA_RECORD;
+		
+		BasicDBObject matchSearch = new BasicDBObject("$match", new BasicDBObject("$text", new BasicDBObject("$search", keyword)));
+		
+		BasicDBObject matchIds = new BasicDBObject("$match", new BasicDBObject("_id", new BasicDBObject("$in", ids)));
+		
+		BasicDBObject limitRecords = new BasicDBObject("$limit", recordLimit+extraPaginationrecord );
+		
+		BasicDBObject skipRecords = new BasicDBObject("$skip", skip );
+		
+//		BasicDBObject project = new BasicDBObject("$project", new BasicDBObject("_id", "$_id"));
+
+		List<DBObject> aggregationList = new ArrayList<DBObject>();
+		aggregationList.add(matchSearch);
+		aggregationList.add(matchIds);
+		aggregationList.add(skipRecords);
+		aggregationList.add(limitRecords);
+		
+		AggregationOutput aggregationOutput = mongoTemplate.getCollection("business")
+		        .aggregate(aggregationList);
+		
+		List<DBObject> dbObjects = (List<DBObject>) aggregationOutput.results();
+		return dbObjects;
 	}
 	
-	public List searchBusinessByKeyword(String keyword) {
-		TextCriteria criteria = TextCriteria.forDefaultLanguage().matching(keyword);
-		Query query = TextQuery.queryText(criteria);
-		List<Business> businesses = mongoTemplate.find(query,Business.class);
-		return businesses;
-	}
-	
-	public List searchBusinessByLocation(double longitude, double latitude, double distance, List ids) {
+	public List searchBusinessByLocation(double longitude, double latitude, double distance) {
 		Aggregation  aggregation;
-		NearQuery geoNear = NearQuery.near(longitude,latitude, Metrics.KILOMETERS).num(10).maxDistance(distance);
-		if(ids!=null && ids.size()>0){
-			aggregation = newAggregation(Aggregation.geoNear(geoNear, "distance"), Aggregation.match(Criteria.where("_id").in(ids)));
-		}
-		else{
-			aggregation = newAggregation(Aggregation.geoNear(geoNear, "distance"));	
-		}
+		
+		NearQuery geoNear = NearQuery.near(longitude,latitude, Metrics.KILOMETERS).maxDistance(distance);
+		
+		//limit and skip are used for pagination logic
+		aggregation = newAggregation(Aggregation.geoNear(geoNear, "distance")); // This might required to limit the records - ,	
 		AggregationResults<DBObject> groupResults = mongoTemplate.aggregate(aggregation, Business.class, DBObject.class);
 		
 		List<DBObject> result = groupResults.getMappedResults();
 		return result;
 		
 	}
+	
+	
 	
 }

@@ -25,8 +25,10 @@ public class Business implements Serializable{
 	private int phone;
 	private String email;
 	private String ownerEmail;
+	private String ownerPhone;
 	private String status;
 	private String website;
+	private String userEmail;
 	private String facebookPage;
 	private String twitterPage;
 	private String otherInfo;
@@ -37,8 +39,33 @@ public class Business implements Serializable{
 	private String halalOfferings;
 	private String createdBy;
 	private String updatedBy;
+	private Date createdDate;
+	private Date updatedDate;
 	
-	
+	public String getOwnerPhone() {
+		return ownerPhone;
+	}
+	public void setOwnerPhone(String ownerPhone) {
+		this.ownerPhone = ownerPhone;
+	}
+	public Date getCreatedDate() {
+		return createdDate;
+	}
+	public void setCreatedDate(Date createdDate) {
+		this.createdDate = createdDate;
+	}
+	public Date getUpdatedDate() {
+		return updatedDate;
+	}
+	public void setUpdatedDate(Date updatedDate) {
+		this.updatedDate = updatedDate;
+	}
+	public String getUserEmail() {
+		return userEmail;
+	}
+	public void setUserEmail(String userEmail) {
+		this.userEmail = userEmail;
+	}
 	public String getDescription() {
 		return description;
 	}

@@ -8,5 +8,8 @@ public class ApplicationConstant {
 	
 	public static final String GOOGLE_GEO_API_ENDPOINT = resourceBundle.getString("GOOGLE_GEO_API_ENDPOINT");
 	
+	public static final int BUSINESS_RECORDS_PER_PAGE = Integer.parseInt(resourceBundle.getString("BUSINESS_RECORDS_PER_PAGE"));
+	public static final int BUSINESS_PAGINATION_EXTRA_RECORD = Integer.parseInt(resourceBundle.getString("BUSINESS_PAGINATION_EXTRA_RECORD"));
+	
 
 }

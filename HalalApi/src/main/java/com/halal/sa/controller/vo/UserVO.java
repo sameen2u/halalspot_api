@@ -14,15 +14,7 @@ public class UserVO {
 	private String fullName;
 	private String email;
 	private String password;
-	private String city;
-	private int phone;
 	
-	public int getPhone() {
-		return phone;
-	}
-	public void setPhone(int phone) {
-		this.phone = phone;
-	}
 	public String getFullName() {
 		return fullName;
 	}
@@ -41,12 +33,5 @@ public class UserVO {
 	public void setPassword(String password) {
 		this.password = password;
 	}
-	public String getCity() {
-		return city;
-	}
-	public void setCity(String city) {
-		this.city = city;
-	}
-	
 	
 }

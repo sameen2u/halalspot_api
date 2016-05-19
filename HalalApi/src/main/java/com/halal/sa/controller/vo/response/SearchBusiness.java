@@ -3,9 +3,13 @@ package com.halal.sa.controller.vo.response;
 import java.util.List;
 import java.util.Map;
 
+import org.codehaus.jackson.annotate.JsonIgnoreProperties;
+
+import com.fasterxml.jackson.annotation.JsonInclude;
 import com.halal.sa.data.entities.Address;
 
-public class BusinessSearchResult {
+@JsonInclude(JsonInclude.Include.NON_NULL)
+public class SearchBusiness {
 	
 	private String name;
 	private String description;
@@ -15,6 +19,15 @@ public class BusinessSearchResult {
 	private String status;
 	private Map<String, String> workingHours;
 	private String authenticity;
+	private String distance; 
+	
+	
+	public String getDistance() {
+		return distance;
+	}
+	public void setDistance(String distance) {
+		this.distance = distance;
+	}
 	public String getName() {
 		return name;
 	}

@@ -16,7 +16,10 @@ public abstract class BaseService {
 	
 	private final static Logger LOGGER = LoggerFactory.getLogger(AccountDaoImpl.class);
 	
-	protected abstract Object processResponse(Object model, HttpServletRequest request);
+	/*
+	 * this method will massage the DB data and construct the response according to contract
+	 */
+	protected abstract Object processResponse(Object dbObject, HttpServletRequest request);
 	
 	/*
 	 * This method club the response body object and status code with response entity

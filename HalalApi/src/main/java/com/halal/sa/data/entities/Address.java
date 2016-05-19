@@ -2,16 +2,25 @@ package com.halal.sa.data.entities;
 
 import java.io.Serializable;
 
+import com.fasterxml.jackson.annotation.JsonInclude;
+
+@JsonInclude(JsonInclude.Include.NON_NULL)
 public class Address implements Serializable{
 	
 	private String streetAddress;
-	private String streetAddress2;
 	private String city;
 	private int pincode;
 	private String landmark;
+	private String locality;
 	private Location location;
 
 	
+	public String getLocality() {
+		return locality;
+	}
+	public void setLocality(String locality) {
+		this.locality = locality;
+	}
 	public Location getLocation() {
 		return location;
 	}
@@ -23,12 +32,6 @@ public class Address implements Serializable{
 	}
 	public void setStreetAddress(String streetAddress) {
 		this.streetAddress = streetAddress;
-	}
-	public String getStreetAddress2() {
-		return streetAddress2;
-	}
-	public void setStreetAddress2(String streetAddress2) {
-		this.streetAddress2 = streetAddress2;
 	}
 	public String getCity() {
 		return city;
@@ -52,11 +55,9 @@ public class Address implements Serializable{
 	public Address(){
 		
 	}
-	public Address(String streetAddress, String streetAddress2,
-			String city, int pincode, String landmark) {
+	public Address(String streetAddress, String city, int pincode, String landmark) {
 		super();
 		this.streetAddress = streetAddress;
-		this.streetAddress2 = streetAddress2;
 		this.city = city;
 		this.pincode = pincode;
 		this.landmark = landmark;

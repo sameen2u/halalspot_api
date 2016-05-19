@@ -22,10 +22,10 @@ public class AccountDaoTest {
 		System.out.println("start");
 		UserVO userVO = new UserVO();
 		userVO.setFullName("lubna");
-		userVO.setCity("pune");
+//		userVO.setCity("pune");
 		userVO.setEmail("lubna@gmail.com");
 		userVO.setPassword("sameen");
-		userVO.setPhone(9890);
+//		userVO.setPhone(9890);
 		accountDao.insertUserData(userVO);
 	}
 	

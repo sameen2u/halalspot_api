@@ -1,5 +1,7 @@
 package com.halal.sa.service;
 
+import java.util.Collections;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
@@ -48,12 +50,25 @@ public class BusinessService extends BaseService{
 			//updating Longitude and Latitude for the address in the DB
 			String BizAddress = constructGoogleApiAddressInUrl(business);
 			Map locationMap = thirdPartyService.getLongiLatitude(BizAddress);
-			Double[] coordinates = {(Double) locationMap.get("lng"),(Double) locationMap.get("lat")};
+			String locality=null;
+			Map coordinateMap = Collections.emptyMap();
+			double[] coordinates = null;
+			if(locationMap!=null){
+				locality = (String) locationMap.get("locality");
+				coordinateMap = (Map) locationMap.get("coordinates");
+			}
+			
+			if(coordinateMap!=null){
+				coordinates = new double[]{(double) coordinateMap.get("lng"),(double) coordinateMap.get("lat")};
+			}
 			Address address = business.getAddress();
 			Location location = new Location();
 			location.setType("Point");
 			location.setCoordinates(coordinates);
+			address.setLocality(locality);
 			address.setLocation(location);
+			business.setCreatedDate(new Date());
+			business.setCreatedBy(business.getUserEmail());
 //			business.setAddress(address);
 			businessDaoImpl.addBusinessInfo(business);
 			return processResponseEntity(processResponse(business, request), HttpStatus.OK);

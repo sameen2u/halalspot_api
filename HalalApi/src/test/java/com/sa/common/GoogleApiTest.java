@@ -29,7 +29,7 @@ public class GoogleApiTest {
 	
 	@Test
 	public void googleTest(){
-		System.out.println(thirdPartyService.getLongiLatitude("Hidayatulla Road, Pune, Maharashtra 411001, India"));
+		System.out.println(thirdPartyService.getLongiLatitude("iman Nagar, Ward No. 8, Sanjay Nagar Pashan, Pashan, Pune, Maharashtra,india"));
 	}
 	
 }

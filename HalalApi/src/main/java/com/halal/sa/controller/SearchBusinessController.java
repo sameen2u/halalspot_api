@@ -16,8 +16,11 @@ public class SearchBusinessController {
 	@Autowired
 	SearchBusinessService searchBusinessService;
 	
-	@RequestMapping(value="/search", method=RequestMethod.POST)
-	public ResponseEntity<Object> registerRestaurant(@RequestParam(value="address",required=true) String address, @RequestParam String keyword, @RequestParam int distance){
-		return (ResponseEntity<Object>) searchBusinessService.searchbusinesses(keyword, address, distance);
+	@RequestMapping(value="/search", method=RequestMethod.GET)
+	public ResponseEntity<Object> registerRestaurant(@RequestParam(value="address",required=true) String address, 
+													 @RequestParam(value="keyword",required=false) String keyword, 
+													 @RequestParam int distance,
+													 @RequestParam int skipRecords){
+		return (ResponseEntity<Object>) searchBusinessService.searchbusinesses(keyword, address, distance, skipRecords);
 	}
 }

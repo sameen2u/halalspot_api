@@ -10,7 +10,7 @@ public interface BusinessDao {
 	
 	public void updateBusinessInfo(Business business);
 	
-	public List searchBusiness(String keyword,String address,  int distance);
+//	public List searchBusiness(String keyword,String address,  double distance, int skipRecords);
 
-	public List searchBusinessByKeyword(String keyword);
+	public List searchBusinessByKeyword(String keyword, List ids, int skip);
 }

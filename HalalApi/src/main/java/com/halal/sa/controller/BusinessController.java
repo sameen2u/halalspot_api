@@ -16,7 +16,7 @@ import com.halal.sa.data.entities.Business;
 import com.halal.sa.service.BusinessService;
 
 @RestController
-@RequestMapping("/v1/ad")
+@RequestMapping("/v1/biz")
 public class BusinessController{
 	
 	@Autowired

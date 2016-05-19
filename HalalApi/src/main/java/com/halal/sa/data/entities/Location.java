@@ -5,7 +5,7 @@ import java.io.Serializable;
 
 public class Location implements Serializable{
 	private String type;
-	private Double[] coordinates;
+	private double[] coordinates;
 	public String getType() {
 		return type;
 	}
@@ -13,10 +13,10 @@ public class Location implements Serializable{
 		this.type = type;
 	}
 	
-	public Double[] getCoordinates() {
+	public double[] getCoordinates() {
 		return coordinates;
 	}
-	public void setCoordinates(Double[] coordinates) {
+	public void setCoordinates(double[] coordinates) {
 		this.coordinates = coordinates;
 	}
 	@Override
