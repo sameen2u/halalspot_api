@@ -1,10 +1,16 @@
 package com.halal.sa.controller.vo.response;
 
+import com.fasterxml.jackson.annotation.JsonInclude;
+import com.fasterxml.jackson.annotation.JsonInclude.Include;
+
+@JsonInclude(value=Include.NON_NULL)
 public class SearchReport {
 	
-	private int recordsPerPage;
+	private Integer totalRecords;
 	
-	private int startIndex;
+	private Integer recordsPerPage;
+	
+	private Integer currentPage;
 	
 	private String keyword;
 	
@@ -12,7 +18,23 @@ public class SearchReport {
 	
 	private String sortOrder;
 	
-	private boolean nextPage;
+	
+	
+	public Integer getTotalRecords() {
+		return totalRecords;
+	}
+
+	public void setTotalRecords(Integer totalRecords) {
+		this.totalRecords = totalRecords;
+	}
+
+	public void setRecordsPerPage(Integer recordsPerPage) {
+		this.recordsPerPage = recordsPerPage;
+	}
+
+	public void setCurrentPage(Integer currentPage) {
+		this.currentPage = currentPage;
+	}
 
 	public int getRecordsPerPage() {
 		return recordsPerPage;
@@ -22,12 +44,12 @@ public class SearchReport {
 		this.recordsPerPage = recordsPerPage;
 	}
 
-	public int getStartIndex() {
-		return startIndex;
+	public int getCurrentPage() {
+		return currentPage;
 	}
 
-	public void setStartIndex(int startIndex) {
-		this.startIndex = startIndex;
+	public void setCurrentPage(int currentPage) {
+		this.currentPage = currentPage;
 	}
 
 	public String getKeyword() {
@@ -53,15 +75,5 @@ public class SearchReport {
 	public void setSortOrder(String sortOrder) {
 		this.sortOrder = sortOrder;
 	}
-
-	public boolean isNextPage() {
-		return nextPage;
-	}
-
-	public void setNextPage(boolean nextPage) {
-		this.nextPage = nextPage;
-	}
-	
-	
 
 }

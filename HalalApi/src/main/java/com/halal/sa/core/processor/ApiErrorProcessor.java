@@ -4,10 +4,12 @@ import java.util.Map;
 
 import com.halal.sa.common.error.ApiException;
 import com.halal.sa.core.ApiRequest;
+import com.halal.sa.core.ApiResponse;
 
 
 public interface ApiErrorProcessor {
 
-	public Object processError(final ApiRequest apiRequest, final ApiException Exception);
+	public <T> ApiResponse<T> processError(final ApiRequest apiRequest, final ApiException 
+			apiException) throws ApiException;
 	
 }

@@ -70,35 +70,30 @@ public class BusinessDaoImpl implements BusinessDao{
 		return ids;
 	}
 	
-	public List searchBusinessByKeyword(String keyword, List ids, int skip) {
-//		TextCriteria criteria = TextCriteria.forDefaultLanguage().matching(keyword);
-//		Query query = TextQuery.queryText(criteria);
-//		List<Business> businesses = mongoTemplate.find(query,Business.class);
-		
-//		Aggregation  aggregation;
-//		aggregation = newAggregation(Aggregation.match(Criteria.where("_id").in(ids)));
-		
-		int recordLimit = ApplicationConstant.BUSINESS_RECORDS_PER_PAGE;
+	public List searchBusinessByKeyword(String keyword, List ids) {
+
+		int skip = 0;
+		int recordsPerPage = ApplicationConstant.BUSINESS_RECORDS_PER_PAGE;
 		int extraPaginationrecord = ApplicationConstant.BUSINESS_PAGINATION_EXTRA_RECORD;
 		
 		BasicDBObject matchSearch = new BasicDBObject("$match", new BasicDBObject("$text", new BasicDBObject("$search", keyword)));
 		
 		BasicDBObject matchIds = new BasicDBObject("$match", new BasicDBObject("_id", new BasicDBObject("$in", ids)));
 		
-		BasicDBObject limitRecords = new BasicDBObject("$limit", recordLimit+extraPaginationrecord );
-		
-		BasicDBObject skipRecords = new BasicDBObject("$skip", skip );
-		
-//		BasicDBObject project = new BasicDBObject("$project", new BasicDBObject("_id", "$_id"));
-
+//		BasicDBObject limitRecords = new BasicDBObject("$limit", recordsPerPage+extraPaginationrecord );
+	
 		List<DBObject> aggregationList = new ArrayList<DBObject>();
 		aggregationList.add(matchSearch);
 		aggregationList.add(matchIds);
-		aggregationList.add(skipRecords);
-		aggregationList.add(limitRecords);
 		
-		AggregationOutput aggregationOutput = mongoTemplate.getCollection("business")
-		        .aggregate(aggregationList);
+//		if(page > 1){
+//			skip = recordsPerPage * (page - 1);
+//			BasicDBObject skipRecords = new BasicDBObject("$skip", skip );
+//			aggregationList.add(skipRecords);
+//		}
+		//limit will be last to be added in the query as per mongo functionality
+		//aggregationList.add(limitRecords);
+		AggregationOutput aggregationOutput = mongoTemplate.getCollection("business").aggregate(aggregationList);
 		
 		List<DBObject> dbObjects = (List<DBObject>) aggregationOutput.results();
 		return dbObjects;

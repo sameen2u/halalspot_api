@@ -1,36 +1,33 @@
-package com.halal.sa.service;
+package com.halal.sa.process.searchbusiness;
 
+import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 
-import javax.servlet.http.HttpServletRequest;
-
+import org.apache.commons.beanutils.BeanUtils;
 import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
-import org.springframework.stereotype.Service;
-import org.springframework.util.MultiValueMap;
-import org.springframework.web.bind.annotation.RequestHeader;
+import org.springframework.stereotype.Component;
 
 import com.halal.sa.common.ApplicationConstant;
 import com.halal.sa.common.CommonUtil;
 import com.halal.sa.common.error.ApiException;
 import com.halal.sa.controller.vo.response.SearchBusiness;
 import com.halal.sa.controller.vo.response.SearchReport;
+import com.halal.sa.core.AbstractProcessor;
+import com.halal.sa.core.AggregateData;
 import com.halal.sa.core.ApiRequest;
+import com.halal.sa.core.RequestParameters;
 import com.halal.sa.core.request.SearchRequestParameters;
-import com.halal.sa.data.dao.BusinessDao;
 import com.halal.sa.data.dao.impl.BusinessDaoImpl;
 import com.halal.sa.data.entities.Address;
-import com.halal.sa.process.searchbusiness.SearchBusinessAggregateData;
+import com.halal.sa.service.ThirdPartyService;
 import com.mongodb.DBObject;
 
-@Service
-public class SearchBusinessService extends BaseService{
+@Component
+public class SearchBusinessProcessor extends AbstractProcessor{
 	
 	String KEYWORD=null;
 	int PAGE=0;
@@ -41,23 +38,66 @@ public class SearchBusinessService extends BaseService{
 	@Autowired
 	ThirdPartyService thirdPartyService;
 	
+
 	@Override
-	protected Object processResponse(Object model, HttpServletRequest request) {
-		List<DBObject> dbObjectList = (List<DBObject>) model;
-		SearchBusinessAggregateData searchBusinessResult = null;
+	public AggregateData retrieveData(RequestParameters requestParameters)
+			throws ApiException {
+		SearchRequestParameters searchRequestParameters = (SearchRequestParameters) requestParameters;
+		SearchBusinessAggregateData searchBusinessAggregateData = searchbusinesses(searchRequestParameters);
+		return searchBusinessAggregateData;
+	}
+	
+	/**
+	 * This the main Search method returning the response based on Api request input
+	 * @param apiRequest
+	 * @return
+	 * @throws ApiException
+	 */
+	public SearchBusinessAggregateData searchbusinesses(SearchRequestParameters searchRequestParameters) throws ApiException{
+		String keyword = searchRequestParameters.getKeyword();
+		String address = searchRequestParameters.getAddress();
+		String distance = searchRequestParameters.getRadius();
 		
+		if( distance == null || Integer.parseInt(distance) < Integer.parseInt(ApplicationConstant.BUSINESS_DEFAULT__DISTANCE_RADIUS)){
+			distance = ApplicationConstant.BUSINESS_DEFAULT__DISTANCE_RADIUS;
+		}
+		int pageParam = 1;
+		if(CommonUtil.convertStringToInt(searchRequestParameters.getPage()) >1){
+			pageParam = CommonUtil.convertStringToInt(searchRequestParameters.getPage());
+		}
+		List businesses = this.searchBusiness(keyword, address, Double.parseDouble(distance));
+		SearchBusinessAggregateData searchBusinessAggregateData = parseIntoJavaBean(businesses, pageParam);
+		if(searchBusinessAggregateData.getSearchReport() !=null && keyword !=null){
+			searchBusinessAggregateData.getSearchReport().setKeyword(keyword);
+		}
+		
+		searchBusinessAggregateData.getSearchReport().setCurrentPage(pageParam);
+		return searchBusinessAggregateData;
+		
+	}
+	
+	public SearchBusinessAggregateData parseIntoJavaBean(List modelObject, int pageParam) throws ApiException{
+		
+		List<DBObject> dbObjectList = (List<DBObject>) modelObject;
+		SearchBusinessAggregateData searchBusinessAggregateData = null;
+		
+		int recordsPerPage = ApplicationConstant.BUSINESS_RECORDS_PER_PAGE;
+		
+		//this index is used to calculate the index to retrive data for pagination
+		int pageIndex = recordsPerPage * (pageParam -1);
 		
 		SearchBusiness searchBusiness;
-		List<SearchBusiness> searchBusinesses;
-		
-		if(dbObjectList !=null && dbObjectList.size()>0){
+		List<SearchBusiness> searchBusinesses = null;
+		int totalRecords = 0;
+			
+		if(dbObjectList !=null && dbObjectList.size()>0 && pageIndex <= dbObjectList.size()){
+			totalRecords = dbObjectList.size();
+			
 			searchBusinesses = new ArrayList<SearchBusiness>();
-			int recordLimit = ApplicationConstant.BUSINESS_RECORDS_PER_PAGE;
-			for(DBObject dbObject: dbObjectList){
+			for(int i=pageIndex; i<=pageIndex+recordsPerPage; i++){
+				
+				DBObject dbObject = dbObjectList.get(i);
 				int record = 1;
-//				if(dbObjectList.size() > recordLimit){
-//					searchReport.setNextPage(true);
-//				}
 				searchBusiness = new SearchBusiness();
 				Address address = new Address();
 				Map<String,Object> resultAddress= (Map<String, Object>) dbObject.get("address");
@@ -97,68 +137,29 @@ public class SearchBusinessService extends BaseService{
 					searchBusiness.setStatus((String)dbObject.get("status"));
 				}
 				double distance = (double) dbObject.get("distance");
-				//rounding logic
-				distance= Math.round(distance * 100.0) / 100.0;
+				
 				if(dbObject.get("distance") != null){
+					//rounding logic
+					distance= Math.round(distance * 100.0) / 100.0;
 					searchBusiness.setDistance(Double.toString(distance));
 				}
-//				searchBusiness.setCuisine(dbObject.get("features").toString());
-//				searchBusiness.setWorkingHours(dbObject.get("working hours").toString());
+	//			searchBusiness.setCuisine(dbObject.get("features").toString());
+	//			searchBusiness.setWorkingHours(dbObject.get("working hours").toString());
 				searchBusinesses.add(searchBusiness);
 				//logic for pagination( if number of index == recordLimit means record limit perpage is over
-				if(searchBusinesses.size() == recordLimit){
+				if((i+1) >= totalRecords || searchBusinesses.size() == recordsPerPage){
 					break;
 				}
 			}
-			searchBusinessResult = new SearchBusinessAggregateData();
-			SearchReport searchReport = new SearchReport();
-			searchBusinessResult.setSearchBusinesses(searchBusinesses);
-			searchReport.setKeyword(KEYWORD);
-			searchReport.setCurrentPage(PAGE);
-			//logic for pagination( if number of records > recordLimit means one more page can be retrieved and next page pagination should be shown on UI
-			searchReport.setRecordsPerPage(ApplicationConstant.BUSINESS_RECORDS_PER_PAGE);
-			
-			searchBusinessResult.setSearchReport(searchReport);
-		}
-		
-		return searchBusinessResult;
-	}
-
-	@Override
-	//done
-	protected SearchRequestParameters validate(ApiRequest apiRequest) throws ApiException {
-		if(apiRequest.getRequestParameters().getFirst("address") == null){
-			throw new ApiException("ERROR_BAD_REQUEST","Mandatory parameter \"address\" is missing in the request");
-		}
-		SearchRequestParameters searchRequestParameters = new SearchRequestParameters();
-		searchRequestParameters.setAddress(apiRequest.getRequestParameters().getFirst("address"));
-		searchRequestParameters.setKeyword(apiRequest.getRequestParameters().getFirst("keyword"));
-		searchRequestParameters.setKeyword(apiRequest.getRequestParameters().getFirst("distance"));
-		searchRequestParameters.setKeyword(apiRequest.getRequestParameters().getFirst("page"));
-		return searchRequestParameters;
-	}
-	
-	/**
-	 * This the main Search method returning the response based on Api request input
-	 * @param apiRequest
-	 * @return
-	 * @throws ApiException
-	 */
-	public Object searchbusinesses(ApiRequest apiRequest) throws ApiException{
-		SearchRequestParameters searchRequestParameters = this.validate(apiRequest);
-		String keyword = apiRequest.getRequestParameters().getFirst("keyword");
-		String address = apiRequest.getRequestParameters().getFirst("keyword");
-		String distance = searchRequestParameters.getRadius();
-		if( distance!=null && Integer.parseInt(distance) < 1){
-			distance = ApplicationConstant.BUSINESS_DEFAULT__DISTANCE_RADIUS;
-		}
-		apiRequest.getRequestParameters().getFirst("keyword");
-		String page = apiRequest.getRequestParameters().getFirst("keyword");
-//		KEYWORD = requestParameters.get("keyword");
-//		PAGE = page;
-		List businesses = this.searchBusiness(keyword, address, Double.parseDouble(distance));
-		Object object = processResponse(businesses, null);
-		return processResponseEntity(object, HttpStatus.OK);
+		}	
+		searchBusinessAggregateData = new SearchBusinessAggregateData();
+		SearchReport searchReport = new SearchReport();
+		searchBusinessAggregateData.setSearchBusinesses(searchBusinesses);
+		//logic for pagination( if number of records > recordLimit means one more page can be retrieved and next page pagination should be shown on UI
+		searchReport.setRecordsPerPage(ApplicationConstant.BUSINESS_RECORDS_PER_PAGE);
+		searchReport.setTotalRecords(totalRecords);
+		searchBusinessAggregateData.setSearchReport(searchReport);
+		return searchBusinessAggregateData;
 	}
 	
 	/**
@@ -190,6 +191,10 @@ public class SearchBusinessService extends BaseService{
 			}
 				businessByKeyword = businessDaoImpl.searchBusinessByKeyword(keyword, businessIds);
 		}
+		//if no keyword passed then businessByDistance list will be returned which the search by address only
+		else{
+			return businessByDistance;
+		}
 		if(businessByKeyword!=null && !businessByKeyword.isEmpty()){
 			resultBusiness = new ArrayList<DBObject>();
 			for(DBObject distObject: businessByDistance){
@@ -202,7 +207,8 @@ public class SearchBusinessService extends BaseService{
 			}
 		}
 		
+		
 		return resultBusiness;		
 	}
-	
+
 }

@@ -30,7 +30,9 @@ import com.halal.sa.controller.AccountController;
 import com.halal.sa.controller.vo.LogonVO;
 import com.halal.sa.controller.vo.UserVO;
 import com.halal.sa.controller.vo.response.UserAuthentication;
+import com.halal.sa.core.ApiRequest;
 import com.halal.sa.core.processor.ApiErrorProcessor;
+import com.halal.sa.core.request.SearchRequestParameters;
 import com.halal.sa.data.dao.impl.AccountDaoImpl;
 import com.halal.sa.data.entities.User;
 import com.sun.org.apache.bcel.internal.generic.RETURN;
@@ -51,8 +53,9 @@ public class AccountService extends BaseService{
 	 * service register method will save the user info to DB 	
 	 * @param userVO
 	 * @return
+	 * @throws ApiException 
 	 */
-	public ResponseEntity<Object> register(UserVO userVO){
+	public ResponseEntity<Object> register(UserVO userVO) throws ApiException{
 		LOGGER.debug("inside register method of Account Service class");
 		try{
 			String hashPassword = CommonUtil.hashPassword(userVO.getPassword());
@@ -90,8 +93,9 @@ public class AccountService extends BaseService{
 	 * @param request
 	 * @return
 	 * @throws NoSuchAlgorithmException 
+	 * @throws ApiException 
 	 */
-	public ResponseEntity<Object> login(LogonVO logonVO, HttpServletRequest request) throws NoSuchAlgorithmException{
+	public ResponseEntity<Object> login(LogonVO logonVO, HttpServletRequest request) throws NoSuchAlgorithmException, ApiException{
 		LOGGER.debug("Inside login method in AccountService class");
 		String hashedPassword = CommonUtil.hashPassword(logonVO.getPassword());
 		User user = (User) accountDao.getUserByPassword(logonVO.getUsername(), hashedPassword);
@@ -120,15 +124,17 @@ public class AccountService extends BaseService{
 
 	/**
 	 * This method process the response for the login authentication
+	 * @throws ApiException 
 	 */
 			
-	protected ResponseEntity<Object> processResponse(Object model, HttpServletRequest request) {
+	protected ResponseEntity<Object> processResponse(Object model, HttpServletRequest request) throws ApiException {
 		//if data is returned means auth successful
+		UserAuthentication userAuthentication = null;
 		User user = (User) model;
 		if(user != null){
 			//#need to call remember me method here.
 //			rememberUser();
-			UserAuthentication userAuthentication = new UserAuthentication();
+			userAuthentication = new UserAuthentication();
 			userAuthentication.setUserId(user.get_id());
 			userAuthentication.setEmail(user.getEmail());
 			userAuthentication.setName(user.getFullname());
@@ -136,12 +142,13 @@ public class AccountService extends BaseService{
 			userAuthentication.setSessionToken(CommonUtil.encriptString(user.getSessionToken()));
 			userAuthentication.setUserActivityToken(CommonUtil.encriptString(user.getUserActivityToken()));
 //			userAuthentication.setUserId(user.getUId());
-			return processResponseEntity(userAuthentication, HttpStatus.OK);
+			
 		}
-		else {
-			Object resObject = eApiErrorProcessor.processError(null, new ApiException(ErrorConstants.ERRORCODE_AUTHENTICATION_FAILED,ErrorConstants.ERRORDESC_AUTHENTICATION_FAILED));
-			return processResponseEntity(resObject, HttpStatus.OK);
-		}
+		return processResponseEntity(userAuthentication, HttpStatus.OK);
+//		else {
+//			Object resObject = eApiErrorProcessor.processError(null, new ApiException(ErrorConstants.ERRORCODE_AUTHENTICATION_FAILED,ErrorConstants.ERRORDESC_AUTHENTICATION_FAILED));
+//			return processResponseEntity(resObject, HttpStatus.OK);
+//		}
 	}
 	
 	/**
@@ -241,9 +248,12 @@ public class AccountService extends BaseService{
 	}
 
 	@Override
-	protected boolean validate(Object model) {
+	protected SearchRequestParameters validate(ApiRequest apiRequest)
+			throws ApiException {
 		// TODO Auto-generated method stub
-		return true;
+		return null;
 	}
+
+
 	
 }

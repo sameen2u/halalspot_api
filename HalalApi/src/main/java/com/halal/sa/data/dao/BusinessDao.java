@@ -12,5 +12,5 @@ public interface BusinessDao {
 	
 //	public List searchBusiness(String keyword,String address,  double distance, int skipRecords);
 
-	public List searchBusinessByKeyword(String keyword, List ids, int skip);
+	public List searchBusinessByKeyword(String keyword, List ids);
 }

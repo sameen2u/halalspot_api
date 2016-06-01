@@ -1,5 +1,0 @@
-com\halal\sa\controller\vo\response\SearchReport.class
-com\halal\sa\data\entities\Location.class
-com\halal\sa\service\SearchBusinessService.class
-com\halal\sa\controller\SearchBusinessController.class
-com\halal\sa\controller\vo\response\SearchBusiness.class

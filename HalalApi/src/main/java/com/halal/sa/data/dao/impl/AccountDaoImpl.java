@@ -18,10 +18,6 @@ import com.halal.sa.data.entities.User;
 @Repository("accountDaoImpl")
 public class AccountDaoImpl implements AccountDao{
 	private final Logger LOGGER = LoggerFactory.getLogger(AccountDaoImpl.class);
-//	private static final org.apache.log4j.Logger LOGGER = org.apache..Logger.getLogger(AccountDaoImpl.class);
-	
-//	@PersistenceContext
-//	private EntityManager entityManager;
 	
 	@Autowired
 	MongoTemplate mongoTemplate;
@@ -30,7 +26,6 @@ public class AccountDaoImpl implements AccountDao{
 	 * returns success if the data inserted successfully
 	 * @see com.halal.sa.data.dao.AccountDao#insertUserData(com.halal.sa.controller.model.UserVO)
 	 */
-//	@Transactional(rollbackFor=Exception.class)
 	public String insertUserData(UserVO userVO) {
 		User user = new User();
 		user.setFullname(userVO.getFullName());
@@ -38,7 +33,6 @@ public class AccountDaoImpl implements AccountDao{
 		user.setPassword(userVO.getPassword());
 		user.setCreatedDate(new Date());
 		mongoTemplate.save(user);
-//		entityManager.persist(user);
 		return "success";
 	}
 	
@@ -46,7 +40,6 @@ public class AccountDaoImpl implements AccountDao{
 	 * this method will return the User object upon successful email and password match
 	 */
 
-//	@Transactional
 	public Object getUserByPassword(String userEmail, String password){
 		LOGGER.info("Inside loginDao method");
 		LOGGER.debug("Inside loginDao method");
@@ -61,7 +54,6 @@ public class AccountDaoImpl implements AccountDao{
 	/**
 	 * this method will return email if present in DB or null will be returned
 	 */
-//	@Transactional
 	public String getUserByEmail(String email) {
 		LOGGER.debug("Inside getUserByEmail method in class AccountDaoImpl");
 		Query query = new Query(Criteria.where("email").is(email));
@@ -72,13 +64,6 @@ public class AccountDaoImpl implements AccountDao{
 		return null;
 	}
 	
-	/**
-	 * this method will get the User object based on user id passed
-	 */
-	
-//	public User getUserById(int userId){
-//		return entityManager.find(User.class, userId);
-//	}
 	
 	/**
 	 * It inserts the session token or activity token to DB
@@ -88,7 +73,6 @@ public class AccountDaoImpl implements AccountDao{
 	 */
 	@Transactional
 	public User updateToken(User user, String sessionToken, String activityToken){
-//			User user = mongoTemplate.findById(userId, User.class); //entityManager.find(User.class, userId);
 			user.setSessionToken(sessionToken);
 			user.setUserActivityToken(activityToken);
 			mongoTemplate.save(user);

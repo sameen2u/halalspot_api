@@ -7,7 +7,7 @@ public class ErrorResponseGenerator {
 	public static ErrorResponse INCOMPLETE_DATA_RESPONSE;
 	
 	static{
-		INCOMPLETE_DATA_RESPONSE = new ErrorResponse(ErrorConstants.ERRORCODE_INCOMPLETE_DATA,ErrorConstants.ERRORDESC_INCOMPLETE_DATA);
+		INCOMPLETE_DATA_RESPONSE = new ErrorResponse(404,ErrorConstants.ERRORDESC_INCOMPLETE_DATA);
 	}
 //	private static final 
 }

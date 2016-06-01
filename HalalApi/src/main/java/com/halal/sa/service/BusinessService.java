@@ -20,7 +20,10 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.util.ObjectUtils;
 
+import com.halal.sa.common.error.ApiException;
 import com.halal.sa.common.error.ErrorResponseGenerator;
+import com.halal.sa.core.ApiRequest;
+import com.halal.sa.core.request.SearchRequestParameters;
 import com.halal.sa.data.dao.BusinessDao;
 import com.halal.sa.data.dao.impl.AccountDaoImpl;
 import com.halal.sa.data.dao.impl.BusinessDaoImpl;
@@ -87,7 +90,10 @@ public class BusinessService extends BaseService{
 		return respMap;
 	}
 
-	@Override
+	
+	/*
+	 * This method will validate the pojo
+	 */
 	protected boolean validate(Object model) {
 		ValidatorFactory factory = Validation.buildDefaultValidatorFactory();
 		Validator validator = factory.getValidator();
@@ -97,6 +103,8 @@ public class BusinessService extends BaseService{
 	    }
 		return false;
 	}
+	
+	
 	
 	protected String constructGoogleApiAddressInUrl(Business business){
 		String address = null;
@@ -111,5 +119,12 @@ public class BusinessService extends BaseService{
 		}
 		address = address+" India";
 		return address = address.replaceAll(" ", "+");
+	}
+
+	@Override
+	protected SearchRequestParameters validate(ApiRequest apiRequest)
+			throws ApiException {
+		// TODO Auto-generated method stub
+		return null;
 	}
 }

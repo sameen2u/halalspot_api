@@ -19,7 +19,7 @@ public class SearchServiceTest {
 
 	@Test
 	public void test() {
-		searchBusinessService.searchbusinesses("kabab", "camp+pune+india", 5,4);
+//		searchBusinessService.searchbusinesses("kabab", "camp+pune+india", 5,4);
 	}
 
 }

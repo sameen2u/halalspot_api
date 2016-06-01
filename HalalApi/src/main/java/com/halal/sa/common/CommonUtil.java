@@ -7,9 +7,9 @@ import java.util.HashMap;
 import java.util.Map;
 
 import org.apache.commons.codec.binary.Base64;
+import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.util.StringUtils;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.ObjectReader;
@@ -106,5 +106,87 @@ public class CommonUtil {
 			}
 		return jsonStr; 
 	}
+	
+	/**
+	 * This will Convert the String decimal value double value. if any errors, return 0.0 by defaults
+	 * @param str
+	 * @return
+	 */
+	public static double convertStringToDecimal(String str){
+		double val=0.0;
+		if(StringUtils.isBlank(str)){
+			return val;
+		}
+		try{
+			val = Double.valueOf(str); 
+		}catch(Exception e){
+			LOGGER.error("convertStringToDecimal. Error ["+str+"] while converting to Decimal.."+e);
+		}
+		return val;
+	}
+	/**
+	 * This will Convert the String integer value double value. if any errors, return 0 by defaults
+	 * @param str
+	 * @return
+	 */
+	public static int convertStringToInt(String str){
+		int val=0;
+		if(StringUtils.isBlank(str)){
+			return val;
+		}
+		try{
+			val = Integer.valueOf(str); 
+		}catch(Exception e){
+			LOGGER.error("convertStringToInt. Error ["+str+"] while converting to Integer.."+e);
+		}
+		return val;
+	}
+	
+	public static int convertStringToInt(Object str){
+		int val=0;
+		try{
+			if(null!=str){
+				val = Integer.valueOf(str.toString()); 
+			}
+		}catch(Exception e){
+			LOGGER.error("convertStringToInt. Error ["+str+"] while converting to Integer.."+e);
+		}
+		return val;
+	}
+	
+	/**
+	 * This will Convert the String decimal value double value. if any errors, return 0.0 by defaults
+	 * @param str
+	 * @return
+	 */
+	public static double convertStringToDecimal(Object str){
+		double val=0.0;
+		try{
+			if(null!=str){
+				val = Double.valueOf(str.toString()); 
+			}
+		}catch(Exception e){
+			LOGGER.error("convertStringToDecimal. Error ["+str+"] while converting to Decimal.."+e);
+		}
+		return val;
+	}
+	
+	/**
+	 * This will Convert the String Log value double value. if any errors, return 0.0 by defaults
+	 * @param str
+	 * @return
+	 */
+	public static long convertStringToLong(Object str){
+		long val=0;
+		try{
+			if(null!=str){
+				val = Long.valueOf(str.toString()); 
+			}
+		}catch(Exception e){
+			LOGGER.error("convertStringToLong. Error ["+str+"] while converting to Long.."+e);
+		}
+		return val;
+	}
 
+	
 }

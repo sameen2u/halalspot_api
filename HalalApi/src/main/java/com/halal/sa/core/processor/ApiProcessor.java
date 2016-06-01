@@ -1,11 +1,14 @@
 package com.halal.sa.core.processor;
 
-import java.util.List;
 
-import com.halal.sa.core.ApiRequest;
-import com.halal.sa.core.response.AggregateData;
+import com.halal.sa.common.error.ApiException;
+import com.halal.sa.core.AggregateData;
+import com.halal.sa.core.RequestParameters;
 
 public interface ApiProcessor {
 
-	public AggregateData process(ApiRequest apiRequest);
+	public abstract AggregateData retrieveData(RequestParameters requestParameters) throws ApiException;
+	
+	public abstract AggregateData process(RequestParameters requestParameters) throws ApiException;
+
 }

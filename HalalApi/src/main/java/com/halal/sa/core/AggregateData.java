@@ -1,4 +1,4 @@
-package com.halal.sa.core.response;
+package com.halal.sa.core;
 
 public interface AggregateData {
 

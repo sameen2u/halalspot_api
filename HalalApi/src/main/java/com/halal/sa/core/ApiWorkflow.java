@@ -1,5 +1,7 @@
 package com.halal.sa.core;
 
+import org.springframework.beans.factory.annotation.Required;
+
 import com.halal.sa.core.processor.ApiErrorProcessor;
 import com.halal.sa.core.processor.ApiPostProcessor;
 import com.halal.sa.core.processor.ApiPreProcessor;
@@ -7,32 +9,43 @@ import com.halal.sa.core.processor.ApiProcessor;
 
 public class ApiWorkflow {
 
-	private ApiPreProcessor apiPreProcessor;
+	private ApiPreProcessor apiPreprocessor;
 	private ApiProcessor apiProcessor;
-	private ApiPostProcessor apiPostProcessor;	
+	private ApiPostProcessor apiPostprocessor;
 	private ApiErrorProcessor apiErrorProcessor;
-	
-	public ApiPreProcessor getApiPreProcessor() {
-		return apiPreProcessor;
+
+	public ApiPreProcessor getApiPreprocessor() {
+		return apiPreprocessor;
 	}
-	public void setApiPreProcessor(ApiPreProcessor apiPreProcessor) {
-		this.apiPreProcessor = apiPreProcessor;
+
+	@Required
+	public void setApiPreprocessor(ApiPreProcessor apiPreprocessor) {
+		this.apiPreprocessor = apiPreprocessor;
 	}
+
 	public ApiProcessor getApiProcessor() {
 		return apiProcessor;
 	}
+
+	@Required
 	public void setApiProcessor(ApiProcessor apiProcessor) {
 		this.apiProcessor = apiProcessor;
 	}
-	public ApiPostProcessor getApiPostProcessor() {
-		return apiPostProcessor;
+
+	public ApiPostProcessor getApiPostprocessor() {
+		return apiPostprocessor;
 	}
-	public void setApiPostProcessor(ApiPostProcessor apiPostProcessor) {
-		this.apiPostProcessor = apiPostProcessor;
+
+	@Required
+	public void setApiPostprocessor(ApiPostProcessor apiPostprocessor) {
+		this.apiPostprocessor = apiPostprocessor;
 	}
+
 	public ApiErrorProcessor getApiErrorProcessor() {
 		return apiErrorProcessor;
 	}
+
+	@Required
 	public void setApiErrorProcessor(ApiErrorProcessor apiErrorProcessor) {
 		this.apiErrorProcessor = apiErrorProcessor;
 	}

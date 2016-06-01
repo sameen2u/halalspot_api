@@ -10,6 +10,7 @@ public class ApplicationConstant {
 	
 	public static final int BUSINESS_RECORDS_PER_PAGE = Integer.parseInt(resourceBundle.getString("BUSINESS_RECORDS_PER_PAGE"));
 	public static final int BUSINESS_PAGINATION_EXTRA_RECORD = Integer.parseInt(resourceBundle.getString("BUSINESS_PAGINATION_EXTRA_RECORD"));
+	public static final String BUSINESS_DEFAULT__DISTANCE_RADIUS = resourceBundle.getString("BUSINESS_DEFAULT__DISTANCE_RADIUS");
 	
 
 }

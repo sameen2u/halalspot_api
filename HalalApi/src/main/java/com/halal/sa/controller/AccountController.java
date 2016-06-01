@@ -36,12 +36,12 @@ public class AccountController{
 	AccountService accountService;
 	
 	@RequestMapping(value="/signup", method=RequestMethod.POST)
-	public ResponseEntity<Object> registerUser(@RequestBody UserVO userBean){
+	public ResponseEntity<Object> registerUser(@RequestBody UserVO userBean) throws ApiException{
 		return accountService.register(userBean);
 	}
 	
 	@RequestMapping(value="/login", method=RequestMethod.POST)
-	public ResponseEntity<Object> loginAuthentication(@RequestBody LogonVO logonVO, HttpServletRequest request) throws NoSuchAlgorithmException{
+	public ResponseEntity<Object> loginAuthentication(@RequestBody LogonVO logonVO, HttpServletRequest request) throws NoSuchAlgorithmException, ApiException{
 		return accountService.login(logonVO, request);
 	}
 	
@@ -56,7 +56,7 @@ public class AccountController{
 									@RequestParam(value="activitytoken", required=false) String activityToken,
 									@RequestParam(value="sessiontoken", required=false) String sessionToken) throws ParseException{
 		if((StringUtils.isEmpty(sessionToken) && StringUtils.isEmpty(activityToken))){
-			ErrorResponse errorResponse = new ErrorResponse("API_ERR01","Please pass sessiontoken");
+			ErrorResponse errorResponse = new ErrorResponse(404,"Please pass sessiontoken");
 			return accountService.processResponseEntity(errorResponse, HttpStatus.FORBIDDEN);
 		}
 			Map<String,String> mapObj = new HashMap<String,String>();

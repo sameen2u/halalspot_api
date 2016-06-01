@@ -34,5 +34,10 @@ public class MongoTest {
 	public void getDataEmailtest(){
 		System.out.println("Email - "+mongoRepo.getDataByEmail("sameen").getEmail());
 	}
+	
+	@Test
+	public void addNumbersTest(){
+		mongoRepo.addNumbers(5, 5);
+	}
 
 }

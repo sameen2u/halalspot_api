@@ -9,6 +9,9 @@ import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 
+import com.halal.sa.common.error.ApiException;
+import com.halal.sa.core.ApiRequest;
+import com.halal.sa.core.request.SearchRequestParameters;
 import com.halal.sa.data.dao.impl.AccountDaoImpl;
 import com.halal.sa.data.entities.User;
 
@@ -19,15 +22,15 @@ public abstract class BaseService {
 	/*
 	 * this method will massage the DB data and construct the response according to contract
 	 */
-	protected abstract Object processResponse(Object dbObject, HttpServletRequest request);
+	protected abstract Object processResponse(Object dbObject, HttpServletRequest request) throws ApiException;
 	
 	/*
 	 * This method club the response body object and status code with response entity
 	 */
-	public ResponseEntity<Object> processResponseEntity(Object responseObj, HttpStatus statucCode){
+	public ResponseEntity<Object> processResponseEntity(Object responseObj, HttpStatus statucCode) {
 		return new ResponseEntity<Object>(responseObj,statucCode);
 	}
 	
-	protected abstract boolean validate(Object model);
+	protected abstract SearchRequestParameters validate(ApiRequest apiRequest) throws ApiException;
 
 }
