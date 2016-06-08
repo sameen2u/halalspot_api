@@ -1,4 +1,4 @@
-package com.halal.sa.process.searchbusiness;
+package com.halal.sa.processor.searchbusiness;
 
 import java.util.List;
 

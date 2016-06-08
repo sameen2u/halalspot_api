@@ -2,7 +2,7 @@ package com.halal.sa.common.error;
 
 import com.halal.sa.core.ApiRequest;
 import com.halal.sa.core.ApiResponse;
-import com.halal.sa.core.processor.ApiErrorProcessor;
+import com.halal.sa.core.apiprocessor.ApiErrorProcessor;
 
 public class ApiErrorProcessorImpl implements ApiErrorProcessor{
 

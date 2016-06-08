@@ -16,7 +16,7 @@ import org.springframework.util.MultiValueMap;
 
 import com.halal.sa.common.error.ApiException;
 import com.halal.sa.common.error.ErrorConstants;
-import com.halal.sa.core.processor.ApiPreProcessor;
+import com.halal.sa.core.apiprocessor.ApiPreProcessor;
 
 /**
  * Class implements the template method for the preprocess step.Class also contains

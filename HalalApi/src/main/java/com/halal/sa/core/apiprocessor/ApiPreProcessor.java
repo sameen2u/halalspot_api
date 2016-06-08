@@ -1,4 +1,4 @@
-package com.halal.sa.core.processor;
+package com.halal.sa.core.apiprocessor;
 
 import com.halal.sa.common.error.ApiException;
 import com.halal.sa.core.ApiRequest;

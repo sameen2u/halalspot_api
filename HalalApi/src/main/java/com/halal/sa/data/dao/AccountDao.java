@@ -2,6 +2,7 @@ package com.halal.sa.data.dao;
 
 import com.halal.sa.common.error.ApiException;
 import com.halal.sa.controller.vo.UserVO;
+import com.halal.sa.data.entities.User;
 
 public interface AccountDao {
 	
@@ -9,6 +10,6 @@ public interface AccountDao {
 	
 	public Object getUserByPassword(String username, String password) throws ApiException;
 	
-	public String getUserByEmail(String email);
+	public User getUserByEmail(String email);
 
 }

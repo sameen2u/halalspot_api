@@ -9,7 +9,7 @@ import org.springframework.http.HttpHeaders;
 import com.halal.sa.common.ServiceCommonConstants;
 import com.halal.sa.common.error.ApiException;
 import com.halal.sa.common.error.ErrorConstants;
-import com.halal.sa.core.processor.ApiPostProcessor;
+import com.halal.sa.core.apiprocessor.ApiPostProcessor;
 
 public abstract class AbstractPostProcessor implements ApiPostProcessor {
 

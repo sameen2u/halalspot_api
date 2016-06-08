@@ -13,11 +13,11 @@ import org.slf4j.LoggerFactory;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.ObjectReader;
-import com.halal.sa.data.dao.impl.AccountDaoImpl;
+import com.halal.sa.data.dao.impl.MyAccountDaoImpl;
 
 public class CommonUtil {
 	
-	private final static Logger LOGGER = LoggerFactory.getLogger(AccountDaoImpl.class);
+	private final static Logger LOGGER = LoggerFactory.getLogger(MyAccountDaoImpl.class);
 	
 	private static final ObjectMapper mapper = new ObjectMapper();
 	private static final ObjectReader reader = mapper.reader(HashMap.class);
@@ -33,16 +33,19 @@ public class CommonUtil {
 	 * @throws NoSuchAlgorithmException
 	 */
 	public static String hashPassword(String password) throws NoSuchAlgorithmException{
-		MessageDigest md = MessageDigest.getInstance("SHA-256");
-        md.update(password.getBytes());
-        byte byteData[] = md.digest();
- 
-        //convert the byte to hex format method 1
-        StringBuffer sb = new StringBuffer();
-        for (int i = 0; i < byteData.length; i++) {
-         sb.append(Integer.toString((byteData[i] & 0xff) + 0x100, 16).substring(1));
-        }
-		return sb.toString();
+		if(password != null){
+			MessageDigest md = MessageDigest.getInstance("SHA-256");
+	        md.update(password.getBytes());
+	        byte byteData[] = md.digest();
+	 
+	        //convert the byte to hex format method 1
+	        StringBuffer sb = new StringBuffer();
+	        for (int i = 0; i < byteData.length; i++) {
+	         sb.append(Integer.toString((byteData[i] & 0xff) + 0x100, 16).substring(1));
+	        }
+			return sb.toString();
+		}
+		return null;
 	}
 	
 	/**

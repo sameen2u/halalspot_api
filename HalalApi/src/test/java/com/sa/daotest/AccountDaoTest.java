@@ -8,14 +8,14 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 import com.halal.sa.controller.vo.LogonVO;
 import com.halal.sa.controller.vo.UserVO;
-import com.halal.sa.data.dao.impl.AccountDaoImpl;
+import com.halal.sa.data.dao.impl.MyAccountDaoImpl;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration("/WEB-INF/dispatcher-servlet.xml")
 public class AccountDaoTest {
 	
 	@Autowired
-	AccountDaoImpl accountDao;
+	MyAccountDaoImpl accountDao;
 	
 //	@Test
 	public void registerTest(){

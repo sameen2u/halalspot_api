@@ -25,7 +25,7 @@ import com.halal.sa.common.error.ErrorResponseGenerator;
 import com.halal.sa.core.ApiRequest;
 import com.halal.sa.core.request.SearchRequestParameters;
 import com.halal.sa.data.dao.BusinessDao;
-import com.halal.sa.data.dao.impl.AccountDaoImpl;
+import com.halal.sa.data.dao.impl.MyAccountDaoImpl;
 import com.halal.sa.data.dao.impl.BusinessDaoImpl;
 import com.halal.sa.data.entities.Address;
 import com.halal.sa.data.entities.Business;
@@ -34,7 +34,7 @@ import com.halal.sa.data.entities.Location;
 @Service
 public class BusinessService extends BaseService{
 	
-	private final static Logger LOGGER = LoggerFactory.getLogger(AccountDaoImpl.class);
+	private final static Logger LOGGER = LoggerFactory.getLogger(MyAccountDaoImpl.class);
 	
 	@Autowired
 	BusinessDao businessDaoImpl;

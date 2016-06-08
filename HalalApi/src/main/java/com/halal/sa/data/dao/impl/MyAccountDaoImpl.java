@@ -16,8 +16,8 @@ import com.halal.sa.data.dao.AccountDao;
 import com.halal.sa.data.entities.User;
 
 @Repository("accountDaoImpl")
-public class AccountDaoImpl implements AccountDao{
-	private final Logger LOGGER = LoggerFactory.getLogger(AccountDaoImpl.class);
+public class MyAccountDaoImpl implements AccountDao{
+	private final Logger LOGGER = LoggerFactory.getLogger(MyAccountDaoImpl.class);
 	
 	@Autowired
 	MongoTemplate mongoTemplate;
@@ -54,12 +54,12 @@ public class AccountDaoImpl implements AccountDao{
 	/**
 	 * this method will return email if present in DB or null will be returned
 	 */
-	public String getUserByEmail(String email) {
+	public User getUserByEmail(String email) {
 		LOGGER.debug("Inside getUserByEmail method in class AccountDaoImpl");
 		Query query = new Query(Criteria.where("email").is(email));
 		List<User> users = mongoTemplate.find(query, User.class);
-		if(!users.isEmpty()){
-			return users.get(0).getEmail();
+		if(users != null && !users.isEmpty()){
+			return users.get(0);
 		}
 		return null;
 	}

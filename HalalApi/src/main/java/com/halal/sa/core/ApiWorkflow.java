@@ -2,10 +2,10 @@ package com.halal.sa.core;
 
 import org.springframework.beans.factory.annotation.Required;
 
-import com.halal.sa.core.processor.ApiErrorProcessor;
-import com.halal.sa.core.processor.ApiPostProcessor;
-import com.halal.sa.core.processor.ApiPreProcessor;
-import com.halal.sa.core.processor.ApiProcessor;
+import com.halal.sa.core.apiprocessor.ApiErrorProcessor;
+import com.halal.sa.core.apiprocessor.ApiPostProcessor;
+import com.halal.sa.core.apiprocessor.ApiPreProcessor;
+import com.halal.sa.core.apiprocessor.ApiProcessor;
 
 public class ApiWorkflow {
 

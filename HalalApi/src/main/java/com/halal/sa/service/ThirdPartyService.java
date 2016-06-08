@@ -16,13 +16,13 @@ import org.springframework.web.client.RestTemplate;
 
 import com.halal.sa.common.ApplicationConstant;
 import com.halal.sa.common.CommonUtil;
-import com.halal.sa.data.dao.impl.AccountDaoImpl;
+import com.halal.sa.data.dao.impl.MyAccountDaoImpl;
 
 @Component
 @SuppressWarnings("unused")
 public class ThirdPartyService {
 	
-	private final static Logger LOGGER = LoggerFactory.getLogger(AccountDaoImpl.class);
+	private final static Logger LOGGER = LoggerFactory.getLogger(MyAccountDaoImpl.class);
 	
 	protected RestTemplate restTemplate;
 	

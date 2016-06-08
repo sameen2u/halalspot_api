@@ -1,32 +1,20 @@
-package com.halal.sa.controller.vo.response;
+package com.halal.sa.processor.myaccount;
 
+import java.util.List;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
+import com.halal.sa.controller.vo.response.SearchBusiness;
+import com.halal.sa.controller.vo.response.SearchReport;
+import com.halal.sa.core.AggregateData;
 
 @JsonInclude(JsonInclude.Include.NON_NULL)
-public class UserAuthentication {
+public class MyAccountAggregateData implements AggregateData{
 	
 	private String userId;
 	private String email;
 	private String name;
 	private String userActivityToken;
 	private String sessionToken;
-	private String error;
-    private String errorDescription;
-    
-	
-	public String getError() {
-		return error;
-	}
-	public void setError(String error) {
-		this.error = error;
-	}
-	public String getErrorDescription() {
-		return errorDescription;
-	}
-	public void setErrorDescription(String errorDescription) {
-		this.errorDescription = errorDescription;
-	}
 	public String getUserId() {
 		return userId;
 	}
@@ -45,16 +33,17 @@ public class UserAuthentication {
 	public void setName(String name) {
 		this.name = name;
 	}
-	public String getSessionToken() {
-		return sessionToken;
-	}
-	public void setSessionToken(String sessionToken) {
-		this.sessionToken = sessionToken;
-	}
 	public String getUserActivityToken() {
 		return userActivityToken;
 	}
 	public void setUserActivityToken(String userActivityToken) {
 		this.userActivityToken = userActivityToken;
 	}
+	public String getSessionToken() {
+		return sessionToken;
+	}
+	public void setSessionToken(String sessionToken) {
+		this.sessionToken = sessionToken;
+	}
+	
 }

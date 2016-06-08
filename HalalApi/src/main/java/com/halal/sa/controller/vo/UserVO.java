@@ -1,5 +1,6 @@
 package com.halal.sa.controller.vo;
 
+import org.apache.commons.collections.map.MultiValueMap;
 import org.codehaus.jackson.annotate.JsonIgnoreProperties;
 
 /**
@@ -9,7 +10,7 @@ import org.codehaus.jackson.annotate.JsonIgnoreProperties;
  */
 
 @JsonIgnoreProperties(ignoreUnknown = true)
-public class UserVO {
+public class UserVO{
 
 	private String fullName;
 	private String email;

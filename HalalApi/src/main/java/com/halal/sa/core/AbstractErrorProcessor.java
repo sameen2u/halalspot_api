@@ -10,7 +10,7 @@ import com.halal.sa.common.ServiceCommonConstants;
 import com.halal.sa.common.error.ApiException;
 import com.halal.sa.common.error.ErrorConstants;
 import com.halal.sa.common.error.ErrorResponse;
-import com.halal.sa.core.processor.ApiErrorProcessor;
+import com.halal.sa.core.apiprocessor.ApiErrorProcessor;
 
 public abstract class AbstractErrorProcessor implements ApiErrorProcessor {
 	

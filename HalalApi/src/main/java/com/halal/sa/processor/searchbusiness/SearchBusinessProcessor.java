@@ -1,4 +1,4 @@
-package com.halal.sa.process.searchbusiness;
+package com.halal.sa.processor.searchbusiness;
 
 import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;

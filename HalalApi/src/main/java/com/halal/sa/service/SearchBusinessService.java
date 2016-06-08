@@ -26,7 +26,7 @@ import com.halal.sa.core.request.SearchRequestParameters;
 import com.halal.sa.data.dao.BusinessDao;
 import com.halal.sa.data.dao.impl.BusinessDaoImpl;
 import com.halal.sa.data.entities.Address;
-import com.halal.sa.process.searchbusiness.SearchBusinessAggregateData;
+import com.halal.sa.processor.searchbusiness.SearchBusinessAggregateData;
 import com.mongodb.DBObject;
 
 @Service

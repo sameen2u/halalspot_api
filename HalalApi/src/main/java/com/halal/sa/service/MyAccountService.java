@@ -11,39 +11,41 @@ import java.util.UUID;
 
 import javax.servlet.http.HttpServletRequest;
 
+import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.util.ObjectUtils;
-import org.springframework.util.StringUtils;
 
 import com.halal.sa.common.ApiConstant;
 import com.halal.sa.common.CommonUtil;
 import com.halal.sa.common.error.ApiException;
+import com.halal.sa.common.error.DomainErrorConstants;
 import com.halal.sa.common.error.ErrorConstants;
 import com.halal.sa.common.error.ErrorResponse;
-import com.halal.sa.controller.AccountController;
+import com.halal.sa.controller.MyAccountController;
 import com.halal.sa.controller.vo.LogonVO;
 import com.halal.sa.controller.vo.UserVO;
 import com.halal.sa.controller.vo.response.UserAuthentication;
 import com.halal.sa.core.ApiRequest;
-import com.halal.sa.core.processor.ApiErrorProcessor;
+import com.halal.sa.core.apiprocessor.ApiErrorProcessor;
 import com.halal.sa.core.request.SearchRequestParameters;
-import com.halal.sa.data.dao.impl.AccountDaoImpl;
+import com.halal.sa.data.dao.impl.MyAccountDaoImpl;
 import com.halal.sa.data.entities.User;
 import com.sun.org.apache.bcel.internal.generic.RETURN;
 
 @Service("accountService")
-public class AccountService extends BaseService{
+public class MyAccountService extends BaseService{
 	
-	private final Logger LOGGER = LoggerFactory.getLogger(AccountService.class);
+	private final Logger LOGGER = LoggerFactory.getLogger(MyAccountService.class);
 	
 	@Autowired
-	AccountDaoImpl accountDao;
+	MyAccountDaoImpl accountDao;
 	
 	@Autowired
 	@Qualifier("error.processor")
@@ -54,25 +56,17 @@ public class AccountService extends BaseService{
 	 * @param userVO
 	 * @return
 	 * @throws ApiException 
+	 * @throws NoSuchAlgorithmException 
 	 */
-	public ResponseEntity<Object> register(UserVO userVO) throws ApiException{
+	public ResponseEntity<Object> register(UserVO userVO) throws ApiException, NoSuchAlgorithmException{
 		LOGGER.debug("inside register method of Account Service class");
-		try{
-			String hashPassword = CommonUtil.hashPassword(userVO.getPassword());
-			userVO.setPassword(hashPassword);
-			if(validateRegistrationData(userVO)){
-				return processResponseEntity(accountDao.insertUserData(userVO),HttpStatus.OK);
-			}
-			else{
-				Object resObject = eApiErrorProcessor.processError(null, new ApiException(ErrorConstants.ERRORCODE_INVALID_DATA,ErrorConstants.ERRORDESC_EMAIL_ALREADY_EXIST));
-				return processResponseEntity(resObject, HttpStatus.OK);
-			}
+		String hashPassword = CommonUtil.hashPassword(userVO.getPassword());
+		userVO.setPassword(hashPassword);
+		if(!validateRegistrationData(userVO)){
+			return processResponseEntity(accountDao.insertUserData(userVO),HttpStatus.OK);
 		}
-		catch(Exception e){
-			e.printStackTrace();
-			//sending generic error in case of exception in Dao method
-			ErrorResponse errorResponse = new ErrorResponse();
-			return processResponseEntity(errorResponse,HttpStatus.OK);
+		else{
+			throw new ApiException(ErrorConstants.ERRORCODE_EMAIL_NOT_FOUND, ErrorConstants.ERRORDESC_EMAIL_ALREADY_EXIST);
 		}
 	}
 	
@@ -82,10 +76,10 @@ public class AccountService extends BaseService{
 	private boolean validateRegistrationData(UserVO userVO){
 		//if email exist then return false
 		if(accountDao.getUserByEmail(userVO.getEmail())!=null){
-			return false;
+			return true;
 		}
 		else
-			return true;
+			return false;
 	}
 	
 	/**
@@ -95,11 +89,12 @@ public class AccountService extends BaseService{
 	 * @throws NoSuchAlgorithmException 
 	 * @throws ApiException 
 	 */
-	public ResponseEntity<Object> login(LogonVO logonVO, HttpServletRequest request) throws NoSuchAlgorithmException, ApiException{
+	public ResponseEntity<Object> loginAuthentication(LogonVO logonVO, HttpServletRequest request) throws NoSuchAlgorithmException, ApiException{
 		LOGGER.debug("Inside login method in AccountService class");
 		String hashedPassword = CommonUtil.hashPassword(logonVO.getPassword());
-		User user = (User) accountDao.getUserByPassword(logonVO.getUsername(), hashedPassword);
-		if(user !=null ){	
+		User user = (User) accountDao.getUserByEmail(logonVO.getUsername());
+		if(user != null && StringUtils.equals(hashedPassword, user.getPassword())){
+			request.setAttribute("authentication", "true");
 			String userId=user.get_id();
 			String activityToken=null;
 			String sessionToken=generateToken(userId);
@@ -129,12 +124,20 @@ public class AccountService extends BaseService{
 			
 	protected ResponseEntity<Object> processResponse(Object model, HttpServletRequest request) throws ApiException {
 		//if data is returned means auth successful
-		UserAuthentication userAuthentication = null;
+		UserAuthentication userAuthentication = new UserAuthentication();
 		User user = (User) model;
-		if(user != null){
+		boolean authentication = false;
+		if(request.getAttribute("authentication") !=null){
+			 authentication = Boolean.parseBoolean(request.getAttribute("authentication").toString());
+		}
+		
+		if(user == null){
+			userAuthentication.setError(ErrorConstants.ERRORCODE_EMAIL_NOT_FOUND);
+			userAuthentication.setErrorDescription(ErrorConstants.ERRORDESC_EMAIL_NOT_FOUND);
+		}
+		else if(authentication){
 			//#need to call remember me method here.
 //			rememberUser();
-			userAuthentication = new UserAuthentication();
 			userAuthentication.setUserId(user.get_id());
 			userAuthentication.setEmail(user.getEmail());
 			userAuthentication.setName(user.getFullname());
@@ -144,11 +147,11 @@ public class AccountService extends BaseService{
 //			userAuthentication.setUserId(user.getUId());
 			
 		}
+		else {
+			userAuthentication.setError(ErrorConstants.ERRORCODE_AUTHENTICATION_FAILED);
+			userAuthentication.setErrorDescription(ErrorConstants.ERRORDESC_AUTHENTICATION_FAILED);
+		}
 		return processResponseEntity(userAuthentication, HttpStatus.OK);
-//		else {
-//			Object resObject = eApiErrorProcessor.processError(null, new ApiException(ErrorConstants.ERRORCODE_AUTHENTICATION_FAILED,ErrorConstants.ERRORDESC_AUTHENTICATION_FAILED));
-//			return processResponseEntity(resObject, HttpStatus.OK);
-//		}
 	}
 	
 	/**
@@ -237,14 +240,25 @@ public class AccountService extends BaseService{
 	/**
 	 * this method will check if email is already registered in the DB 
 	 * @return
+	 * @throws ApiException 
 	 */
-	public String checkEmail(String email){
-		if(StringUtils.isEmpty(accountDao.getUserByEmail(email))){
-			System.out.println("email ---------------"+accountDao.getUserByEmail(email));
-			return "false";
+	public ResponseEntity<Object> checkEmail(String email) throws ApiException{
+		if(email !=null){
+			Map<String, String> response = new HashMap<String, String>();
+			response.put("email", email);
+			User user = accountDao.getUserByEmail(email);
+			if(user == null){
+				response.put("available", "true");
+			}
+			else {
+				response.put("available", "false");
+			}
+			
+			return processResponseEntity(response, HttpStatus.OK);	
 		}
-		else 
-			return "true";
+		else{
+			throw new ApiException(DomainErrorConstants.ERRCODE_INCOMPLETE_DATA, ErrorConstants.ERRORDESC_INCOMPLETE_DATA);
+		}
 	}
 
 	@Override
@@ -253,7 +267,6 @@ public class AccountService extends BaseService{
 		// TODO Auto-generated method stub
 		return null;
 	}
-
 
 	
 }

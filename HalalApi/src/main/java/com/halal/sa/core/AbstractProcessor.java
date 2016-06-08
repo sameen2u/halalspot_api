@@ -5,7 +5,7 @@ import org.slf4j.LoggerFactory;
 
 import com.halal.sa.common.error.ApiException;
 import com.halal.sa.common.error.ErrorConstants;
-import com.halal.sa.core.processor.ApiProcessor;
+import com.halal.sa.core.apiprocessor.ApiProcessor;
 
 public abstract class AbstractProcessor implements ApiProcessor {
 	

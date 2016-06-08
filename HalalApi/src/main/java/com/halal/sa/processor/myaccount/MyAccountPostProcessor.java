@@ -1,4 +1,4 @@
-package com.halal.sa.process.searchbusiness;
+package com.halal.sa.processor.myaccount;
 
 import org.springframework.stereotype.Component;
 
@@ -9,7 +9,7 @@ import com.halal.sa.core.AggregateData;
 import com.halal.sa.core.RequestParameters;
 
 @Component
-public class SearchBusinessPostProcessor extends AbstractPostProcessor{
+public class MyAccountPostProcessor extends AbstractPostProcessor{
 
 	@Override
 	public <T> T transform(RequestParameters requestParameters,

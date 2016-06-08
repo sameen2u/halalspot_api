@@ -44,7 +44,7 @@ import com.mongodb.DBObject;
 @Repository("businessDaoImpl")
 public class BusinessDaoImpl implements BusinessDao{
 	
-	private final static Logger LOGGER = LoggerFactory.getLogger(AccountDaoImpl.class);
+	private final static Logger LOGGER = LoggerFactory.getLogger(MyAccountDaoImpl.class);
 	
 	@Autowired
 	MongoTemplate mongoTemplate;

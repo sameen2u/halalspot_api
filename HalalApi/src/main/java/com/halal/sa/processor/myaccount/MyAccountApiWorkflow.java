@@ -1,38 +1,38 @@
-package com.halal.sa.process.searchbusiness;
+package com.halal.sa.processor.myaccount;
 
 import javax.annotation.Resource;
 
 import org.springframework.stereotype.Component;
 
 import com.halal.sa.core.ApiWorkflow;
-import com.halal.sa.core.processor.ApiErrorProcessor;
-import com.halal.sa.core.processor.ApiPostProcessor;
-import com.halal.sa.core.processor.ApiPreProcessor;
-import com.halal.sa.core.processor.ApiProcessor;
+import com.halal.sa.core.apiprocessor.ApiErrorProcessor;
+import com.halal.sa.core.apiprocessor.ApiPostProcessor;
+import com.halal.sa.core.apiprocessor.ApiPreProcessor;
+import com.halal.sa.core.apiprocessor.ApiProcessor;
 
 @Component
-public class SearchBusinessApiWorkflow extends ApiWorkflow{
+public class MyAccountApiWorkflow extends ApiWorkflow{
 	
 	@Override
-	@Resource(name="searchBusinessPreProcessor")
+	@Resource(name="myAccountPreProcessor")
 	public void setApiPreprocessor(ApiPreProcessor apiPreprocessor) {
 		super.setApiPreprocessor(apiPreprocessor);
 	}
 	
 	@Override
-	@Resource(name="searchBusinessProcessor")
+	@Resource(name="myAccountProcessor")
 	public void setApiProcessor(ApiProcessor apiProcessor) {
 		super.setApiProcessor(apiProcessor);
 	}
 	
 	@Override
-	@Resource(name="searchBusinessPostProcessor")
+	@Resource(name="myAccountPostProcessor")
 	public void setApiPostprocessor(ApiPostProcessor apiPostprocessor) {
 		super.setApiPostprocessor(apiPostprocessor);
 	}
 	
 	@Override
-	@Resource(name="searchBusinessErrorProcessor")
+	@Resource(name="myAccountErrorProcessor")
 	public void setApiErrorProcessor(ApiErrorProcessor apiErrorProcessor) {
 		super.setApiErrorProcessor(apiErrorProcessor);
 	}

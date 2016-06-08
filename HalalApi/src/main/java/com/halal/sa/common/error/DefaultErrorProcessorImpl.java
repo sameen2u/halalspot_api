@@ -4,9 +4,11 @@ import java.util.HashMap;
 import java.util.Map;
 
 import org.apache.commons.lang.StringUtils;
+import org.springframework.stereotype.Component;
 
 import com.halal.sa.core.AbstractErrorProcessor;
 
+@Component
 public class DefaultErrorProcessorImpl extends AbstractErrorProcessor {
 	
 //	private static final Logger LOGGER = LoggerFactory.getLogger(DefaultErrorProcessorImpl.class.getName());
@@ -87,7 +89,8 @@ public class DefaultErrorProcessorImpl extends AbstractErrorProcessor {
 		errorCodeToErrorRespMap.put(ErrorCode.ERR_GATEWAY_TIMEOUT.toString(), gatewayTimeoutError);
 		errorCodeToErrorRespMap.put(ErrorCode.ERR_FETCH_TEMPLATE_UNAVAILABLE.toString(), fetchTemplateUnavailableError);
 		errorCodeToErrorRespMap.put(ErrorCode.ERR_REQUEST_COULD_NOT_BE_PROCESSED.toString(), requestCouldNotBeProcessedError);
-				
+		errorCodeToErrorRespMap.put(ErrorCode.ERR_EMAIL_NOT_FOUND.toString(), recordNotFoundError);
+		
 		return errorCodeToErrorRespMap;
 	}
 	

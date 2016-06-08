@@ -9,14 +9,14 @@ import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 import com.halal.sa.controller.vo.LogonVO;
-import com.halal.sa.service.AccountService;
+import com.halal.sa.service.MyAccountService;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration("/WEB-INF/dispatcher-servlet.xml")
 public class AccountServiceTest {
 	
 	@Autowired
-	AccountService accountService;
+	MyAccountService accountService;
 	
 	@Test
 	public void loginTest() throws NoSuchAlgorithmException{

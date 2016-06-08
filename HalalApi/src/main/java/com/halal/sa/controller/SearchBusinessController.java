@@ -21,8 +21,8 @@ import com.halal.sa.service.SearchBusinessService;
 @RequestMapping("/v1/business")
 public class SearchBusinessController {
 	
-	@Autowired
-	SearchBusinessService searchBusinessService;
+//	@Autowired
+//	SearchBusinessService searchBusinessService;
 	
 	@Autowired
 	private ApiController apiController;
@@ -30,14 +30,10 @@ public class SearchBusinessController {
 	@Resource(name="searchBusinessApiWorkflow")
 	private ApiWorkflow searchBusinessApiWorkflow;
 	
-	@SuppressWarnings("unchecked")
 	@RequestMapping(value="/search", method=RequestMethod.GET)
 	public ResponseEntity<Object> registerRestaurant(@RequestParam MultiValueMap<String, String> requestParameters,
 													 @RequestHeader HttpHeaders headers) throws ApiException{
 //													 @RequestParam(value="address",required=true) String address, 
-//													 @RequestParam(value="keyword",required=false) String keyword, 
-//													 @RequestParam(value="distance",required=true) int distance,
-//													 @RequestParam(value="page",required=false, defaultValue="0") int page){
 		ApiRequest apiRequest = new ApiRequest(requestParameters, headers);
 		//return (ResponseEntity<Object>) searchBusinessService.searchbusinesses(apiRequest);
 		return apiController.execute(apiRequest, searchBusinessApiWorkflow);

@@ -14,8 +14,10 @@ public class ErrorConstants {
 	public static final int ERRORCODE_GATEWAY_TIMEOUT = 504;
 	public static final int ERRORCODE_REQUEST_COULD_NOT_BE_PROCESSED = 500;
 	public static final int ERRORCODE_RULE_NOT_FOUND = 404;
-	public static final int ENDECA_ERROR_RULE_MISSING = -6;	
+	public static final String ERRORCODE_EMAIL_NOT_FOUND = "ERR_EMAIL_NOT_FOUND";	
 	
+	
+	public static final String ERRORDESC_EMAIL_NOT_FOUND = "Email not registered. Please signup.";
 	public static final String INVALID_PATH_PARAMETER = "This request could not be fulfulled because of an invalid path parameter.";
 	public static final String ERRORDESC_RULE_NOT_FOUND = "Rule Not Found.";
 	public static final String ERRORDESC_FETCH_TEMPLATE_UNAVAILABLE = "Fetch Template is not available in Content Grid.";
@@ -83,20 +85,13 @@ public class ErrorConstants {
 	
 	public static final String VAL_PASSED_VALUE_NOT_ALLOWED = "Parameter=''{0}'' passed value=''{1}'' is not allowed";
 	
-	// API : 3444 - constants for the dynamic error response
-	public static final String DYNAMIC_ERRORDESC_INVALID_REQUEST_PARAMETERS = "Bad Request:Request cannot be fulfilled because of incorrect input for itemId={0}";
-	public static final String DYNAMIC_ERRORDESC_INVALID_URL_PARAMETERS = "Bad Request:Request cannot be fulfilled because of incorrect url for itemId={0}";
-	public static final String DYNAMIC_ERRORDESC_RECORD_NOT_FOUND = "Record Not Found for itemId={0}";
-	public static final String ERROR_FBT_IDS_NOT_FOUND="No FBT ids found for the itemId {0}";
-	public static final String ERROR_REQUIRED_MESSAGE = "Required ''{0}''({1}), if  ''{2}'' is ''{3}''";
 
 
 	public static final String ERRORCODE_INVALID_DATA = "INVALID_DATA";
 	public static final String ERRORCODE_AUTHENTICATION_FAILED = "AUTHENTICATION_FAILED";
-	public static final String ERRORCODE_INCOMPLETE_DATA = "E101";
 	
 	
-	public static final String API_ERR_100 = "Login authentication Failed, invalid email and password combination";
+	public static final String LOGIN_ERR_100 = "Login authentication Failed, invalid email and password combination";
 	public static final String ERRORDESC_INVALID_URL_PARAMETERS = "Bad Request:Request cannot be fulfilled because of incorrect url.";
 	public static final String ERRORDESC_INTERNAL_ERROR = "Internal error processing request.";
 	public static final String ERRORDESC_AUTHENTICATION_FAILED = "Authentication Failed: Email and Password dont Match";
@@ -104,5 +99,13 @@ public class ErrorConstants {
 	public static final String ERRORDESC_USERID_NOT_EXIST_IN_DB = "User id is not present in the database, Cookie might have changed at client side";
 	public static final String ERRORDESC_INCOMPLETE_DATA = "Incomplete data provided, please complete the form and resubmit it.";
 	public static final String ERR_ENCOUNTERED_DURING_PROCESSING = "Error encountered before execution of processors";
+	
+	public static final String DYNAMIC_ERRORDESC_INVALID_REQUEST_PARAMETERS = "Bad Request:Request cannot be fulfilled because of incorrect input for itemId={0}";
+	public static final String DYNAMIC_ERRORDESC_INVALID_URL_PARAMETERS = "Bad Request:Request cannot be fulfilled because of incorrect url for itemId={0}";
+	public static final String DYNAMIC_ERRORDESC_RECORD_NOT_FOUND = "Record Not Found for itemId={0}";
+	public static final String ERROR_FBT_IDS_NOT_FOUND="No FBT ids found for the itemId {0}";
+	public static final String ERROR_REQUIRED_MESSAGE = "Required ''{0}''({1}), if  ''{2}'' is ''{3}''";
+
+
 	
 }

@@ -1,4 +1,4 @@
-package com.halal.sa.process.searchbusiness;
+package com.halal.sa.processor.myaccount;
 
 import java.util.HashSet;
 import java.util.Set;
@@ -16,7 +16,7 @@ import com.halal.sa.common.error.ErrorConstants;
 import com.halal.sa.common.error.ErrorResponse;
 
 @Component
-public class SearchBusinessErrorProcessor extends DefaultErrorProcessorImpl{
+public class MyAccountErrorProcessor extends DefaultErrorProcessorImpl{
 	
 	private Set<String> badRequestErrors;
 
@@ -50,39 +50,7 @@ private void initialize() {
 		badRequestErrors.add(ErrorConstants.VAL_ERR_INVALID_OPERATION_CODE);
 		badRequestErrors.add(ErrorConstants.VAL_ERR_AMBIGUOUS_OPERATION_CODE);
 		badRequestErrors.add(DomainErrorConstants.ERR_INVALID_REQUEST_PARAMETERS);
-		badRequestErrors.add(DomainErrorConstants. ERR_ROUTE_V1_BING_BAD_REQUEST);
-		badRequestErrors.add(DomainErrorConstants.ERR_LOCATION_V1_BING_BAD_REQUEST);
-		badRequestErrors.add(DomainErrorConstants.ERR_SPATIALQUERY_V1_BING_BAD_REQUEST);
 		badRequestErrors.add(ErrorCode.ERR_BAD_REQUEST.toString());
-	
-		
-		serviceUnavailableErrors.add(DomainErrorConstants. ERR_ROUTE_V1_BING_SERVICE_UNAVAILABLE);
-		serviceUnavailableErrors.add(DomainErrorConstants. ERR_ROUTE_V1_BING_HTTP_HOST_CONNECT);
-		serviceUnavailableErrors.add(DomainErrorConstants. ERR_ROUTE_V1_BING_CONNECT_TIMEOUT);
-		serviceUnavailableErrors.add(DomainErrorConstants. ERR_ROUTE_V1_BING_SOCKET_TIMEOUT);
-		serviceUnavailableErrors.add(DomainErrorConstants. ERR_ROUTE_V1_BING_CLIENT_PROTOCOL);
-		serviceUnavailableErrors.add(DomainErrorConstants.ERR_V1_BING_IO);
-		serviceUnavailableErrors.add(DomainErrorConstants.ERR_LOCATION_V1_BING_DE_SERIALIZING_FROM_JSON);
-		serviceUnavailableErrors.add(DomainErrorConstants.ERR_SPATIALQUERY_V1_BING_SERVICE_UNAVAILABLE);
-		serviceUnavailableErrors.add(DomainErrorConstants.ERR_SPATIALQUERY_V1_BING_HTTP_HOST_CONNECT);
-		serviceUnavailableErrors.add(DomainErrorConstants.ERR_SPATIALQUERY_V1_BING_CONNECT_TIMEOUT);
-		serviceUnavailableErrors.add(DomainErrorConstants.ERR_SPATIALQUERY_V1_BING_SOCKET_TIMEOUT);
-		serviceUnavailableErrors.add(DomainErrorConstants.ERR_SPATIALQUERY_V1_BING_CLIENT_PROTOCOL);
-		serviceUnavailableErrors.add(DomainErrorConstants.ERR_SPATIALQUERY_V1_BING_IO);
-		serviceUnavailableErrors.add(DomainErrorConstants.ERR_SPATIALQUERY_V1_BING_DE_SERIALIZING_FROM_JSON);
-		
-		internalServerErrors.add(DomainErrorConstants.ERR_ROUTE_V1_BING_HTTP_RESPONSE_CODE);
-		internalServerErrors.add(DomainErrorConstants.ERR_ROUTE_V1_BING_INTERNAL_SERVER);
-		internalServerErrors.add(DomainErrorConstants.ERR_ROUTE_V1_BING_UNAUTHORIZED);
-		internalServerErrors.add(DomainErrorConstants.ERR_ROUTE_V1_BING_CONNECTION_POOL_TIMEOUT);
-		internalServerErrors.add(DomainErrorConstants.ERR_SPATIALQUERY_V1_BING_HTTP_RESPONSE_CODE);
-		internalServerErrors.add(DomainErrorConstants.ERR_SPATIALQUERY_V1_BING_INTERNAL_SERVER);
-		internalServerErrors.add(DomainErrorConstants.ERR_SPATIALQUERY_V1_BING_UNAUTHORIZED);
-		internalServerErrors.add(DomainErrorConstants.ERR_SPATIALQUERY_V1_BING_CONNECTION_POOL_TIMEOUT);
-		
-		recordNotFoundErrors.add(DomainErrorConstants.ERR_ROUTE_V1_BING_RECORD_NOT_FOUND);
-		recordNotFoundErrors.add(DomainErrorConstants.ERR_SPATIALQUERY_V1_BING_RECORD_NOT_FOUND);
-		recordNotFoundErrors.add(DomainErrorConstants.ERR_V2_STORESEARCH_AMBIGUOUS_ADDRESS);
 	}
 	
 	
