@@ -4,6 +4,8 @@ import java.util.HashMap;
 import java.util.Map;
 
 import org.apache.commons.lang.StringUtils;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Component;
 
 import com.halal.sa.core.AbstractErrorProcessor;
@@ -82,7 +84,6 @@ public class DefaultErrorProcessorImpl extends AbstractErrorProcessor {
 		errorCodeToErrorRespMap.put(ErrorCode.ERR_BAD_REQUEST.toString(), badRequestError);
 //		errorCodeToErrorRespMap.put(SpecificErrorCode.INVALID_PATH_PARAMETER.toString(), invalidPathParamater);
 		errorCodeToErrorRespMap.put(ErrorCode.ERR_RECORD_NOT_FOUND.toString(), recordNotFoundError);
-		errorCodeToErrorRespMap.put(ErrorCode.ERR_AMBIGUOUS_RESULTS.toString(), recordNotFoundError);
 		errorCodeToErrorRespMap.put(ErrorCode.ERR_UNAUTHORIZED.toString(), unauthorizedError);
 		errorCodeToErrorRespMap.put(ErrorCode.ERR_SERVICE_UNAVAILABLE.toString(), serviceUnavailableError);
 		errorCodeToErrorRespMap.put(ErrorCode.ERR_METHOD_NOT_ALLOWED.toString(), methodNotAllowedError);
@@ -90,6 +91,8 @@ public class DefaultErrorProcessorImpl extends AbstractErrorProcessor {
 		errorCodeToErrorRespMap.put(ErrorCode.ERR_FETCH_TEMPLATE_UNAVAILABLE.toString(), fetchTemplateUnavailableError);
 		errorCodeToErrorRespMap.put(ErrorCode.ERR_REQUEST_COULD_NOT_BE_PROCESSED.toString(), requestCouldNotBeProcessedError);
 		errorCodeToErrorRespMap.put(ErrorCode.ERR_EMAIL_NOT_FOUND.toString(), recordNotFoundError);
+		errorCodeToErrorRespMap.put(ErrorCode.ERR_MONGODB_UNAVAILABLE.toString(), serviceUnavailableError);
+		
 		
 		return errorCodeToErrorRespMap;
 	}
@@ -129,5 +132,20 @@ public class DefaultErrorProcessorImpl extends AbstractErrorProcessor {
 		
 		return errorResponse;
 	}
+	
+	public ResponseEntity<ErrorResponse> getErrorResponse(ErrorResponse errorResponseObj){
+		
+		if(errorResponseObj == null){
+			errorResponseObj = new ErrorResponse(
+					ErrorConstants.ERRORCODE_INTERNAL_ERROR,
+					ErrorConstants.ERRORDESC_INTERNAL_ERROR);
+		}
+			
+		 
+		 ResponseEntity<ErrorResponse> errorResponse= new ResponseEntity<>(errorResponseObj, HttpStatus.INTERNAL_SERVER_ERROR);
+		return errorResponse;
+		
+	}
+	
 
 }

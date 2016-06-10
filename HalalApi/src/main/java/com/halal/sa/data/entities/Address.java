@@ -2,11 +2,14 @@ package com.halal.sa.data.entities;
 
 import java.io.Serializable;
 
+import org.hibernate.validator.constraints.NotEmpty;
+
 import com.fasterxml.jackson.annotation.JsonInclude;
 
 @JsonInclude(JsonInclude.Include.NON_NULL)
 public class Address implements Serializable{
 	
+	@NotEmpty
 	private String streetAddress;
 	private String city;
 	private int pincode;

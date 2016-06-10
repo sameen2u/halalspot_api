@@ -11,6 +11,8 @@ import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
+
+import com.halal.sa.common.error.ApiException;
 import com.halal.sa.controller.vo.UserVO;
 import com.halal.sa.data.dao.AccountDao;
 import com.halal.sa.data.entities.User;
@@ -26,42 +28,82 @@ public class MyAccountDaoImpl implements AccountDao{
 	 * returns success if the data inserted successfully
 	 * @see com.halal.sa.data.dao.AccountDao#insertUserData(com.halal.sa.controller.model.UserVO)
 	 */
-	public String insertUserData(UserVO userVO) {
+	public String insertUserData(UserVO userVO) throws ApiException {
 		User user = new User();
 		user.setFullname(userVO.getFullName());
 		user.setEmail(userVO.getEmail());
 		user.setPassword(userVO.getPassword());
 		user.setCreatedDate(new Date());
-		mongoTemplate.save(user);
-		return "success";
+		
+		try{
+			mongoTemplate.save(user);
+			return "success";
+		}
+		catch(Exception e){
+			LOGGER.error("ERR_MONGODB_UNAVAILABLE", e);
+			throw new ApiException("ERR_MONGODB_UNAVAILABLE", "ERR_MONGODB_UNAVAILABLE");
+		}
+		
 	}
 	
 	/**
 	 * this method will return the User object upon successful email and password match
+	 * @throws ApiException 
 	 */
 
-	public Object getUserByPassword(String userEmail, String password){
+	public Object getUserByPassword(String userEmail, String password) throws ApiException{
 		LOGGER.info("Inside loginDao method");
-		LOGGER.debug("Inside loginDao method");
 		Query query = new Query(Criteria.where("email").is(userEmail).and("password").is(password));
-		List<User> users = mongoTemplate.find(query, User.class);
-		if(!users.isEmpty()){
-			return users.get(0);
+		
+		try{
+			List<User> users = mongoTemplate.find(query, User.class);
+			if(!users.isEmpty()){
+				return users.get(0);
+			}
+			return null;
 		}
-		return null;
+		catch(Exception e){
+			LOGGER.error("ERR_MONGODB_UNAVAILABLE", e);
+			throw new ApiException("ERR_MONGODB_UNAVAILABLE", "ERR_MONGODB_UNAVAILABLE");
+		}
 	}
 
 	/**
 	 * this method will return email if present in DB or null will be returned
+	 * @throws ApiException 
 	 */
-	public User getUserByEmail(String email) {
+	public User getUserByEmail(String email) throws ApiException {
 		LOGGER.debug("Inside getUserByEmail method in class AccountDaoImpl");
 		Query query = new Query(Criteria.where("email").is(email));
-		List<User> users = mongoTemplate.find(query, User.class);
-		if(users != null && !users.isEmpty()){
-			return users.get(0);
+		
+		try{
+			List<User> users = mongoTemplate.find(query, User.class);
+			if(users != null && !users.isEmpty()){
+				return users.get(0);
+			}
+			return null;
 		}
-		return null;
+		catch(Exception e){
+			LOGGER.error("ERR_MONGODB_UNAVAILABLE", e);
+			throw new ApiException("ERR_MONGODB_UNAVAILABLE", "ERR_MONGODB_UNAVAILABLE");
+		}
+	}
+	
+	/**
+	 * this method will return email if present in DB or null will be returned
+	 * @throws ApiException 
+	 */
+	public User getUserById(String userId) throws ApiException {
+		LOGGER.debug("Inside getUserByEmail method in class AccountDaoImpl");
+		
+		try{
+			User user = mongoTemplate.findById(userId, User.class);
+			return user;
+		}
+		catch(Exception e){
+			LOGGER.error("ERR_MONGODB_UNAVAILABLE", e);
+			throw new ApiException("ERR_MONGODB_UNAVAILABLE", "ERR_MONGODB_UNAVAILABLE");
+		}
 	}
 	
 	
@@ -70,12 +112,20 @@ public class MyAccountDaoImpl implements AccountDao{
 	 * @param userId
 	 * @param sessionToken
 	 * @param activityToken
+	 * @throws ApiException 
 	 */
 	@Transactional
-	public User updateToken(User user, String sessionToken, String activityToken){
+	public User updateToken(User user, String sessionToken, String activityToken) throws ApiException{
 			user.setSessionToken(sessionToken);
 			user.setUserActivityToken(activityToken);
-			mongoTemplate.save(user);
-			return user;
+			
+			try{
+				mongoTemplate.save(user);
+				return user;
+			}
+			catch(Exception e){
+				LOGGER.error("ERR_MONGODB_UNAVAILABLE", e);
+				throw new ApiException("ERR_MONGODB_UNAVAILABLE", "ERR_MONGODB_UNAVAILABLE");
+			}
 	}
 }

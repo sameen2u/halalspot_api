@@ -7,9 +7,11 @@ public class DomainErrorConstants {
 	}
 	
 	
-	public static final String ERRCODE_INCOMPLETE_DATA = "ERR_INCOMPLETE_DATA";
+	public static final String ERRCODE_INCOMPLETE_DATA = "ERR_INCOMPLETE_DATA";	
+	public static final String ERRCODE_BAD_REQUEST = "ERR_BAD_REQUEST";
 	
-	public static final String ERR_STORE_SEARCH_SERVICE_V2_BAD_REQUEST = "ERR_STORE_SEARCH_SERVICE_V2_BAD_REQUEST";
+	public static final String ERRDESC_TOKEN_MISSING = "Session or Activity token is required in request param";	
+	
 	public static final String ERR_STORE_SEARCH_SERVICE_V2_UNAUTHORIZED = "ERR_STORE_SEARCH_SERVICE_V2_UNAUTHORIZED";
 	public static final String ERR_STORE_SEARCH_SERVICE_V2_RECORD_NOT_FOUND = "ERR_STORE_SEARCH_SERVICE_V2_RECORD_NOT_FOUND";
 	public static final String ERR_STORE_SEARCH_SERVICE_V2_INTERNAL_SERVER = "ERR_STORE_SEARCH_SERVICE_V2_INTERNAL_SERVER";

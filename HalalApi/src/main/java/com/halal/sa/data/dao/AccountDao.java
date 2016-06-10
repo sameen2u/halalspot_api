@@ -6,10 +6,10 @@ import com.halal.sa.data.entities.User;
 
 public interface AccountDao {
 	
-	public String insertUserData(UserVO userBean);
+	public String insertUserData(UserVO userBean) throws ApiException;
 	
 	public Object getUserByPassword(String username, String password) throws ApiException;
 	
-	public User getUserByEmail(String email);
+	public User getUserByEmail(String email)  throws ApiException;
 
 }

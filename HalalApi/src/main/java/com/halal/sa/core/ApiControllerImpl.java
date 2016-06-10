@@ -55,7 +55,7 @@ public class ApiControllerImpl implements ApiController {
 				response = apiResponseGenerator.generateResponse(apiRequest, apiResponse);
 
 				if (response == null) {
-					response = (ResponseEntity<T>) getErrorResponse();
+					response = (ResponseEntity<T>) getErrorResponse(null);
 				}
 			}
 
@@ -64,17 +64,18 @@ public class ApiControllerImpl implements ApiController {
 			LOGGER.error(e.getMessage(), e);
 			LOGGER.error(ApiLoggingConstants.API_RESPONSE_GENERATION_FAILED
 					+ e.getMessage());
-			response = (ResponseEntity<T>) getErrorResponse();
+			response = (ResponseEntity<T>) getErrorResponse(e.getMessage());
 		}
 
 		return response;
 	}
 	
-	private ResponseEntity<ErrorResponse> getErrorResponse(){
+	private ResponseEntity<ErrorResponse> getErrorResponse(String msg){
+		String errorMsg = (msg != null)? msg : ErrorConstants.ERRORDESC_INTERNAL_ERROR;
 		
 		ErrorResponse internalServerErrorResponse = new ErrorResponse(
 				ErrorConstants.ERRORCODE_INTERNAL_ERROR,
-				ErrorConstants.ERRORDESC_INTERNAL_ERROR);
+				errorMsg);
 		 
 		 ResponseEntity<ErrorResponse> errorResponse= new ResponseEntity<>(internalServerErrorResponse,HttpStatus.INTERNAL_SERVER_ERROR);
 		return errorResponse;

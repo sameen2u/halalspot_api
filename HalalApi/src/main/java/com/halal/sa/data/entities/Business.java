@@ -5,9 +5,9 @@ import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
-import javax.validation.constraints.NotNull;
-import javax.validation.constraints.Size;
+import javax.validation.Valid;
 
+import org.hibernate.validator.constraints.NotEmpty;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 
@@ -17,12 +17,14 @@ public class Business implements Serializable{
 	@Id
 	private String id;
 	
-	@NotNull
+	@NotEmpty
 	private String name;
 	private String description;
 	private List<String> cuisine;
+	@Valid
 	private Address address;
 	private int phone;
+	@NotEmpty
 	private String email;
 	private String ownerEmail;
 	private String ownerPhone;

@@ -61,6 +61,9 @@ public class ThirdPartyService {
 		return location;
 	}
 	
+	/*
+	 * This method returns locality from the response of the google api 
+	 */
 	private String getLocality(List<Map> addressComponents){
 		String locality = null;
 		for(Map locationMap: addressComponents){

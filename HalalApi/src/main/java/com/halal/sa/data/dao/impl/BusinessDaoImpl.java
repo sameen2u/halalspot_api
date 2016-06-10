@@ -34,6 +34,8 @@ import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.halal.sa.common.ApplicationConstant;
+import com.halal.sa.common.error.ApiException;
+import com.halal.sa.common.error.ErrorCode;
 import com.halal.sa.data.dao.BusinessDao;
 import com.halal.sa.data.entities.Business;
 import com.halal.sa.service.ThirdPartyService;
@@ -44,7 +46,7 @@ import com.mongodb.DBObject;
 @Repository("businessDaoImpl")
 public class BusinessDaoImpl implements BusinessDao{
 	
-	private final static Logger LOGGER = LoggerFactory.getLogger(MyAccountDaoImpl.class);
+	private final static Logger LOGGER = LoggerFactory.getLogger(BusinessDaoImpl.class);
 	
 	@Autowired
 	MongoTemplate mongoTemplate;
@@ -54,9 +56,16 @@ public class BusinessDaoImpl implements BusinessDao{
 
 	/**
 	 * This method adds restaurant info in DB
+	 * @throws ApiException 
 	 */
-	public void addBusinessInfo(Business business) {
-		mongoTemplate.save(business);
+	public void addBusinessInfo(Business business) throws ApiException {
+		try{
+			mongoTemplate.save(business);
+		}
+		catch(Exception e){
+			LOGGER.error("ERR_MONGODB_UNAVAILABLE", e);
+			throw new ApiException("ERR_MONGODB_UNAVAILABLE", "ERR_MONGODB_UNAVAILABLE");
+		}
 	}
 
 	/**
@@ -66,11 +75,7 @@ public class BusinessDaoImpl implements BusinessDao{
 		// TODO Auto-generated method stub
 	}
 	
-	public List businessCountByKeyword(String keyword, List ids) {
-		return ids;
-	}
-	
-	public List searchBusinessByKeyword(String keyword, List ids) {
+	public List searchBusinessByKeyword(String keyword, List ids) throws ApiException {
 
 		int skip = 0;
 		int recordsPerPage = ApplicationConstant.BUSINESS_RECORDS_PER_PAGE;
@@ -80,23 +85,21 @@ public class BusinessDaoImpl implements BusinessDao{
 		
 		BasicDBObject matchIds = new BasicDBObject("$match", new BasicDBObject("_id", new BasicDBObject("$in", ids)));
 		
-//		BasicDBObject limitRecords = new BasicDBObject("$limit", recordsPerPage+extraPaginationrecord );
-	
 		List<DBObject> aggregationList = new ArrayList<DBObject>();
 		aggregationList.add(matchSearch);
 		aggregationList.add(matchIds);
+		try{
+			AggregationOutput aggregationOutput = mongoTemplate.getCollection("business").aggregate(aggregationList);
 		
-//		if(page > 1){
-//			skip = recordsPerPage * (page - 1);
-//			BasicDBObject skipRecords = new BasicDBObject("$skip", skip );
-//			aggregationList.add(skipRecords);
-//		}
-		//limit will be last to be added in the query as per mongo functionality
-		//aggregationList.add(limitRecords);
-		AggregationOutput aggregationOutput = mongoTemplate.getCollection("business").aggregate(aggregationList);
+		
 		
 		List<DBObject> dbObjects = (List<DBObject>) aggregationOutput.results();
 		return dbObjects;
+		}
+		catch(Exception e){
+			LOGGER.error("ERR_MONGODB_UNAVAILABLE", e);
+			throw new ApiException("ERR_MONGODB_UNAVAILABLE", "ERR_MONGODB_UNAVAILABLE");
+		}
 	}
 	
 	public List searchBusinessByLocation(double longitude, double latitude, double distance) {

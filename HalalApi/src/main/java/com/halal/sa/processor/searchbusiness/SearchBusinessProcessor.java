@@ -168,15 +168,16 @@ public class SearchBusinessProcessor extends AbstractProcessor{
 	 * 1. get list of all business near the lang and lat of the address
 	 * 2. get list of business contains the keyword in above list of biz 
 	 * and then filter the records which doesnt have the keywords 
+	 * @throws ApiException 
 	 */
 	@SuppressWarnings({ "rawtypes", "unchecked" })
-	public List searchBusiness(String keyword, String address, double distance) {
+	public List searchBusiness(String keyword, String address, double distance) throws ApiException {
 		List businessIds = null;
 		List<DBObject> businessByDistance = null;
 		List<DBObject> businessByKeyword = null;
 		List<DBObject> resultBusiness=null;
-		double longitude;
-		double latitude;
+		double longitude = 0;
+		double latitude = 0;
 		Map<String,Object> map = thirdPartyService.getLongiLatitude(address);
 		if(map !=null && map.size() >0){
 			Map coordinate = (Map)map.get("coordinates");

@@ -21,6 +21,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.util.ObjectUtils;
+import org.springframework.web.bind.annotation.RequestParam;
 
 import com.halal.sa.common.ApiConstant;
 import com.halal.sa.common.CommonUtil;
@@ -72,8 +73,9 @@ public class MyAccountService extends BaseService{
 	
 	/**
 	 * This method will validate the user data and avoid duplicate registration
+	 * @throws ApiException 
 	 */
-	private boolean validateRegistrationData(UserVO userVO){
+	private boolean validateRegistrationData(UserVO userVO) throws ApiException{
 		//if email exist then return false
 		if(accountDao.getUserByEmail(userVO.getEmail())!=null){
 			return true;
@@ -127,13 +129,15 @@ public class MyAccountService extends BaseService{
 		UserAuthentication userAuthentication = new UserAuthentication();
 		User user = (User) model;
 		boolean authentication = false;
-		if(request.getAttribute("authentication") !=null){
+		HttpStatus httpStatus;
+		if(request != null && request.getAttribute("authentication") !=null){
 			 authentication = Boolean.parseBoolean(request.getAttribute("authentication").toString());
 		}
 		
 		if(user == null){
 			userAuthentication.setError(ErrorConstants.ERRORCODE_EMAIL_NOT_FOUND);
 			userAuthentication.setErrorDescription(ErrorConstants.ERRORDESC_EMAIL_NOT_FOUND);
+			httpStatus = HttpStatus.NOT_FOUND;
 		}
 		else if(authentication){
 			//#need to call remember me method here.
@@ -145,13 +149,43 @@ public class MyAccountService extends BaseService{
 			userAuthentication.setSessionToken(CommonUtil.encriptString(user.getSessionToken()));
 			userAuthentication.setUserActivityToken(CommonUtil.encriptString(user.getUserActivityToken()));
 //			userAuthentication.setUserId(user.getUId());
+			httpStatus = HttpStatus.OK;
 			
 		}
 		else {
 			userAuthentication.setError(ErrorConstants.ERRORCODE_AUTHENTICATION_FAILED);
 			userAuthentication.setErrorDescription(ErrorConstants.ERRORDESC_AUTHENTICATION_FAILED);
+			httpStatus = HttpStatus.UNAUTHORIZED;
 		}
-		return processResponseEntity(userAuthentication, HttpStatus.OK);
+		return processResponseEntity(userAuthentication, httpStatus);
+	}
+	
+	/**
+	 * This is common method to validate sessions and activity token
+	 * @return
+	 * @throws ParseException 
+	 * @throws ApiException 
+	 */
+	public ResponseEntity<Object> validateTokens(String userId, String activityToken, String sessionToken) throws ParseException, ApiException{
+		
+		if((StringUtils.isEmpty(sessionToken) && StringUtils.isEmpty(activityToken))){
+			throw new ApiException(DomainErrorConstants.ERRCODE_BAD_REQUEST, DomainErrorConstants.ERRDESC_TOKEN_MISSING);
+		}
+			Map<String,String> mapObj = new HashMap<String,String>();
+			if(!StringUtils.isEmpty(sessionToken) && this.validateSessionToken(userId, sessionToken)){
+				mapObj.put("sessionToken", "success");
+			}else{
+				mapObj.put("sessionToken", "failure");
+			}
+				
+			if(!StringUtils.isEmpty(activityToken) && this.validateActivityToken(userId, activityToken)){
+				mapObj.put("activitytoken", "success");
+			}else{
+				mapObj.put("activitytoken", "failure");
+			}
+		
+		return this.processResponseEntity(mapObj, HttpStatus.OK);
+		
 	}
 	
 	/**
@@ -160,19 +194,20 @@ public class MyAccountService extends BaseService{
 	 * @param token
 	 * @return
 	 * @throws ParseException 
+	 * @throws ApiException 
 	 */
-	public boolean validateActivityToken(int userId ,String activityToken) throws ParseException{
-		User user=null; //accountDao.getUserById(userId);
-		LOGGER.debug("Validating Session Token - "+user.getUserActivityToken());
-		if(!ObjectUtils.isEmpty(user) && !StringUtils.isEmpty(user.getUserActivityToken())){
+	public boolean validateActivityToken(String userId ,String activityToken) throws ParseException, ApiException{
+		User user= accountDao.getUserById(userId);
+		LOGGER.debug("Validating Activity Token - "+activityToken+" for user id - "+userId);
+		if(user != null && !StringUtils.isEmpty(user.getUserActivityToken())){
 			//decoding the input token before validating
 			activityToken=CommonUtil.decryptString(activityToken);
 			if(user.getUserActivityToken().equals(activityToken)){
 				SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd,HH:mm:ss");
 				String[] ss=activityToken.split("/");
-		        int userIdOfToken = Integer.parseInt(ss[1]);
+		        String userIdOfToken = ss[1].toString();
 		        Date tokendate = formatter.parse(ss[2]);
-		        if(userId == userIdOfToken && !isTokenExpired(tokendate, ApiConstant.API_TOKEN_TYPE_ACTIVITY)){
+		        if(StringUtils.equals(userId, userIdOfToken) && isTokenExpired(tokendate, ApiConstant.API_TOKEN_TYPE_ACTIVITY)){
 		        	return true;
 		        }
 			}
@@ -183,11 +218,12 @@ public class MyAccountService extends BaseService{
 	/**
 	 * this method will validate the user session token for the User id 
 	 * @return
+	 * @throws ApiException 
 	 */
-	public boolean validateSessionToken(int userId ,String sessionToken){
-		User user = null;//accountDao.getUserById(userId);
-		LOGGER.debug("Validating Session Token - "+user.getSessionToken());
+	public boolean validateSessionToken(String userId ,String sessionToken) throws ApiException{
+		User user = accountDao.getUserById(userId);
 		if(!ObjectUtils.isEmpty(user) && !StringUtils.isEmpty(user.getSessionToken())){
+			LOGGER.debug("Validating Session Token - "+user.getSessionToken());
 			sessionToken= CommonUtil.decryptString(sessionToken);
 			if(user.getSessionToken().equals(sessionToken)){
 				//#need to put session validate logic whenever needed
@@ -204,13 +240,12 @@ public class MyAccountService extends BaseService{
 		}
 		if(tokenType.equals(ApiConstant.API_TOKEN_TYPE_ACTIVITY)){
 			cal.add(Calendar.DATE, -60);
-		    Date expiredDate = cal.getTime();
-		    if(tokenDate.before(expiredDate)){
-	        	System.out.println("token expired");
-	        	return true;
+		    Date expiryDate = cal.getTime();
+		    if(tokenDate.before(expiryDate)){
+	        	return false;
 	        }
 		}		
-		return false;
+		return true;
 	}
 	
 	/**
@@ -243,7 +278,7 @@ public class MyAccountService extends BaseService{
 	 * @throws ApiException 
 	 */
 	public ResponseEntity<Object> checkEmail(String email) throws ApiException{
-		if(email !=null){
+		if(email !=null && !email.isEmpty()){
 			Map<String, String> response = new HashMap<String, String>();
 			response.put("email", email);
 			User user = accountDao.getUserByEmail(email);

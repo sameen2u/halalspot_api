@@ -2,26 +2,17 @@ package com.halal.sa.controller;
 
 import java.security.NoSuchAlgorithmException;
 import java.text.ParseException;
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.Map;
-
 import javax.servlet.http.HttpServletRequest;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpHeaders;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.halal.sa.common.error.ApiException;
@@ -64,13 +55,13 @@ public class MyAccountController{
 		catch (ApiException ae){
 			LOGGER.error(ae.getErrorCode(), ae);
 			ErrorResponse errorResponse = defaultErrorProcessorImpl.buildErrorResponse(ae);
-			response = (ResponseEntity<T>) getErrorResponse(errorResponse);
+			response = (ResponseEntity<T>) defaultErrorProcessorImpl.getErrorResponse(errorResponse);
 		}
-		catch (NoSuchAlgorithmException e) {
+		catch (Exception e) {
 			LOGGER.error(e.getMessage(), e);
 			LOGGER.error(ApiLoggingConstants.API_RESPONSE_GENERATION_FAILED
 					+ e.getMessage());
-			response = (ResponseEntity<T>) getErrorResponse(null);
+			response = (ResponseEntity<T>) defaultErrorProcessorImpl.getErrorResponse(null);
 		}
 		
 		return response;
@@ -95,7 +86,7 @@ public class MyAccountController{
 			LOGGER.error(e.getMessage(), e);
 			LOGGER.error(ApiLoggingConstants.API_RESPONSE_GENERATION_FAILED
 					+ e.getMessage());
-			response = (ResponseEntity<T>) getErrorResponse(null);
+			response = (ResponseEntity<T>) defaultErrorProcessorImpl.getErrorResponse(null);
 		}
 		return response;		
 	}
@@ -111,7 +102,7 @@ public class MyAccountController{
 		} catch (ApiException ae) {
 			LOGGER.error(ae.getErrorCode(), ae);
 			ErrorResponse errorResponse = defaultErrorProcessorImpl.buildErrorResponse(ae);
-			response = (ResponseEntity<T>) getErrorResponse(errorResponse);
+			response = (ResponseEntity<T>) defaultErrorProcessorImpl.getErrorResponse(errorResponse);
 		}
 		return response;
 	}
@@ -120,26 +111,20 @@ public class MyAccountController{
 	 * This method will validate the activity and session token required to check the validity of user session
 	 */
 	@RequestMapping(value="/validateToken", method=RequestMethod.GET)
-	public ResponseEntity<Object> validateUserToken(HttpServletRequest request, 
-									@RequestParam(value="userid", required=true) int userId,
+	public <T> ResponseEntity<T> validateUserToken(HttpServletRequest request, 
+									@RequestParam(value="userid", required=true) String userId,
 									@RequestParam(value="activitytoken", required=false) String activityToken,
 									@RequestParam(value="sessiontoken", required=false) String sessionToken) throws ParseException{
-		if((StringUtils.isEmpty(sessionToken) && StringUtils.isEmpty(activityToken))){
-			ErrorResponse errorResponse = new ErrorResponse(404,"Please pass sessiontoken");
-			return accountService.processResponseEntity(errorResponse, HttpStatus.FORBIDDEN);
+		ResponseEntity<T> response = null;
+		try {
+			response = (ResponseEntity<T>) accountService.validateTokens(userId, activityToken, sessionToken);
+		} catch (ApiException ae) {
+			LOGGER.error(ae.getErrorCode(), ae);
+			ErrorResponse errorResponse = defaultErrorProcessorImpl.buildErrorResponse(ae);
+			response = (ResponseEntity<T>) defaultErrorProcessorImpl.getErrorResponse(errorResponse);
 		}
-			Map<String,String> mapObj = new HashMap<String,String>();
-			if(accountService.validateSessionToken(userId, sessionToken)){
-				mapObj.put("sessionToken", "success");
-			}
-			else
-				mapObj.put("sessionToken", "failure");
-			if(accountService.validateActivityToken(userId, activityToken)){
-				mapObj.put("activitytoken", "success");
-			}	
-			else
-				mapObj.put("activitytoken", "failure");
-			return accountService.processResponseEntity(mapObj, HttpStatus.OK);
+		return response;
+		
 	}
 	
 	//need to implement 
@@ -147,20 +132,6 @@ public class MyAccountController{
 	public ResponseEntity<Object> logout(@RequestParam String id) {
 		System.out.println("------------------------Logout done for id = "+id+"------------------");
 		return null;
-	}
-	
-private ResponseEntity<ErrorResponse> getErrorResponse(ErrorResponse errorResponseObj){
-		
-		if(errorResponseObj == null){
-			errorResponseObj = new ErrorResponse(
-					ErrorConstants.ERRORCODE_INTERNAL_ERROR,
-					ErrorConstants.ERRORDESC_INTERNAL_ERROR);
-		}
-			
-		 
-		 ResponseEntity<ErrorResponse> errorResponse= new ResponseEntity<>(errorResponseObj, HttpStatus.INTERNAL_SERVER_ERROR);
-		return errorResponse;
-		
 	}
 	
 }
