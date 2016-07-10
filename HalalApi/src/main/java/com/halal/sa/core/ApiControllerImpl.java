@@ -51,7 +51,6 @@ public class ApiControllerImpl implements ApiController {
 				apiResponse = apiWorkflow.getApiPostprocessor()
 						.postProcess(apiRequest, requestParameters,
 								aggregateData);
-				LOGGER.info("apiResponse -------------- > "+apiResponse);
 				response = apiResponseGenerator.generateResponse(apiRequest, apiResponse);
 
 				if (response == null) {

@@ -12,6 +12,8 @@ import com.halal.sa.data.entities.Address;
 public class SearchBusiness {
 	
 	private String name;
+	private int profile_id;
+	private String profileUri;
 	private String description;
 	private List<String> cuisine;
 	private Address address;
@@ -21,7 +23,18 @@ public class SearchBusiness {
 	private String authenticity;
 	private String distance; 
 	
-	
+	public String getProfileUri() {
+		return profileUri;
+	}
+	public void setProfileUri(String profileUrl) {
+		this.profileUri = profileUrl;
+	}
+	public int getProfile_id() {
+		return profile_id;
+	}
+	public void setProfile_id(int profile_id) {
+		this.profile_id = profile_id;
+	}
 	public String getDistance() {
 		return distance;
 	}

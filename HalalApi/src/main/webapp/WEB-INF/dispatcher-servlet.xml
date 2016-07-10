@@ -31,8 +31,7 @@
 	</mvc:cors>
 	
 	<!-- Configure the Mongo Server -->
-	<mongo:db-factory id="mongoDbFactory" host="localhost" port="27017" dbname="halalspot" />
-
+	<mongo:db-factory id="mongoDbFactory" uri="mongodb://halalapi:samsung123@ds021884.mlab.com:21884/halaldb"/>
 
 	<bean id="mongoTemplate" class="org.springframework.data.mongodb.core.MongoTemplate">
 	    <constructor-arg name="mongoDbFactory" ref="mongoDbFactory" />

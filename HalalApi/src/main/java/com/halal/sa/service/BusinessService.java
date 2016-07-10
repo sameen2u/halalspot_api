@@ -42,6 +42,9 @@ public class BusinessService extends BaseService{
 	@Autowired
 	ThirdPartyService thirdPartyService;
 	
+	@Autowired
+	CounterService counterService;
+	
 	/**
 	 * This service method will add the business object to the Business Document in DB 
 	 * @param business
@@ -52,6 +55,7 @@ public class BusinessService extends BaseService{
 	public ResponseEntity<Object> registerBusiness(Business business, HttpServletRequest request) throws ApiException{
 		Map errorMap = validate(business);
 		if(business != null && errorMap.isEmpty()){
+			LOGGER.info("Adding the Business to the DB - "+business.getName());
 			//updating Longitude and Latitude for the address in the DB
 			String BizAddress = constructGoogleApiAddressInUrl(business);
 			Map locationMap = thirdPartyService.getLongiLatitude(BizAddress);
@@ -74,7 +78,11 @@ public class BusinessService extends BaseService{
 			address.setLocation(location);
 			business.setCreatedDate(new Date());
 			business.setCreatedBy(business.getUserEmail());
-//			business.setAddress(address);
+			
+			//getting seq id from counters table for the passed collection name
+			int profileId = counterService.getNextSequence("business");
+			business.setProfile_id(profileId);
+			
 			businessDaoImpl.addBusinessInfo(business);
 			return processResponseEntity(processResponse(business, request), HttpStatus.OK);
 		}
@@ -89,7 +97,7 @@ public class BusinessService extends BaseService{
 		if(request.getAttribute("method").equals("register")){
 			respMap.put("restaurantName", business.getName());
 			respMap.put("email", business.getEmail());
-			LOGGER.info("Added the restaurant - "+business.getName());
+			LOGGER.info("Sucessfully Added the Business - "+business.getName());
 		}
 		return respMap;
 	}
@@ -116,11 +124,11 @@ public class BusinessService extends BaseService{
 	    	while(iterator.hasNext()){
 	    		ConstraintViolation cv = iterator.next();
 	    		errorMap.put(cv.getPropertyPath(), cv.getMessage());
+	    		LOGGER.error("Error count in validating POST JSON object - missing parameter :"+cv.getPropertyPath());
 	    	}
-	    	LOGGER.error("Errors in the POST JSON object - "+errorMap);
+	    	
 	    	return errorMap;
 	    }
-		
 	}
 	
 	/*

@@ -16,6 +16,7 @@ import com.halal.sa.common.error.ApiException;
 import com.halal.sa.controller.vo.UserVO;
 import com.halal.sa.data.dao.AccountDao;
 import com.halal.sa.data.entities.User;
+import com.halal.sa.service.CounterService;
 
 @Repository("accountDaoImpl")
 public class MyAccountDaoImpl implements AccountDao{
@@ -23,12 +24,16 @@ public class MyAccountDaoImpl implements AccountDao{
 	
 	@Autowired
 	MongoTemplate mongoTemplate;
+	
+	@Autowired
+	CounterService counterService;
 
 	/*
 	 * returns success if the data inserted successfully
 	 * @see com.halal.sa.data.dao.AccountDao#insertUserData(com.halal.sa.controller.model.UserVO)
 	 */
 	public String insertUserData(UserVO userVO) throws ApiException {
+		
 		User user = new User();
 		user.setFullname(userVO.getFullName());
 		user.setEmail(userVO.getEmail());
@@ -37,6 +42,7 @@ public class MyAccountDaoImpl implements AccountDao{
 		
 		try{
 			mongoTemplate.save(user);
+			LOGGER.info("Inserted the user email to My account - "+user.getEmail());
 			return "success";
 		}
 		catch(Exception e){
@@ -73,7 +79,7 @@ public class MyAccountDaoImpl implements AccountDao{
 	 * @throws ApiException 
 	 */
 	public User getUserByEmail(String email) throws ApiException {
-		LOGGER.debug("Inside getUserByEmail method in class AccountDaoImpl");
+		LOGGER.debug("Inside getUserByEmail method in class AccountDaoImpl, searching for email - "+email);
 		Query query = new Query(Criteria.where("email").is(email));
 		
 		try{
@@ -94,7 +100,7 @@ public class MyAccountDaoImpl implements AccountDao{
 	 * @throws ApiException 
 	 */
 	public User getUserById(String userId) throws ApiException {
-		LOGGER.debug("Inside getUserByEmail method in class AccountDaoImpl");
+		LOGGER.debug("Inside getUserById method in class AccountDaoImpl, searching for id - "+userId);
 		
 		try{
 			User user = mongoTemplate.findById(userId, User.class);

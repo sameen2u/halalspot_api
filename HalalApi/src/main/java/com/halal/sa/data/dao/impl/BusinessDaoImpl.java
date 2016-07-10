@@ -4,38 +4,26 @@ package com.halal.sa.data.dao.impl;
 import static org.springframework.data.mongodb.core.aggregation.Aggregation.*;
 
 import org.apache.commons.lang.StringUtils;
-import org.bson.types.ObjectId;
 import org.springframework.data.mongodb.core.aggregation.Aggregation;
 import org.springframework.data.mongodb.core.aggregation.AggregationResults;
 
-import static org.springframework.data.mongodb.core.aggregation.Aggregation.sort;
-
 import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.List;
-import java.util.Map;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.Sort;
-import org.springframework.data.geo.Circle;
-import org.springframework.data.geo.Metric;
 import org.springframework.data.geo.Metrics;
-import org.springframework.data.geo.Point;
 import org.springframework.data.mongodb.core.MongoTemplate;
-import org.springframework.data.mongodb.core.geo.Sphere;
+import org.springframework.data.mongodb.core.query.BasicQuery;
 import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.data.mongodb.core.query.NearQuery;
-import org.springframework.data.mongodb.core.query.Query;
-import org.springframework.data.mongodb.core.query.TextCriteria;
-import org.springframework.data.mongodb.core.query.TextQuery;
+import org.springframework.data.mongodb.repository.Query;
 import org.springframework.stereotype.Repository;
-import org.springframework.transaction.annotation.Transactional;
 
 import com.halal.sa.common.ApplicationConstant;
 import com.halal.sa.common.error.ApiException;
-import com.halal.sa.common.error.ErrorCode;
+import com.halal.sa.common.error.DomainErrorConstants;
 import com.halal.sa.data.dao.BusinessDao;
 import com.halal.sa.data.entities.Business;
 import com.halal.sa.service.ThirdPartyService;
@@ -53,6 +41,8 @@ public class BusinessDaoImpl implements BusinessDao{
 	
 	@Autowired
 	ThirdPartyService thirdPartyService;
+	
+	
 
 	/**
 	 * This method adds restaurant info in DB
@@ -61,6 +51,7 @@ public class BusinessDaoImpl implements BusinessDao{
 	public void addBusinessInfo(Business business) throws ApiException {
 		try{
 			mongoTemplate.save(business);
+			LOGGER.info("Added the business in the DB - "+business.getName());
 		}
 		catch(Exception e){
 			LOGGER.error("ERR_MONGODB_UNAVAILABLE", e);
@@ -76,7 +67,11 @@ public class BusinessDaoImpl implements BusinessDao{
 	}
 	
 	public List searchBusinessByKeyword(String keyword, List ids) throws ApiException {
-
+		if(ids == null){
+			LOGGER.error("No ids found in search by Lat Lng");
+			throw new ApiException(DomainErrorConstants.ERR_SEARCH_RECORD_NOT_FOUND, "No ids found in search by Lat Lng");
+		}
+		LOGGER.info("Searching the business with keyword - "+keyword+", in ids count -"+ids.size());
 		int skip = 0;
 		int recordsPerPage = ApplicationConstant.BUSINESS_RECORDS_PER_PAGE;
 		int extraPaginationrecord = ApplicationConstant.BUSINESS_PAGINATION_EXTRA_RECORD;
@@ -94,6 +89,7 @@ public class BusinessDaoImpl implements BusinessDao{
 		
 		
 		List<DBObject> dbObjects = (List<DBObject>) aggregationOutput.results();
+		LOGGER.info("Returning the ids searched by keyword - "+dbObjects.size());
 		return dbObjects;
 		}
 		catch(Exception e){
@@ -103,8 +99,8 @@ public class BusinessDaoImpl implements BusinessDao{
 	}
 	
 	public List searchBusinessByLocation(double longitude, double latitude, double distance) {
+		LOGGER.info("Searching the business by longitude :"+longitude+", and Latitude :"+latitude);
 		Aggregation  aggregation;
-		
 		NearQuery geoNear = NearQuery.near(longitude,latitude, Metrics.KILOMETERS).maxDistance(distance);
 		
 		//limit and skip are used for pagination logic
@@ -112,10 +108,34 @@ public class BusinessDaoImpl implements BusinessDao{
 		AggregationResults<DBObject> groupResults = mongoTemplate.aggregate(aggregation, Business.class, DBObject.class);
 		
 		List<DBObject> result = groupResults.getMappedResults();
+		LOGGER.info("Returning the ids searched by Longitude :"+longitude+", and Latitude :"+latitude+", result count - "+result.size());
 		return result;
 		
 	}
 	
+	@Query(value = "{'name': {$regex : '^?0$', $options: 'i'}}")
+	public Business searchBusinessProfile(String name, String locality, String city){
+		if(name.contains("-")){
+			name = name.replace("-", " ");
+		}
+		String localityQuery="";
+		if(!StringUtils.isBlank(locality)){
+			localityQuery = ", locality:'"+locality+"'";
+		}
+		int subscriptionID;
+
+		String fieldValue;
+		
+//		Query query1 = Query.query(Criteria.where("fieldName").regex(name, "i"));
+		
+		BasicQuery query = new BasicQuery("{name : {$regex : '^?0$', $"+name+": 'i'}"+localityQuery+", address.city :'"+city+"' }");//{ name : "+name+localityQuery+", address.city :"+city+" }
+		Business business = mongoTemplate.findOne(query, Business.class);
+		return business;
+	}
 	
+	@Query(value = "{'name': {$regex : '^?0$', $options: 'i'}}")
+    public void findItemsByNameRegexExactMatch(String name){
+		
+	}
 	
 }

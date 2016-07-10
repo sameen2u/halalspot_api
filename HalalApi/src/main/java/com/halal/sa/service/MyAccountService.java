@@ -27,6 +27,7 @@ import com.halal.sa.common.ApiConstant;
 import com.halal.sa.common.CommonUtil;
 import com.halal.sa.common.error.ApiException;
 import com.halal.sa.common.error.DomainErrorConstants;
+import com.halal.sa.common.error.ErrorCode;
 import com.halal.sa.common.error.ErrorConstants;
 import com.halal.sa.common.error.ErrorResponse;
 import com.halal.sa.controller.MyAccountController;
@@ -67,7 +68,7 @@ public class MyAccountService extends BaseService{
 			return processResponseEntity(accountDao.insertUserData(userVO),HttpStatus.OK);
 		}
 		else{
-			throw new ApiException(ErrorConstants.ERRORCODE_EMAIL_NOT_FOUND, ErrorConstants.ERRORDESC_EMAIL_ALREADY_EXIST);
+			throw new ApiException(ErrorCode.ERRORCODE_EMAIL_NOT_FOUND.toString(), ErrorConstants.ERRORDESC_EMAIL_ALREADY_EXIST);
 		}
 	}
 	
@@ -93,6 +94,9 @@ public class MyAccountService extends BaseService{
 	 */
 	public ResponseEntity<Object> loginAuthentication(LogonVO logonVO, HttpServletRequest request) throws NoSuchAlgorithmException, ApiException{
 		LOGGER.debug("Inside login method in AccountService class");
+		if(logonVO == null || logonVO.getUsername().isEmpty() || logonVO.getPassword().isEmpty()){
+			throw new ApiException(ErrorCode.ERRORCODE_LOGIN_EMAIL_OR_PASSWORD_MISSING.toString(), ErrorConstants.ERRORDESC_LOGIN_EMAIL_OR_PASSWORD_MISSING);
+		}
 		String hashedPassword = CommonUtil.hashPassword(logonVO.getPassword());
 		User user = (User) accountDao.getUserByEmail(logonVO.getUsername());
 		if(user != null && StringUtils.equals(hashedPassword, user.getPassword())){
@@ -135,7 +139,7 @@ public class MyAccountService extends BaseService{
 		}
 		
 		if(user == null){
-			userAuthentication.setError(ErrorConstants.ERRORCODE_EMAIL_NOT_FOUND);
+			userAuthentication.setError(ErrorCode.ERRORCODE_EMAIL_NOT_FOUND.toString());
 			userAuthentication.setErrorDescription(ErrorConstants.ERRORDESC_EMAIL_NOT_FOUND);
 			httpStatus = HttpStatus.NOT_FOUND;
 		}

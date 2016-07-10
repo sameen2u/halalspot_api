@@ -2,32 +2,39 @@ package com.halal.sa.processor.searchbusiness;
 
 import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 
 import org.apache.commons.beanutils.BeanUtils;
 import org.apache.commons.lang.StringUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Component;
 
 import com.halal.sa.common.ApplicationConstant;
 import com.halal.sa.common.CommonUtil;
 import com.halal.sa.common.error.ApiException;
+import com.halal.sa.common.error.DomainErrorConstants;
+import com.halal.sa.controller.vo.BusinessVO;
 import com.halal.sa.controller.vo.response.SearchBusiness;
 import com.halal.sa.controller.vo.response.SearchReport;
 import com.halal.sa.core.AbstractProcessor;
 import com.halal.sa.core.AggregateData;
-import com.halal.sa.core.ApiRequest;
 import com.halal.sa.core.RequestParameters;
 import com.halal.sa.core.request.SearchRequestParameters;
+import com.halal.sa.data.dao.SearchBusinessDao;
 import com.halal.sa.data.dao.impl.BusinessDaoImpl;
 import com.halal.sa.data.entities.Address;
+import com.halal.sa.data.entities.Business;
 import com.halal.sa.service.ThirdPartyService;
 import com.mongodb.DBObject;
 
 @Component
 public class SearchBusinessProcessor extends AbstractProcessor{
+	
+	private final Logger LOGGER = LoggerFactory.getLogger(SearchBusinessProcessor.class);
 	
 	String KEYWORD=null;
 	int PAGE=0;
@@ -38,12 +45,15 @@ public class SearchBusinessProcessor extends AbstractProcessor{
 	@Autowired
 	ThirdPartyService thirdPartyService;
 	
+	@Autowired
+	SearchBusinessDao searchBusinessDao; 
+	
 
 	@Override
 	public AggregateData retrieveData(RequestParameters requestParameters)
 			throws ApiException {
 		SearchRequestParameters searchRequestParameters = (SearchRequestParameters) requestParameters;
-		SearchBusinessAggregateData searchBusinessAggregateData = searchbusinesses(searchRequestParameters);
+		SearchBusinessAggregateData searchBusinessAggregateData = searchProcessor(searchRequestParameters);
 		return searchBusinessAggregateData;
 	}
 	
@@ -53,7 +63,7 @@ public class SearchBusinessProcessor extends AbstractProcessor{
 	 * @return
 	 * @throws ApiException
 	 */
-	public SearchBusinessAggregateData searchbusinesses(SearchRequestParameters searchRequestParameters) throws ApiException{
+	public SearchBusinessAggregateData searchProcessor(SearchRequestParameters searchRequestParameters) throws ApiException{
 		String keyword = searchRequestParameters.getKeyword();
 		String address = searchRequestParameters.getAddress();
 		String distance = searchRequestParameters.getRadius();
@@ -65,17 +75,30 @@ public class SearchBusinessProcessor extends AbstractProcessor{
 		if(CommonUtil.convertStringToInt(searchRequestParameters.getPage()) >1){
 			pageParam = CommonUtil.convertStringToInt(searchRequestParameters.getPage());
 		}
-		List businesses = this.searchBusiness(keyword, address, Double.parseDouble(distance));
-		SearchBusinessAggregateData searchBusinessAggregateData = parseIntoJavaBean(businesses, pageParam);
-		if(searchBusinessAggregateData.getSearchReport() !=null && keyword !=null){
-			searchBusinessAggregateData.getSearchReport().setKeyword(keyword);
+		if(address !=null && !address.isEmpty()){
+			LOGGER.info("searchProcessor method searching for address - "+address+", distance - "+distance+", keyword - "+keyword);
+			List businesses = this.searchBusinessService(keyword, address, Double.parseDouble(distance));
+			SearchBusinessAggregateData searchBusinessAggregateData = parseIntoJavaBean(businesses, pageParam);
+			if(searchBusinessAggregateData.getSearchReport() !=null && keyword !=null){
+				searchBusinessAggregateData.getSearchReport().setKeyword(keyword);
+			}
+			
+			searchBusinessAggregateData.getSearchReport().setCurrentPage(pageParam);
+			return searchBusinessAggregateData;
 		}
-		
-		searchBusinessAggregateData.getSearchReport().setCurrentPage(pageParam);
-		return searchBusinessAggregateData;
-		
+		else{
+			LOGGER.error(DomainErrorConstants.ERRCODE_BAD_REQUEST, "Mandatory param Address is missing");
+			throw new ApiException(DomainErrorConstants.ERRCODE_BAD_REQUEST, "Mandatory param Address is missing");
+		}
 	}
 	
+	/**
+	 * This method will set the data in aggregate data object from the DB response
+	 * @param modelObject
+	 * @param pageParam
+	 * @return
+	 * @throws ApiException
+	 */
 	public SearchBusinessAggregateData parseIntoJavaBean(List modelObject, int pageParam) throws ApiException{
 		
 		List<DBObject> dbObjectList = (List<DBObject>) modelObject;
@@ -124,6 +147,13 @@ public class SearchBusinessProcessor extends AbstractProcessor{
 				if(dbObject.get("name") != null){
 					searchBusiness.setName((String)dbObject.get("name"));
 				}
+				if(dbObject.get("profile_id") != null){
+					searchBusiness.setProfile_id((int)dbObject.get("profile_id"));
+				}
+				String profileUri = constructProfileUrl(dbObject, address);
+				if(profileUri !=null){
+					searchBusiness.setProfileUri(profileUri);
+				}
 				if(dbObject.get("phone") != null){
 					searchBusiness.setPhone((int)dbObject.get("phone"));
 				}
@@ -171,15 +201,18 @@ public class SearchBusinessProcessor extends AbstractProcessor{
 	 * @throws ApiException 
 	 */
 	@SuppressWarnings({ "rawtypes", "unchecked" })
-	public List searchBusiness(String keyword, String address, double distance) throws ApiException {
+	public List searchBusinessService(String keyword, String address, double distance) throws ApiException {
 		List businessIds = null;
 		List<DBObject> businessByDistance = null;
 		List<DBObject> businessByKeyword = null;
-		List<DBObject> resultBusiness=null;
+		List<DBObject> resultBusiness= Collections.emptyList();
 		double longitude = 0;
 		double latitude = 0;
 		Map<String,Object> map = thirdPartyService.getLongiLatitude(address);
 		if(map !=null && map.size() >0){
+			if(!StringUtils.equals((String) map.get("country"), "India")){
+				return resultBusiness;
+			}
 			Map coordinate = (Map)map.get("coordinates");
 			longitude = (double) coordinate.get("lng");
 			latitude = (double) coordinate.get("lat");
@@ -208,8 +241,53 @@ public class SearchBusinessProcessor extends AbstractProcessor{
 			}
 		}
 		
-		
+		LOGGER.info("searchBusinessService method searching for address - "+address+", distance - "+distance+", keyword - "+keyword+", SearchResult count - "+resultBusiness.size());
 		return resultBusiness;		
 	}
-
+	
+	/*
+	 * This method will return full business data for the profile id passed
+	 */
+	public BusinessVO searchSingleBusiness(String city, int businessProfileId){
+//		String businessName = "";
+//		String city = "";
+//		if(businessCityCode.contains("-")){
+//			String[] arr = businessCityCode.split("-");
+//			for(int i=0; i<arr.length; i++ ){
+//				
+//				if(i == arr.length-1){
+//					city = arr[i];
+//					break;
+//				}
+//				businessName = businessName.concat(arr[i]+" ");
+//			}
+//		}
+		//trimming the last space concatinated as above
+//		businessName = businessName.trim();
+		Business business = searchBusinessDao.findByBusinessCodeAndProfileId(city, businessProfileId);
+		BusinessVO businessVO = new BusinessVO();
+		try {
+			BeanUtils.copyProperties(businessVO, business);
+		} catch (IllegalAccessException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (InvocationTargetException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		return businessVO;		
+	}
+	
+	public String constructProfileUrl(DBObject dbObject, Address address){
+		String name = (String) dbObject.get("name").toString().replace(" ", "-");
+		String city = address.getCity();
+		String locality = "";
+		if(!StringUtils.isBlank(address.getLocality())){
+			locality = "-"+address.getLocality().toLowerCase().replace(" ", "-");
+		}
+		String profileId = dbObject.get("profile_id").toString();
+		
+		String profileUri = "/"+city.toLowerCase()+"/"+name.toLowerCase()+locality+"/"+profileId;
+		return profileUri;
+	}
 }

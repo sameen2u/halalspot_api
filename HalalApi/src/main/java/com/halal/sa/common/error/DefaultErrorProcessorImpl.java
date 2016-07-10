@@ -64,9 +64,9 @@ public class DefaultErrorProcessorImpl extends AbstractErrorProcessor {
 			ErrorConstants.ERRORCODE_GATEWAY_TIMEOUT,
 			ErrorConstants.ERRORDESC_GATEWAY_TIMEOUT);
 	
-	private static final ErrorResponse fetchTemplateUnavailableError = new ErrorResponse(
-			ErrorConstants.ERRORCODE_FETCH_TEMPLATE_UNAVAILABLE,
-			ErrorConstants.ERRORDESC_FETCH_TEMPLATE_UNAVAILABLE);
+	private static final ErrorResponse loginEmailOrPasswordMissingError = new ErrorResponse(
+			ErrorConstants.ERRORCODE_LOGIN_EMAIL_OR_PASSWORD_MISSING,
+			ErrorConstants.ERRORDESC_LOGIN_EMAIL_OR_PASSWORD_MISSING);
 	
 	private static final ErrorResponse requestCouldNotBeProcessedError = new ErrorResponse(
 			ErrorConstants.ERRORCODE_REQUEST_COULD_NOT_BE_PROCESSED,
@@ -88,9 +88,9 @@ public class DefaultErrorProcessorImpl extends AbstractErrorProcessor {
 		errorCodeToErrorRespMap.put(ErrorCode.ERR_SERVICE_UNAVAILABLE.toString(), serviceUnavailableError);
 		errorCodeToErrorRespMap.put(ErrorCode.ERR_METHOD_NOT_ALLOWED.toString(), methodNotAllowedError);
 		errorCodeToErrorRespMap.put(ErrorCode.ERR_GATEWAY_TIMEOUT.toString(), gatewayTimeoutError);
-		errorCodeToErrorRespMap.put(ErrorCode.ERR_FETCH_TEMPLATE_UNAVAILABLE.toString(), fetchTemplateUnavailableError);
+		errorCodeToErrorRespMap.put(ErrorCode.ERRORCODE_LOGIN_EMAIL_OR_PASSWORD_MISSING.toString(), loginEmailOrPasswordMissingError);
 		errorCodeToErrorRespMap.put(ErrorCode.ERR_REQUEST_COULD_NOT_BE_PROCESSED.toString(), requestCouldNotBeProcessedError);
-		errorCodeToErrorRespMap.put(ErrorCode.ERR_EMAIL_NOT_FOUND.toString(), recordNotFoundError);
+		errorCodeToErrorRespMap.put(ErrorCode.ERRORCODE_EMAIL_NOT_FOUND.toString(), unauthorizedError);
 		errorCodeToErrorRespMap.put(ErrorCode.ERR_MONGODB_UNAVAILABLE.toString(), serviceUnavailableError);
 		
 		

@@ -17,6 +17,8 @@ public class Business implements Serializable{
 	@Id
 	private String id;
 	
+	private int profile_id;
+	
 	@NotEmpty
 	private String name;
 	private String description;
@@ -44,6 +46,14 @@ public class Business implements Serializable{
 	private Date createdDate;
 	private Date updatedDate;
 	
+	
+	
+	public int getProfile_id() {
+		return profile_id;
+	}
+	public void setProfile_id(int profile_id) {
+		this.profile_id = profile_id;
+	}
 	public String getOwnerPhone() {
 		return ownerPhone;
 	}

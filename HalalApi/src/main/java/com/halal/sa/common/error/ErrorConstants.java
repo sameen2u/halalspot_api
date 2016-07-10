@@ -4,7 +4,7 @@ public class ErrorConstants {
 	
 	public static final int ERRORCODE_RECORD_NOT_FOUND = 404;
 	public static final int ERRORCODE_EMPTY_SEARCH_RESULT = 404;
-	public static final int ERRORCODE_FETCH_TEMPLATE_UNAVAILABLE = 503;
+	public static final int ERRORCODE_LOGIN_EMAIL_OR_PASSWORD_MISSING = 400;
 	public static final int ERRORCODE_INVALID_URL_PARAMETERS = 400;
 	public static final int ERRORCODE_INCORRECT_HTTP_METHOD = 405;
 	public static final int ERRORCODE_UNSUPPORTED_MEDIA_TYPE = 415;
@@ -14,13 +14,12 @@ public class ErrorConstants {
 	public static final int ERRORCODE_GATEWAY_TIMEOUT = 504;
 	public static final int ERRORCODE_REQUEST_COULD_NOT_BE_PROCESSED = 500;
 	public static final int ERRORCODE_RULE_NOT_FOUND = 404;
-	public static final String ERRORCODE_EMAIL_NOT_FOUND = "ERR_EMAIL_NOT_FOUND";	
-	
+	public static final int ERRORCODE_EMAIL_NOT_FOUND = 401;
 	
 	public static final String ERRORDESC_EMAIL_NOT_FOUND = "Email not registered. Please signup.";
 	public static final String INVALID_PATH_PARAMETER = "This request could not be fulfulled because of an invalid path parameter.";
 	public static final String ERRORDESC_RULE_NOT_FOUND = "Rule Not Found.";
-	public static final String ERRORDESC_FETCH_TEMPLATE_UNAVAILABLE = "Fetch Template is not available in Content Grid.";
+	public static final String ERRORDESC_LOGIN_EMAIL_OR_PASSWORD_MISSING = "Email or Password is empty please resubmit the request";
 	public static final String ERRORDESC_RECORD_NOT_FOUND = "Record Not Found.";
 	public static final String ERRORDESC_EMPTY_SEARCH_RESULT = "No data found for search.";
 	public static final String ERRORDESC_UNAUTHORIZED = "Unauthorized to access the service.";

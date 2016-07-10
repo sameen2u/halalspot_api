@@ -14,7 +14,7 @@ public class User {
 	private Date createdDate;
 
 	private String email;
-
+	
 	private String fullname;
 
 	private Date updatedDate;
@@ -24,7 +24,7 @@ public class User {
 	private String userActivityToken;
 	
 	private String sessionToken;
-
+	
 	public String get_id() {
 		return _id;
 	}

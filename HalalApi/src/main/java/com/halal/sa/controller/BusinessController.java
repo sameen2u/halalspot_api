@@ -38,7 +38,7 @@ public class BusinessController{
 	 * Method Add the business in the backend
 	 */
 	@RequestMapping(value="/register", method=RequestMethod.POST)
-	public <T> ResponseEntity<T> registerRestaurant(@RequestBody Business business, HttpServletRequest request){
+	public <T> ResponseEntity<T> registerBizExecute(@RequestBody Business business, HttpServletRequest request){
 		request.setAttribute("method", "register");
 		ResponseEntity<T> response = null;
 		try {

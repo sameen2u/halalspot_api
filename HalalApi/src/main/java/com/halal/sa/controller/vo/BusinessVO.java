@@ -9,6 +9,7 @@ import com.halal.sa.data.entities.Address;
 public class BusinessVO {
 	
 	private String id;
+	private int profile_id;
 	private String name;
 	private Address address;
 	private int phone;
@@ -26,6 +27,13 @@ public class BusinessVO {
 	private String authenticity;
 	private String createdBy;
 	private String updatedBy;
+	
+	public int getProfile_id() {
+		return profile_id;
+	}
+	public void setProfile_id(int profile_id) {
+		this.profile_id = profile_id;
+	}
 	public String getId() {
 		return id;
 	}

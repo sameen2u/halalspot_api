@@ -82,6 +82,11 @@ public class MyAccountController{
 		try{
 			response = (ResponseEntity<T>) accountService.loginAuthentication(logonVO, request);
 		}
+		catch (ApiException ae) {
+			LOGGER.error(ae.getErrorCode(), ae);
+			ErrorResponse errorResponse = defaultErrorProcessorImpl.buildErrorResponse(ae);
+			response = (ResponseEntity<T>) defaultErrorProcessorImpl.getErrorResponse(errorResponse);
+		}
 		catch(Exception e){
 			LOGGER.error(e.getMessage(), e);
 			LOGGER.error(ApiLoggingConstants.API_RESPONSE_GENERATION_FAILED

@@ -21,11 +21,11 @@
   <listener>
     <listener-class>org.springframework.web.context.ContextLoaderListener</listener-class>
   </listener>
-  <context-param>
+  <!--  <context-param>
     <param-name>property.envTarget</param-name>
     <param-value>local</param-value>
   </context-param>
-<!--   <filter>
+ <filter>
 	  <filter-name>cors</filter-name>
 	  <filter-class>com.halal.sa.filters.CORSFilter</filter-class>
 	</filter>
