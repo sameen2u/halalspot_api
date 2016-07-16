@@ -43,7 +43,7 @@ public class BusinessService extends BaseService{
 	ThirdPartyService thirdPartyService;
 	
 	@Autowired
-	CounterService counterService;
+	DBCounterService counterService;
 	
 	/**
 	 * This service method will add the business object to the Business Document in DB 

@@ -2,6 +2,11 @@ package com.halal.sa.common.error;
 
 public class ApiException extends Exception{
 	
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = -7861290553132780319L;
+
 	private String errorCode;
 	
 	private String errorMessage;

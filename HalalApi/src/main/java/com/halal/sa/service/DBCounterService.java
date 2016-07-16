@@ -11,8 +11,13 @@ import static org.springframework.data.mongodb.core.query.Query.*;
 import static org.springframework.data.mongodb.core.query.Criteria.*;
 import static org.springframework.data.mongodb.core.FindAndModifyOptions.*;
 
+/**
+ * This class is responsible for getting next sequence id for profile id of a business
+ * @author SXH8750
+ *
+ */
 @Service
-public class CounterService {
+public class DBCounterService {
 	
   @Autowired 
   private MongoTemplate mongo;

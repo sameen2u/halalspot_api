@@ -17,7 +17,7 @@ import com.halal.sa.data.dao.impl.MyAccountDaoImpl;
 
 public class CommonUtil {
 	
-	private final static Logger LOGGER = LoggerFactory.getLogger(MyAccountDaoImpl.class);
+	private final static Logger LOGGER = LoggerFactory.getLogger(CommonUtil.class);
 	
 	private static final ObjectMapper mapper = new ObjectMapper();
 	private static final ObjectReader reader = mapper.reader(HashMap.class);

@@ -16,7 +16,7 @@ import com.halal.sa.common.error.ApiException;
 import com.halal.sa.controller.vo.UserVO;
 import com.halal.sa.data.dao.AccountDao;
 import com.halal.sa.data.entities.User;
-import com.halal.sa.service.CounterService;
+import com.halal.sa.service.DBCounterService;
 
 @Repository("accountDaoImpl")
 public class MyAccountDaoImpl implements AccountDao{
@@ -26,7 +26,7 @@ public class MyAccountDaoImpl implements AccountDao{
 	MongoTemplate mongoTemplate;
 	
 	@Autowired
-	CounterService counterService;
+	DBCounterService counterService;
 
 	/*
 	 * returns success if the data inserted successfully

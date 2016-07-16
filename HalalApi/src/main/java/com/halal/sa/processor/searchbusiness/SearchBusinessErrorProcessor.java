@@ -26,7 +26,7 @@ public class SearchBusinessErrorProcessor extends DefaultErrorProcessorImpl{
 	
 	private Set<String> serviceUnavailableErrors;
 	
-private void initialize() {
+	private void initialize() {
 		
 		badRequestErrors = new HashSet<String>();
 		

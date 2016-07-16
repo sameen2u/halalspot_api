@@ -30,6 +30,8 @@ public class SearchBusinessPreProcessor extends AbstractPreProcessor{
 		searchRequestParameters.setKeyword(apiRequest.getRequestParameters().getFirst("keyword"));
 		searchRequestParameters.setRadius(apiRequest.getRequestParameters().getFirst("distance"));
 		searchRequestParameters.setPage(apiRequest.getRequestParameters().getFirst("page"));
+		searchRequestParameters.setLattitude(apiRequest.getRequestParameters().getFirst("lattitude"));
+		searchRequestParameters.setLongitude(apiRequest.getRequestParameters().getFirst("longitude"));
 		LOGGER.info("Request Parameter for searching the business - "+searchRequestParameters.toString());
 		return searchRequestParameters;
 	}

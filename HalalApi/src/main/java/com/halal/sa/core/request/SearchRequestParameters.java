@@ -8,7 +8,21 @@ public class SearchRequestParameters implements RequestParameters{
 	private String address; 
 	private String radius; 
 	private String page;
+	private String lattitude;
+	private String longitude;
 	
+	public String getLattitude() {
+		return lattitude;
+	}
+	public void setLattitude(String lattitude) {
+		this.lattitude = lattitude;
+	}
+	public String getLongitude() {
+		return longitude;
+	}
+	public void setLongitude(String longitude) {
+		this.longitude = longitude;
+	}
 	public String getKeyword() {
 		return keyword;
 	}

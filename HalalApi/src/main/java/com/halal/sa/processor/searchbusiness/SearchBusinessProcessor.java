@@ -67,6 +67,8 @@ public class SearchBusinessProcessor extends AbstractProcessor{
 		String keyword = searchRequestParameters.getKeyword();
 		String address = searchRequestParameters.getAddress();
 		String distance = searchRequestParameters.getRadius();
+		String lat = searchRequestParameters.getLattitude();
+		String lng = searchRequestParameters.getLongitude();
 		
 		if( distance == null || Integer.parseInt(distance) < Integer.parseInt(ApplicationConstant.BUSINESS_DEFAULT__DISTANCE_RADIUS)){
 			distance = ApplicationConstant.BUSINESS_DEFAULT__DISTANCE_RADIUS;
@@ -75,9 +77,9 @@ public class SearchBusinessProcessor extends AbstractProcessor{
 		if(CommonUtil.convertStringToInt(searchRequestParameters.getPage()) >1){
 			pageParam = CommonUtil.convertStringToInt(searchRequestParameters.getPage());
 		}
-		if(address !=null && !address.isEmpty()){
+		if(StringUtils.isNotBlank(address) || StringUtils.isNotBlank(lat) && StringUtils.isNotBlank(lng)){
 			LOGGER.info("searchProcessor method searching for address - "+address+", distance - "+distance+", keyword - "+keyword);
-			List businesses = this.searchBusinessService(keyword, address, Double.parseDouble(distance));
+			List businesses = this.searchBusinessService(keyword, address, Double.parseDouble(distance), lat, lng);
 			SearchBusinessAggregateData searchBusinessAggregateData = parseIntoJavaBean(businesses, pageParam);
 			if(searchBusinessAggregateData.getSearchReport() !=null && keyword !=null){
 				searchBusinessAggregateData.getSearchReport().setKeyword(keyword);
@@ -201,23 +203,32 @@ public class SearchBusinessProcessor extends AbstractProcessor{
 	 * @throws ApiException 
 	 */
 	@SuppressWarnings({ "rawtypes", "unchecked" })
-	public List searchBusinessService(String keyword, String address, double distance) throws ApiException {
+	public List searchBusinessService(String keyword, String address, double distance, String lat, String lng) throws ApiException {
 		List businessIds = null;
 		List<DBObject> businessByDistance = null;
 		List<DBObject> businessByKeyword = null;
 		List<DBObject> resultBusiness= Collections.emptyList();
 		double longitude = 0;
 		double latitude = 0;
-		Map<String,Object> map = thirdPartyService.getLongiLatitude(address);
-		if(map !=null && map.size() >0){
-			if(!StringUtils.equals((String) map.get("country"), "India")){
-				return resultBusiness;
-			}
-			Map coordinate = (Map)map.get("coordinates");
-			longitude = (double) coordinate.get("lng");
-			latitude = (double) coordinate.get("lat");
-			businessByDistance= businessDaoImpl.searchBusinessByLocation(longitude, latitude, distance);
+		if(StringUtils.isNotBlank(lat) && StringUtils.isNotBlank(lng)){
+			latitude = Double.parseDouble(lat);
+			longitude = Double.parseDouble(lng);
 		}
+		else{
+			Map<String,Object> map = thirdPartyService.getLongiLatitude(address);
+			if(map !=null && map.size() >0){
+				if(!StringUtils.equals((String) map.get("country"), "India")){
+					return resultBusiness;
+				}
+				Map coordinate = (Map)map.get("coordinates");
+				longitude = (double) coordinate.get("lng");
+				latitude = (double) coordinate.get("lat");
+			}
+			LOGGER.error("Google Api not returned the coordinates");
+		}
+		
+		businessByDistance= businessDaoImpl.searchBusinessByLocation(longitude, latitude, distance);
+		
 		if(businessByDistance !=null && businessByDistance.size()>0 && StringUtils.isNotEmpty(keyword)){
 			businessIds = new ArrayList<>();
 			for(DBObject dbObject: businessByDistance){

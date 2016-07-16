@@ -68,7 +68,7 @@ public class SearchBusinessProcessorTest {
 	 */
 	@Test
 	public void searchBusiness_with_valid_data() throws ApiException {
-		List list = searchBusinessProcessor.searchBusinessService("chinese", "camp pune india", 5);
+		List list = searchBusinessProcessor.searchBusinessService("chinese", "camp pune india", 5,null, null);
 		assertTrue(list.size() > 0);
 	}
 	
@@ -77,7 +77,7 @@ public class SearchBusinessProcessorTest {
 	 */
 	@Test
 	public void searchBusiness_with_invalid_data() throws ApiException {
-		List list = searchBusinessProcessor.searchBusinessService("xxx", "aaa", 5);
+		List list = searchBusinessProcessor.searchBusinessService("xxx", "aaa", 5, null, null);
 		assertTrue(true);
 	}
 
