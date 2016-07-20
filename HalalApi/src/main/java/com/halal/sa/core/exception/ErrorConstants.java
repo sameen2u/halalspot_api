@@ -37,6 +37,7 @@ public class ErrorConstants {
 	public static final String ERRORDESC_INCOMPLETE_DATA = "Incomplete data provided, please complete the form and resubmit it.";
 	public static final String ERR_ENCOUNTERED_DURING_PROCESSING = "Error encountered before execution of processors";
 	public static final String ERRORDESC_MONGODB_UNAVAILABLE = "No response from MongoDB, please check the logs for more details.";
+	public static final String ERRORDESC_MANDATORY_PARAM_MISSING = "Mandatory param Address or Lat & Lng are missing";
 	
 	public static final String DYNAMIC_ERRORDESC_INVALID_REQUEST_PARAMETERS = "Bad Request:Request cannot be fulfilled because of incorrect input for itemId={0}";
 	public static final String DYNAMIC_ERRORDESC_INVALID_URL_PARAMETERS = "Bad Request:Request cannot be fulfilled because of incorrect url for itemId={0}";

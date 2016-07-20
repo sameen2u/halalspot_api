@@ -12,6 +12,7 @@ import org.springframework.util.MultiValueMap;
 
 import com.halal.sa.core.exception.ApiException;
 import com.halal.sa.core.exception.BadRequestException;
+import com.halal.sa.core.exception.ErrorConstants;
 import com.halal.sa.core.exception.ErrorResponse;
 import com.halal.sa.processor.searchbusiness.SearchBusinessAggregateData;
 import com.halal.sa.processor.searchbusiness.SearchBusinessApiWorkflow;
@@ -46,7 +47,13 @@ public class ApiControllerImplTest {
 	 */
 	@Test
 	public void execute_search_business_workflow_with_null_apirequest() throws ApiException, BadRequestException {
-		ErrorResponse errorResponse = (ErrorResponse) apiControllerImpl.execute(null, apiWorkflow).getBody();
+		try{
+			ErrorResponse errorResponse = (ErrorResponse) apiControllerImpl.execute(null, apiWorkflow).getBody();
+		}
+		catch(ApiException e){
+			assertTrue(e.getMessage().equals(ErrorConstants.ERR_ENCOUNTERED_DURING_PROCESSING));
+		}
+		
 //		assertTrue(errorResponse.getId() == 500);
 	}
 	
@@ -61,8 +68,12 @@ public class ApiControllerImplTest {
 		requestParameters.add("keyword", "chinese");
 		requestParameters.add("page", "1");
 		request.setRequestParameters(requestParameters);
-		ErrorResponse errorResponse = (ErrorResponse) apiControllerImpl.execute(request, null).getBody();
-//		assertTrue(errorResponse.getId() == 500);
+		try{
+			ErrorResponse errorResponse = (ErrorResponse) apiControllerImpl.execute(request, null).getBody();
+		}
+		catch(ApiException e){
+			assertTrue(e.getMessage().equals(ErrorConstants.ERR_ENCOUNTERED_DURING_PROCESSING));
+		}
 	}
 
 }

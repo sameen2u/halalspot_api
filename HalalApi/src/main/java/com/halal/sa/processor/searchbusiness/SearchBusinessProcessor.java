@@ -24,6 +24,7 @@ import com.halal.sa.core.RequestParameters;
 import com.halal.sa.core.exception.ApiException;
 import com.halal.sa.core.exception.BadRequestException;
 import com.halal.sa.core.exception.DomainErrorConstants;
+import com.halal.sa.core.exception.ErrorConstants;
 import com.halal.sa.core.request.SearchRequestParameters;
 import com.halal.sa.data.dao.SearchBusinessDao;
 import com.halal.sa.data.dao.impl.BusinessDaoImpl;
@@ -92,7 +93,7 @@ public class SearchBusinessProcessor extends AbstractProcessor{
 			return searchBusinessAggregateData;
 		}
 		else{
-			String errorMsg = "Mandatory param Address or Lat & Lng are missing";
+			String errorMsg = ErrorConstants.ERRORDESC_MANDATORY_PARAM_MISSING;
 			LOGGER.error(DomainErrorConstants.ERRCODE_BAD_REQUEST, errorMsg);
 			throw new BadRequestException(DomainErrorConstants.ERRCODE_BAD_REQUEST, errorMsg);
 		}

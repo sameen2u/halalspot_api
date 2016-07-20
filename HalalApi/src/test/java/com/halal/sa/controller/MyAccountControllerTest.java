@@ -13,10 +13,12 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.mock.web.MockHttpServletRequest;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
+import org.springframework.web.client.HttpClientErrorException;
 
 import com.halal.sa.controller.vo.LogonVO;
 import com.halal.sa.controller.vo.response.UserAuthentication;
 import com.halal.sa.core.exception.ApiException;
+import com.halal.sa.core.exception.ErrorCode;
 import com.halal.sa.core.exception.ErrorConstants;
 import com.halal.sa.core.exception.ErrorResponse;
 
@@ -60,15 +62,18 @@ public class MyAccountControllerTest {
 	/*
 	 * test loginAuth methd with empty login data
 	 */
-	@Test
+	@Test()
 	public void loginAuthentication_with_empty_LogonVO() throws NoSuchAlgorithmException, ApiException {
 		LogonVO logonVO = new LogonVO();
 		logonVO.setUsername("");
 		logonVO.setPassword("");
 		logonVO.setRememberMe(Boolean.FALSE);
-		ErrorResponse errorResponse = (ErrorResponse) myAccountController.loginAuthentication(logonVO, mockedRequest).getBody();
-//		assertTrue(errorResponse.getId().equals(400));
-		assertTrue(errorResponse.getDescription().equals(ErrorConstants.ERRORDESC_LOGIN_EMAIL_OR_PASSWORD_MISSING));
+		try{
+			ErrorResponse errorResponse = (ErrorResponse) myAccountController.loginAuthentication(logonVO, mockedRequest).getBody();
+		}
+		catch(ApiException e){
+			assertTrue(e.getMessage().equals(ErrorConstants.ERRORDESC_LOGIN_EMAIL_OR_PASSWORD_MISSING));
+		}
 	}
 	
 	/*

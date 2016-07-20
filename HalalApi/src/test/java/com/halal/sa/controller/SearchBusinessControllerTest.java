@@ -44,9 +44,12 @@ public class SearchBusinessControllerTest {
 		MultiValueMap<String, String> requestParameters = new LinkedMultiValueMap<String, String>();
 		requestParameters.add("address", "");
 		requestParameters.add("keyword", "chinese");
-		ErrorResponse errorResponse = (ErrorResponse) searchBusinessController.searchBusinessExecute(requestParameters, null).getBody();
-//		assertTrue(errorResponse.getId().equals(500));
-		assertTrue(errorResponse.getDescription().equals("ERR_BAD_REQUEST"));
+		try{
+			ErrorResponse errorResponse = (ErrorResponse) searchBusinessController.searchBusinessExecute(requestParameters, null).getBody();
+		}
+		catch(BadRequestException e){
+			assertTrue(e.getMessage().equals(ErrorConstants.ERRORDESC_MANDATORY_PARAM_MISSING));
+		}
 	}
 	
 	/*
