@@ -11,8 +11,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
-import com.halal.sa.common.error.ApiException;
 import com.halal.sa.controller.vo.UserVO;
+import com.halal.sa.core.exception.ApiException;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration("/WEB-INF/dispatcher-servlet.xml")

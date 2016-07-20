@@ -1,4 +1,4 @@
-package com.halal.sa.common.error;
+package com.halal.sa.core.exception;
 
 public class DomainErrorConstants {
 	

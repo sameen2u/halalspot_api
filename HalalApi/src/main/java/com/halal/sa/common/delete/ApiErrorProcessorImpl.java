@@ -1,8 +1,9 @@
-package com.halal.sa.common.error;
+package com.halal.sa.common.delete;
 
 import com.halal.sa.core.ApiRequest;
 import com.halal.sa.core.ApiResponse;
 import com.halal.sa.core.apiprocessor.ApiErrorProcessor;
+import com.halal.sa.core.exception.ApiException;
 
 public class ApiErrorProcessorImpl implements ApiErrorProcessor{
 

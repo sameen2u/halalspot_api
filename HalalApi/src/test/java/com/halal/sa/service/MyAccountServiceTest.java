@@ -19,8 +19,8 @@ import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 import com.halal.sa.common.ApiConstant;
-import com.halal.sa.common.error.ApiException;
 import com.halal.sa.controller.vo.LogonVO;
+import com.halal.sa.core.exception.ApiException;
 import com.halal.sa.service.MyAccountService;
 
 @RunWith(SpringJUnit4ClassRunner.class)

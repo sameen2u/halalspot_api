@@ -1,8 +1,5 @@
 package com.halal.sa.controller;
 
-import java.util.HashMap;
-import java.util.Map;
-
 import javax.annotation.Resource;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,10 +14,11 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.halal.sa.common.error.ApiException;
 import com.halal.sa.controller.vo.BusinessVO;
 import com.halal.sa.core.ApiRequest;
 import com.halal.sa.core.ApiWorkflow;
+import com.halal.sa.core.exception.ApiException;
+import com.halal.sa.core.exception.BadRequestException;
 import com.halal.sa.processor.searchbusiness.SearchBusinessProcessor;
 
 @RestController
@@ -38,7 +36,7 @@ public class SearchBusinessController {
 	
 	@RequestMapping(value="/search", method=RequestMethod.GET)
 	public ResponseEntity<Object> searchBusinessExecute(@RequestParam MultiValueMap<String, String> requestParameters,
-													 @RequestHeader HttpHeaders headers) throws ApiException{
+													 @RequestHeader HttpHeaders headers) throws ApiException, BadRequestException{
 		ApiRequest apiRequest = new ApiRequest(requestParameters, headers);
 		//return (ResponseEntity<Object>) searchBusinessService.searchbusinesses(apiRequest);
 		return apiController.execute(apiRequest, searchBusinessApiWorkflow);

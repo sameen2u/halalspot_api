@@ -2,7 +2,7 @@ package com.halal.sa.core;
 
 import org.springframework.http.ResponseEntity;
 
-import com.halal.sa.common.error.ApiException;
+import com.halal.sa.core.exception.ApiException;
 
 public interface ApiResponseGenerator {
 	

@@ -7,9 +7,9 @@ import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpHeaders;
 
 import com.halal.sa.common.ServiceCommonConstants;
-import com.halal.sa.common.error.ApiException;
-import com.halal.sa.common.error.ErrorConstants;
 import com.halal.sa.core.apiprocessor.ApiPostProcessor;
+import com.halal.sa.core.exception.ApiException;
+import com.halal.sa.core.exception.ErrorConstants;
 
 public abstract class AbstractPostProcessor implements ApiPostProcessor {
 

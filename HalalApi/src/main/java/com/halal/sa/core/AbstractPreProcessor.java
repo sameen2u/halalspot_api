@@ -14,9 +14,9 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.util.MultiValueMap;
 
-import com.halal.sa.common.error.ApiException;
-import com.halal.sa.common.error.ErrorConstants;
 import com.halal.sa.core.apiprocessor.ApiPreProcessor;
+import com.halal.sa.core.exception.ApiException;
+import com.halal.sa.core.exception.ErrorConstants;
 
 /**
  * Class implements the template method for the preprocess step.Class also contains

@@ -39,9 +39,6 @@
     
     <mongo:repositories base-package="com.halal.sa.data.dao"></mongo:repositories>
 	
-	<import resource="classpath:apiservices-catalog-context.xml"/>
-	
-	
 	<!-- <bean id="productService" class="com.sam.api.service.ProductService" /> -->
 	
 	<!-- <bean id="dataSource"

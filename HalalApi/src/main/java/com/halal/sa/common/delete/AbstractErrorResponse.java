@@ -1,4 +1,4 @@
-package com.halal.sa.common.error;
+package com.halal.sa.common.delete;
 
 import java.util.List;
 

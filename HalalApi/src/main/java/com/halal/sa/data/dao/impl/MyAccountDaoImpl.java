@@ -12,11 +12,13 @@ import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
-import com.halal.sa.common.error.ApiException;
 import com.halal.sa.controller.vo.UserVO;
+import com.halal.sa.core.exception.ApiException;
 import com.halal.sa.data.dao.AccountDao;
 import com.halal.sa.data.entities.User;
 import com.halal.sa.service.DBCounterService;
+
+import static com.halal.sa.core.exception.ErrorConstants.ERRORDESC_MONGODB_UNAVAILABLE;
 
 @Repository("accountDaoImpl")
 public class MyAccountDaoImpl implements AccountDao{
@@ -47,7 +49,7 @@ public class MyAccountDaoImpl implements AccountDao{
 		}
 		catch(Exception e){
 			LOGGER.error("ERR_MONGODB_UNAVAILABLE", e);
-			throw new ApiException("ERR_MONGODB_UNAVAILABLE", "ERR_MONGODB_UNAVAILABLE");
+			throw new ApiException("ERR_MONGODB_UNAVAILABLE", ERRORDESC_MONGODB_UNAVAILABLE);
 		}
 		
 	}
@@ -70,7 +72,7 @@ public class MyAccountDaoImpl implements AccountDao{
 		}
 		catch(Exception e){
 			LOGGER.error("ERR_MONGODB_UNAVAILABLE", e);
-			throw new ApiException("ERR_MONGODB_UNAVAILABLE", "ERR_MONGODB_UNAVAILABLE");
+			throw new ApiException("ERR_MONGODB_UNAVAILABLE", ERRORDESC_MONGODB_UNAVAILABLE);
 		}
 	}
 
@@ -91,7 +93,7 @@ public class MyAccountDaoImpl implements AccountDao{
 		}
 		catch(Exception e){
 			LOGGER.error("ERR_MONGODB_UNAVAILABLE", e);
-			throw new ApiException("ERR_MONGODB_UNAVAILABLE", "ERR_MONGODB_UNAVAILABLE");
+			throw new ApiException("ERR_MONGODB_UNAVAILABLE", ERRORDESC_MONGODB_UNAVAILABLE);
 		}
 	}
 	
@@ -108,7 +110,7 @@ public class MyAccountDaoImpl implements AccountDao{
 		}
 		catch(Exception e){
 			LOGGER.error("ERR_MONGODB_UNAVAILABLE", e);
-			throw new ApiException("ERR_MONGODB_UNAVAILABLE", "ERR_MONGODB_UNAVAILABLE");
+			throw new ApiException("ERR_MONGODB_UNAVAILABLE", ERRORDESC_MONGODB_UNAVAILABLE);
 		}
 	}
 	
@@ -131,7 +133,7 @@ public class MyAccountDaoImpl implements AccountDao{
 			}
 			catch(Exception e){
 				LOGGER.error("ERR_MONGODB_UNAVAILABLE", e);
-				throw new ApiException("ERR_MONGODB_UNAVAILABLE", "ERR_MONGODB_UNAVAILABLE");
+				throw new ApiException("ERR_MONGODB_UNAVAILABLE", ERRORDESC_MONGODB_UNAVAILABLE);
 			}
 	}
 }

@@ -2,7 +2,7 @@ package com.halal.sa.data.dao;
 
 import java.util.List;
 
-import com.halal.sa.common.error.ApiException;
+import com.halal.sa.core.exception.ApiException;
 import com.halal.sa.data.entities.Business;
 
 public interface BusinessDao {

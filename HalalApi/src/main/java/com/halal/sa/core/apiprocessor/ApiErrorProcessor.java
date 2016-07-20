@@ -2,9 +2,9 @@ package com.halal.sa.core.apiprocessor;
 
 import java.util.Map;
 
-import com.halal.sa.common.error.ApiException;
 import com.halal.sa.core.ApiRequest;
 import com.halal.sa.core.ApiResponse;
+import com.halal.sa.core.exception.ApiException;
 
 
 public interface ApiErrorProcessor {

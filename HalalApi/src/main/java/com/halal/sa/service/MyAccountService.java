@@ -25,17 +25,17 @@ import org.springframework.web.bind.annotation.RequestParam;
 
 import com.halal.sa.common.ApiConstant;
 import com.halal.sa.common.CommonUtil;
-import com.halal.sa.common.error.ApiException;
-import com.halal.sa.common.error.DomainErrorConstants;
-import com.halal.sa.common.error.ErrorCode;
-import com.halal.sa.common.error.ErrorConstants;
-import com.halal.sa.common.error.ErrorResponse;
 import com.halal.sa.controller.MyAccountController;
 import com.halal.sa.controller.vo.LogonVO;
 import com.halal.sa.controller.vo.UserVO;
 import com.halal.sa.controller.vo.response.UserAuthentication;
 import com.halal.sa.core.ApiRequest;
 import com.halal.sa.core.apiprocessor.ApiErrorProcessor;
+import com.halal.sa.core.exception.ApiException;
+import com.halal.sa.core.exception.DomainErrorConstants;
+import com.halal.sa.core.exception.ErrorCode;
+import com.halal.sa.core.exception.ErrorConstants;
+import com.halal.sa.core.exception.ErrorResponse;
 import com.halal.sa.core.request.SearchRequestParameters;
 import com.halal.sa.data.dao.impl.MyAccountDaoImpl;
 import com.halal.sa.data.entities.User;
@@ -48,10 +48,6 @@ public class MyAccountService extends BaseService{
 	
 	@Autowired
 	MyAccountDaoImpl accountDao;
-	
-	@Autowired
-	@Qualifier("error.processor")
-	ApiErrorProcessor eApiErrorProcessor;
 	
 	/**
 	 * service register method will save the user info to DB 	

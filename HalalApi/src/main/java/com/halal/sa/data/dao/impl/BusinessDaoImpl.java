@@ -2,6 +2,7 @@ package com.halal.sa.data.dao.impl;
 
 
 import static org.springframework.data.mongodb.core.aggregation.Aggregation.*;
+import static com.halal.sa.core.exception.ErrorConstants.ERRORDESC_MONGODB_UNAVAILABLE;
 
 import org.apache.commons.lang.StringUtils;
 import org.springframework.data.mongodb.core.aggregation.Aggregation;
@@ -16,14 +17,13 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.geo.Metrics;
 import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.data.mongodb.core.query.BasicQuery;
-import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.data.mongodb.core.query.NearQuery;
 import org.springframework.data.mongodb.repository.Query;
 import org.springframework.stereotype.Repository;
 
 import com.halal.sa.common.ApplicationConstant;
-import com.halal.sa.common.error.ApiException;
-import com.halal.sa.common.error.DomainErrorConstants;
+import com.halal.sa.core.exception.ApiException;
+import com.halal.sa.core.exception.DomainErrorConstants;
 import com.halal.sa.data.dao.BusinessDao;
 import com.halal.sa.data.entities.Business;
 import com.halal.sa.service.ThirdPartyService;
@@ -55,7 +55,7 @@ public class BusinessDaoImpl implements BusinessDao{
 		}
 		catch(Exception e){
 			LOGGER.error("ERR_MONGODB_UNAVAILABLE", e);
-			throw new ApiException("ERR_MONGODB_UNAVAILABLE", "ERR_MONGODB_UNAVAILABLE");
+			throw new ApiException("ERR_MONGODB_UNAVAILABLE", ERRORDESC_MONGODB_UNAVAILABLE);
 		}
 	}
 
@@ -94,7 +94,7 @@ public class BusinessDaoImpl implements BusinessDao{
 		}
 		catch(Exception e){
 			LOGGER.error("ERR_MONGODB_UNAVAILABLE", e);
-			throw new ApiException("ERR_MONGODB_UNAVAILABLE", "ERR_MONGODB_UNAVAILABLE");
+			throw new ApiException("ERR_MONGODB_UNAVAILABLE", ERRORDESC_MONGODB_UNAVAILABLE);
 		}
 	}
 	

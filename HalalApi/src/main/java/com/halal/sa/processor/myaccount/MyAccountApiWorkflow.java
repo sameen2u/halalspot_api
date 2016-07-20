@@ -31,10 +31,4 @@ public class MyAccountApiWorkflow extends ApiWorkflow{
 		super.setApiPostprocessor(apiPostprocessor);
 	}
 	
-	@Override
-	@Resource(name="myAccountErrorProcessor")
-	public void setApiErrorProcessor(ApiErrorProcessor apiErrorProcessor) {
-		super.setApiErrorProcessor(apiErrorProcessor);
-	}
-
 }

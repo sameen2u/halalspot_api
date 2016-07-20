@@ -31,10 +31,4 @@ public class SearchBusinessApiWorkflow extends ApiWorkflow{
 		super.setApiPostprocessor(apiPostprocessor);
 	}
 	
-	@Override
-	@Resource(name="searchBusinessErrorProcessor")
-	public void setApiErrorProcessor(ApiErrorProcessor apiErrorProcessor) {
-		super.setApiErrorProcessor(apiErrorProcessor);
-	}
-
 }

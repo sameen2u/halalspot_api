@@ -15,14 +15,15 @@ import org.springframework.stereotype.Component;
 
 import com.halal.sa.common.ApplicationConstant;
 import com.halal.sa.common.CommonUtil;
-import com.halal.sa.common.error.ApiException;
-import com.halal.sa.common.error.DomainErrorConstants;
 import com.halal.sa.controller.vo.BusinessVO;
 import com.halal.sa.controller.vo.response.SearchBusiness;
 import com.halal.sa.controller.vo.response.SearchReport;
 import com.halal.sa.core.AbstractProcessor;
 import com.halal.sa.core.AggregateData;
 import com.halal.sa.core.RequestParameters;
+import com.halal.sa.core.exception.ApiException;
+import com.halal.sa.core.exception.BadRequestException;
+import com.halal.sa.core.exception.DomainErrorConstants;
 import com.halal.sa.core.request.SearchRequestParameters;
 import com.halal.sa.data.dao.SearchBusinessDao;
 import com.halal.sa.data.dao.impl.BusinessDaoImpl;
@@ -51,7 +52,7 @@ public class SearchBusinessProcessor extends AbstractProcessor{
 
 	@Override
 	public AggregateData retrieveData(RequestParameters requestParameters)
-			throws ApiException {
+			throws BadRequestException, ApiException {
 		SearchRequestParameters searchRequestParameters = (SearchRequestParameters) requestParameters;
 		SearchBusinessAggregateData searchBusinessAggregateData = searchProcessor(searchRequestParameters);
 		return searchBusinessAggregateData;
@@ -62,8 +63,10 @@ public class SearchBusinessProcessor extends AbstractProcessor{
 	 * @param apiRequest
 	 * @return
 	 * @throws ApiException
+	 * @throws BadRequestException 
+	 * @throws NumberFormatException 
 	 */
-	public SearchBusinessAggregateData searchProcessor(SearchRequestParameters searchRequestParameters) throws ApiException{
+	public SearchBusinessAggregateData searchProcessor(SearchRequestParameters searchRequestParameters) throws BadRequestException, ApiException{
 		String keyword = searchRequestParameters.getKeyword();
 		String address = searchRequestParameters.getAddress();
 		String distance = searchRequestParameters.getRadius();
@@ -89,8 +92,9 @@ public class SearchBusinessProcessor extends AbstractProcessor{
 			return searchBusinessAggregateData;
 		}
 		else{
-			LOGGER.error(DomainErrorConstants.ERRCODE_BAD_REQUEST, "Mandatory param Address is missing");
-			throw new ApiException(DomainErrorConstants.ERRCODE_BAD_REQUEST, "Mandatory param Address is missing");
+			String errorMsg = "Mandatory param Address or Lat & Lng are missing";
+			LOGGER.error(DomainErrorConstants.ERRCODE_BAD_REQUEST, errorMsg);
+			throw new BadRequestException(DomainErrorConstants.ERRCODE_BAD_REQUEST, errorMsg);
 		}
 	}
 	

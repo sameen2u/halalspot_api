@@ -23,8 +23,8 @@ import org.springframework.web.client.RestTemplate;
 
 import com.halal.sa.common.ApplicationConstant;
 import com.halal.sa.common.CommonUtil;
-import com.halal.sa.common.error.ApiException;
-import com.halal.sa.common.error.DomainErrorConstants;
+import com.halal.sa.core.exception.ApiException;
+import com.halal.sa.core.exception.DomainErrorConstants;
 import com.halal.sa.data.dao.impl.MyAccountDaoImpl;
 
 @Component

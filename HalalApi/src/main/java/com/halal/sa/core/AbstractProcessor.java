@@ -3,9 +3,10 @@ package com.halal.sa.core;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.halal.sa.common.error.ApiException;
-import com.halal.sa.common.error.ErrorConstants;
 import com.halal.sa.core.apiprocessor.ApiProcessor;
+import com.halal.sa.core.exception.ApiException;
+import com.halal.sa.core.exception.BadRequestException;
+import com.halal.sa.core.exception.ErrorConstants;
 
 public abstract class AbstractProcessor implements ApiProcessor {
 	
@@ -35,9 +36,10 @@ public abstract class AbstractProcessor implements ApiProcessor {
 	/**
 	 * This method does the performas any calls to external services and processes the data.
 	 * @param requestParameters - RequestParameters
+	 * @throws ApiException 
 	 */
 	@Override
-	public final AggregateData process(RequestParameters requestParameters) throws ApiException {
+	public final AggregateData process(RequestParameters requestParameters) throws BadRequestException, ApiException {
 		
 		AggregateData aggregateData = retrieveData(requestParameters);
 		

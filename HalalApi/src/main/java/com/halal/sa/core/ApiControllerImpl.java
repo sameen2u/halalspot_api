@@ -7,11 +7,12 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Component;
 
-import com.halal.sa.common.error.ApiException;
-import com.halal.sa.common.error.ApiLoggingConstants;
-import com.halal.sa.common.error.ErrorConstants;
-import com.halal.sa.common.error.ErrorResponse;
+import com.halal.sa.common.delete.ApiLoggingConstants;
 import com.halal.sa.controller.ApiController;
+import com.halal.sa.core.exception.ApiException;
+import com.halal.sa.core.exception.BadRequestException;
+import com.halal.sa.core.exception.ErrorConstants;
+import com.halal.sa.core.exception.ErrorResponse;
 
 @Component
 public class ApiControllerImpl implements ApiController {
@@ -24,22 +25,20 @@ public class ApiControllerImpl implements ApiController {
 	
 	@Override
 	public final <T> ResponseEntity<T> execute(final ApiRequest apiRequest,
-			final ApiWorkflow apiWorkflow) {
+			final ApiWorkflow apiWorkflow) throws ApiException, BadRequestException {
 
 		ResponseEntity<T> response = null;
 		ApiResponse<T> apiResponse;
 		
-		try {
+//		try {
 			if (apiRequest == null || apiWorkflow == null
 					|| apiWorkflow.getApiPreprocessor() == null
 					|| apiWorkflow.getApiProcessor() == null
-					|| apiWorkflow.getApiPostprocessor() == null
-					|| apiWorkflow.getApiErrorProcessor() == null) {
+					|| apiWorkflow.getApiPostprocessor() == null) {
 
 				LOGGER.error(ApiLoggingConstants.API_INVALID_ARGUMENTS
 						, "Expected input parameters are null");
-				throw new ApiException(
-						ErrorConstants.ERR_ENCOUNTERED_DURING_PROCESSING.toString());
+				throw new ApiException(ErrorConstants.ERR_ENCOUNTERED_DURING_PROCESSING.toString());
 			} else {
 				
 				RequestParameters requestParameters = apiWorkflow
@@ -54,31 +53,32 @@ public class ApiControllerImpl implements ApiController {
 				response = apiResponseGenerator.generateResponse(apiRequest, apiResponse);
 
 				if (response == null) {
-					response = (ResponseEntity<T>) getErrorResponse(null);
+					throw new ApiException("Response is null");
 				}
 			}
 
-		} catch (Exception e) {
-
-			LOGGER.error(e.getMessage(), e);
-			LOGGER.error(ApiLoggingConstants.API_RESPONSE_GENERATION_FAILED
-					+ e.getMessage());
-			response = (ResponseEntity<T>) getErrorResponse(e.getMessage());
-		}
-
+//		} 
+//		catch (Exception e) {
+//
+//			LOGGER.error(e.getMessage(), e);
+//			LOGGER.error(ApiLoggingConstants.API_RESPONSE_GENERATION_FAILED
+//					+ e.getMessage());
+//			response = (ResponseEntity<T>) getErrorResponse(e.getMessage());
+//		}
+//
 		return response;
-	}
+//	}
 	
-	private ResponseEntity<ErrorResponse> getErrorResponse(String msg){
-		String errorMsg = (msg != null)? msg : ErrorConstants.ERRORDESC_INTERNAL_ERROR;
-		
-		ErrorResponse internalServerErrorResponse = new ErrorResponse(
-				ErrorConstants.ERRORCODE_INTERNAL_ERROR,
-				errorMsg);
-		 
-		 ResponseEntity<ErrorResponse> errorResponse= new ResponseEntity<>(internalServerErrorResponse,HttpStatus.INTERNAL_SERVER_ERROR);
-		return errorResponse;
-		
+//	private ResponseEntity<ErrorResponse> getErrorResponse(String msg){
+//		String errorMsg = (msg != null)? msg : ErrorConstants.ERRORDESC_INTERNAL_ERROR;
+//		
+//		ErrorResponse internalServerErrorResponse = new ErrorResponse(
+//				ErrorConstants.ERRORCODE_INTERNAL_ERROR,
+//				errorMsg);
+//		 
+//		 ResponseEntity<ErrorResponse> errorResponse= new ResponseEntity<>(internalServerErrorResponse,HttpStatus.INTERNAL_SERVER_ERROR);
+//		return errorResponse;
+//		
 	}
-
+			
 }

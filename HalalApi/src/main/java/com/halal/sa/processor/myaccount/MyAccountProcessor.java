@@ -13,13 +13,13 @@ import org.springframework.stereotype.Component;
 
 import com.halal.sa.common.ApplicationConstant;
 import com.halal.sa.common.CommonUtil;
-import com.halal.sa.common.error.ApiException;
 import com.halal.sa.controller.vo.response.SearchBusiness;
 import com.halal.sa.controller.vo.response.SearchReport;
 import com.halal.sa.core.AbstractProcessor;
 import com.halal.sa.core.AggregateData;
 import com.halal.sa.core.ApiRequest;
 import com.halal.sa.core.RequestParameters;
+import com.halal.sa.core.exception.ApiException;
 import com.halal.sa.core.request.SearchRequestParameters;
 import com.halal.sa.data.dao.impl.BusinessDaoImpl;
 import com.halal.sa.data.entities.Address;

@@ -12,7 +12,6 @@ public class ApiWorkflow {
 	private ApiPreProcessor apiPreprocessor;
 	private ApiProcessor apiProcessor;
 	private ApiPostProcessor apiPostprocessor;
-	private ApiErrorProcessor apiErrorProcessor;
 
 	public ApiPreProcessor getApiPreprocessor() {
 		return apiPreprocessor;
@@ -41,13 +40,4 @@ public class ApiWorkflow {
 		this.apiPostprocessor = apiPostprocessor;
 	}
 
-	public ApiErrorProcessor getApiErrorProcessor() {
-		return apiErrorProcessor;
-	}
-
-	@Required
-	public void setApiErrorProcessor(ApiErrorProcessor apiErrorProcessor) {
-		this.apiErrorProcessor = apiErrorProcessor;
-	}
-	
 }

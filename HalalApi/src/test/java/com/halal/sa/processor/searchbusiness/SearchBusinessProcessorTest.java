@@ -12,9 +12,10 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
 
-import com.halal.sa.common.error.ApiException;
 import com.halal.sa.controller.vo.BusinessVO;
 import com.halal.sa.core.ApiRequest;
+import com.halal.sa.core.exception.ApiException;
+import com.halal.sa.core.exception.BadRequestException;
 import com.halal.sa.core.request.SearchRequestParameters;
 import com.halal.sa.data.entities.Business;
 
@@ -29,7 +30,7 @@ public class SearchBusinessProcessorTest {
 	 * test retrieveData method with correct requestParameter value
 	 */
 	@Test
-	public void retrieveData_with_valid_data() throws ApiException {
+	public void retrieveData_with_valid_data() throws ApiException, BadRequestException {
 		SearchRequestParameters searchRequestParameters = new SearchRequestParameters();
 		searchRequestParameters.setAddress("camp pune india");
 		searchRequestParameters.setKeyword("chinese");
@@ -42,7 +43,7 @@ public class SearchBusinessProcessorTest {
 	 * test searchbusinesses method with correct requestParameter value
 	 */
 	@Test
-	public void searchbusinesses_with_valid_data() throws ApiException {
+	public void searchbusinesses_with_valid_data() throws ApiException, BadRequestException {
 		SearchRequestParameters searchRequestParameters = new SearchRequestParameters();
 		searchRequestParameters.setAddress("camp pune india");
 		searchRequestParameters.setKeyword("chinese");
@@ -55,7 +56,7 @@ public class SearchBusinessProcessorTest {
 	 * test search method with correct requestParameter value
 	 */
 	@Test(expected=ApiException.class)
-	public void search_with_empty_data() throws ApiException {
+	public void search_with_empty_data() throws ApiException, BadRequestException {
 		SearchRequestParameters searchRequestParameters = new SearchRequestParameters();
 		searchRequestParameters.setAddress("");
 		searchRequestParameters.setKeyword("");

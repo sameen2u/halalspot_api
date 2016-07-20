@@ -1,7 +1,7 @@
 package com.halal.sa.data.dao;
 
-import com.halal.sa.common.error.ApiException;
 import com.halal.sa.controller.vo.UserVO;
+import com.halal.sa.core.exception.ApiException;
 import com.halal.sa.data.entities.User;
 
 public interface AccountDao {

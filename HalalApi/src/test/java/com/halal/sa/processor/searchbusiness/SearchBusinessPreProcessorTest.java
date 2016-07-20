@@ -10,8 +10,8 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
 
-import com.halal.sa.common.error.ApiException;
 import com.halal.sa.core.ApiRequest;
+import com.halal.sa.core.exception.ApiException;
 import com.halal.sa.core.request.SearchRequestParameters;
 
 @RunWith(SpringJUnit4ClassRunner.class)

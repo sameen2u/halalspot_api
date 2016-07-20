@@ -4,10 +4,10 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
 
-import com.halal.sa.common.error.ApiException;
 import com.halal.sa.core.AbstractPreProcessor;
 import com.halal.sa.core.ApiRequest;
 import com.halal.sa.core.RequestParameters;
+import com.halal.sa.core.exception.ApiException;
 import com.halal.sa.core.request.SearchRequestParameters;
 import com.halal.sa.data.dao.impl.MyAccountDaoImpl;
 

@@ -9,8 +9,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Component;
 
-import com.halal.sa.common.error.ApiException;
-import com.halal.sa.common.error.ErrorConstants;
+import com.halal.sa.core.exception.ApiException;
+import com.halal.sa.core.exception.ErrorConstants;
 
 /**
  * Class is responsible for producing a response based on the input 

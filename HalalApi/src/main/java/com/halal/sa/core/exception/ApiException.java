@@ -1,4 +1,4 @@
-package com.halal.sa.common.error;
+package com.halal.sa.core.exception;
 
 public class ApiException extends Exception{
 	
@@ -9,14 +9,13 @@ public class ApiException extends Exception{
 
 	private String errorCode;
 	
-	private String errorMessage;
+//	private String errorMessage;
 	
 	public ApiException(){
 	}
 	
-	public ApiException(String errorCode){
-		super(errorCode);
-		this.errorCode = errorCode;
+	public ApiException(String message){
+		super(message);
 	}
 	
 	public ApiException(String errorCode, Throwable throwable) {
@@ -25,24 +24,18 @@ public class ApiException extends Exception{
 	}
 	
 	public ApiException(String errorCode, String message) {
-		super(errorCode);
+		super(message);
 		this.errorCode = errorCode;
-		this.errorMessage = message;
 	}
 	
 	public ApiException(String errorCode, String message, Throwable throwable) {
-		super(errorCode, throwable);
+		super(message, throwable);
 		this.errorCode = errorCode;
-		this.errorMessage = message;
 	}
 	
 	
 	public String getErrorCode() {
 		return errorCode;
-	}
-	
-	public String getErrorMessage() {
-		return errorMessage;
 	}
 
 }

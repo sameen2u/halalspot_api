@@ -7,10 +7,10 @@ import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpHeaders;
 
 import com.halal.sa.common.ServiceCommonConstants;
-import com.halal.sa.common.error.ApiException;
-import com.halal.sa.common.error.ErrorConstants;
-import com.halal.sa.common.error.ErrorResponse;
 import com.halal.sa.core.apiprocessor.ApiErrorProcessor;
+import com.halal.sa.core.exception.ApiException;
+import com.halal.sa.core.exception.ErrorConstants;
+import com.halal.sa.core.exception.ErrorResponse;
 
 public abstract class AbstractErrorProcessor implements ApiErrorProcessor {
 	
@@ -41,7 +41,7 @@ public abstract class AbstractErrorProcessor implements ApiErrorProcessor {
 		
 		ApiResponse<T> apiResponse = new ApiResponse<T>();
 		apiResponse.setResponseBody((T) errorResponse);
-		apiResponse.setStatusCode(errorResponse.getId());
+//		apiResponse.setStatusCode(errorResponse.getId());
 		apiResponse.setHttpHeaders(obtainHttpHeaders());
 		
 		return apiResponse;

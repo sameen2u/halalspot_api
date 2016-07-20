@@ -1,11 +1,11 @@
 package com.halal.sa.core.apiprocessor;
 
 
-import com.halal.sa.common.error.ApiException;
 import com.halal.sa.core.AggregateData;
 import com.halal.sa.core.ApiRequest;
 import com.halal.sa.core.ApiResponse;
 import com.halal.sa.core.RequestParameters;
+import com.halal.sa.core.exception.ApiException;
 
 public interface ApiPostProcessor {
 	

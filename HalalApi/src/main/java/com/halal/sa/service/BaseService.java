@@ -9,8 +9,8 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 
-import com.halal.sa.common.error.ApiException;
 import com.halal.sa.core.ApiRequest;
+import com.halal.sa.core.exception.ApiException;
 import com.halal.sa.core.request.SearchRequestParameters;
 import com.halal.sa.data.dao.impl.MyAccountDaoImpl;
 
