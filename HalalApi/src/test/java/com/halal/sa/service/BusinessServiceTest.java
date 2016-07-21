@@ -24,7 +24,7 @@ public class BusinessServiceTest {
 	/*
 	 * test validate method with null Business obj to see all the validation errors
 	 */
-	@Test
+//	@Test
 	public void validate_with_all_null_in_Business_obj() {
 		Business business = new Business();
 		Address address = new Address();

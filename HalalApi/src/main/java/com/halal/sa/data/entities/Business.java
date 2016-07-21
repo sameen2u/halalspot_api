@@ -26,7 +26,6 @@ public class Business implements Serializable{
 	@Valid
 	private Address address;
 	private int phone;
-	@NotEmpty
 	private String email;
 	private String ownerEmail;
 	private String ownerPhone;
@@ -37,15 +36,14 @@ public class Business implements Serializable{
 	private String twitterPage;
 	private String otherInfo;
 	private Date lastUpdated;
-	private Map<String, String> workingHours;
-	private List<String> facility;
+	private String workingHours;
+	private String facility;
 	private String authenticity;
 	private String halalOfferings;
 	private String createdBy;
 	private String updatedBy;
 	private Date createdDate;
 	private Date updatedDate;
-	
 	
 	
 	public int getProfile_id() {
@@ -168,16 +166,10 @@ public class Business implements Serializable{
 	public void setLastUpdated(Date lastUpdated) {
 		this.lastUpdated = lastUpdated;
 	}
-	public Map<String, String> getWorkingHours() {
-		return workingHours;
-	}
-	public void setWorkingHours(Map<String, String> workingHours) {
-		this.workingHours = workingHours;
-	}
-	public List<String> getFacility() {
+	public String getFacility() {
 		return facility;
 	}
-	public void setFacility(List<String> facility) {
+	public void setFacility(String facility) {
 		this.facility = facility;
 	}
 	public String getCreatedBy() {
@@ -197,6 +189,12 @@ public class Business implements Serializable{
 	}
 	public void setUpdatedBy(String updatedBy) {
 		this.updatedBy = updatedBy;
+	}
+	public String getWorkingHours() {
+		return workingHours;
+	}
+	public void setWorkingHours(String workingHours) {
+		this.workingHours = workingHours;
 	}
 	
 }
