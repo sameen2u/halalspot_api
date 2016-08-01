@@ -1,0 +1,74 @@
+Afghani
+African
+American
+Andhra
+Arabian
+Asian
+Assamese
+Bakery
+Bengali
+Beverages
+Bihari
+Biryani
+Burger
+Burmese
+Cafe
+Chettinad
+Chili Masala
+Chinese
+Continental
+Desserts
+European
+Fast Food
+French
+Goan
+Gujarati
+Hyderabadi
+Ice Cream
+Iranian
+Italian
+Japanese
+Juices
+Kashmiri
+Kerala
+Konkan
+Lucknowi
+Maharashtrian
+Malaysian
+Mangalore
+Mediterranean
+Mexican
+Middle Eastern
+Moroccan
+Mughlai
+North Eastern
+North Indian
+Odiya
+Pakistani
+Parsi
+Persian
+Pizza
+Rajasthani
+Roasted Chicken
+Salad
+Seafood
+Singaporean
+South Indian
+Spanish
+Sri Lankan
+Steak
+Street Food
+Sushi
+Tea
+Irani Tea
+Thai
+Turkish
+Wrap
+Kabab
+Sheekh Kabab
+Bhuna Boti
+Tandoor
+Haleem
+Paya
+Rolls
+

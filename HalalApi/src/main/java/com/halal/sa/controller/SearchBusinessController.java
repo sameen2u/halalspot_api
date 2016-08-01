@@ -1,5 +1,7 @@
 package com.halal.sa.controller;
 
+import java.util.List;
+
 import javax.annotation.Resource;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,6 +17,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.halal.sa.controller.vo.BusinessVO;
+import com.halal.sa.controller.vo.KeywordSearchVO;
 import com.halal.sa.core.ApiRequest;
 import com.halal.sa.core.ApiWorkflow;
 import com.halal.sa.core.exception.ApiException;
@@ -42,11 +45,18 @@ public class SearchBusinessController {
 		return apiController.execute(apiRequest, searchBusinessApiWorkflow);
 	}
 	
-	@RequestMapping(value="/search/{city}/{id}", method=RequestMethod.GET)
-	public ResponseEntity<Object> searchSingleBusinessExecute(@PathVariable("city") String city,
-						@PathVariable("id") int profile_id) throws ApiException{
+	@RequestMapping(value="/search/{city}/{profileId}", method=RequestMethod.GET)
+	public ResponseEntity<Object> searchBusinessProfileExecute(@PathVariable("city") String city,
+						@PathVariable("profileId") int profile_id) throws ApiException{
 		BusinessVO businessVO = searchBusinessProcessor.searchSingleBusiness(city, profile_id);
 		return new ResponseEntity<Object>(businessVO, HttpStatus.OK);
 //		return apiController.execute(null, searchBusinessApiWorkflow);
+	}
+	
+	@RequestMapping(value="/search/{city}/key/{keywordInitials}", method=RequestMethod.GET)
+	public ResponseEntity<Object> searchRestaurantKeyword(@PathVariable("city") String city,
+						@PathVariable("keywordInitials") String keywordInitials) throws ApiException{
+		KeywordSearchVO keywordSearchVo = searchBusinessProcessor.searchKeyword(city, keywordInitials);
+		return new ResponseEntity<Object>(keywordSearchVo, HttpStatus.OK);
 	}
 }

@@ -90,4 +90,18 @@ public class SearchBusinessProcessorTest {
 		BusinessVO businessVO = searchBusinessProcessor.searchSingleBusiness("savali-vegetarian-restaurant-pune", 4);
 		assertNotNull(businessVO.getEmail());
 	}
+	
+	
+	/*
+	 * test searchBusiness method with invalid keyword
+	 */
+	@Test
+	public void populateWorkingHours_with_valid_data() {
+		Business business = new Business();
+		BusinessVO businessVO = new BusinessVO();
+		business.setWorkingHours("mon=07:00-21:00,tue=07:00-21:00,wed=07:00-21:00,thur=07:00-21:00,fri=07:00-21:00,sat=10:00-17:00,sun=closed");
+		searchBusinessProcessor.populateWorkingHours(business, businessVO);
+		
+		assertNotNull(businessVO.getWorkingHours());
+	}
 }

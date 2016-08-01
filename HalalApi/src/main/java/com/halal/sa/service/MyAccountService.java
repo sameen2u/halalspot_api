@@ -15,31 +15,23 @@ import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Qualifier;
-import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.util.ObjectUtils;
-import org.springframework.web.bind.annotation.RequestParam;
 
 import com.halal.sa.common.ApiConstant;
 import com.halal.sa.common.CommonUtil;
-import com.halal.sa.controller.MyAccountController;
 import com.halal.sa.controller.vo.LogonVO;
 import com.halal.sa.controller.vo.UserVO;
 import com.halal.sa.controller.vo.response.UserAuthentication;
 import com.halal.sa.core.ApiRequest;
-import com.halal.sa.core.apiprocessor.ApiErrorProcessor;
 import com.halal.sa.core.exception.ApiException;
-import com.halal.sa.core.exception.DomainErrorConstants;
 import com.halal.sa.core.exception.ErrorCode;
 import com.halal.sa.core.exception.ErrorConstants;
-import com.halal.sa.core.exception.ErrorResponse;
 import com.halal.sa.core.request.SearchRequestParameters;
 import com.halal.sa.data.dao.impl.MyAccountDaoImpl;
 import com.halal.sa.data.entities.User;
-import com.sun.org.apache.bcel.internal.generic.RETURN;
 
 @Service("accountService")
 public class MyAccountService extends BaseService{
@@ -169,7 +161,7 @@ public class MyAccountService extends BaseService{
 	public ResponseEntity<Object> validateTokens(String userId, String activityToken, String sessionToken) throws ParseException, ApiException{
 		
 		if((StringUtils.isEmpty(sessionToken) && StringUtils.isEmpty(activityToken))){
-			throw new ApiException(DomainErrorConstants.ERRCODE_BAD_REQUEST, DomainErrorConstants.ERRDESC_TOKEN_MISSING);
+			throw new ApiException(ErrorConstants.ERRCODE_BAD_REQUEST, ErrorConstants.ERRDESC_TOKEN_MISSING);
 		}
 			Map<String,String> mapObj = new HashMap<String,String>();
 			if(!StringUtils.isEmpty(sessionToken) && this.validateSessionToken(userId, sessionToken)){
@@ -292,7 +284,7 @@ public class MyAccountService extends BaseService{
 			return processResponseEntity(response, HttpStatus.OK);	
 		}
 		else{
-			throw new ApiException(DomainErrorConstants.ERRCODE_INCOMPLETE_DATA, ErrorConstants.ERRORDESC_INCOMPLETE_DATA);
+			throw new ApiException(ErrorConstants.ERRCODE_INCOMPLETE_DATA, ErrorConstants.ERRORDESC_INCOMPLETE_DATA);
 		}
 	}
 

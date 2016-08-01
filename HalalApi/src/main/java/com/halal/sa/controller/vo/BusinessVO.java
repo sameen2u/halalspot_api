@@ -22,8 +22,8 @@ public class BusinessVO {
 	private String twitterPage;
 	private String otherInfo;
 	private Date lastUpdated;
-	private Map<String, String> workingHours;
-	private List<String> facility;
+	private Map<String, Object> workingHours;
+	private Map<String, Boolean> facilities;
 	private String authenticity;
 	private String createdBy;
 	private String updatedBy;
@@ -112,18 +112,6 @@ public class BusinessVO {
 	public void setLastUpdated(Date lastUpdated) {
 		this.lastUpdated = lastUpdated;
 	}
-	public Map<String, String> getWorkingHours() {
-		return workingHours;
-	}
-	public void setWorkingHours(Map<String, String> workingHours) {
-		this.workingHours = workingHours;
-	}
-	public List<String> getFacility() {
-		return facility;
-	}
-	public void setFacility(List<String> facility) {
-		this.facility = facility;
-	}
 	public String getAuthenticity() {
 		return authenticity;
 	}
@@ -142,7 +130,16 @@ public class BusinessVO {
 	public void setUpdatedBy(String updatedBy) {
 		this.updatedBy = updatedBy;
 	}
-	
-	
-
+	public Map<String, Object> getWorkingHours() {
+		return workingHours;
+	}
+	public void setWorkingHours(Map<String, Object> workingHours) {
+		this.workingHours = workingHours;
+	}
+	public Map<String, Boolean> getFacilities() {
+		return facilities;
+	}
+	public void setFacilities(Map<String, Boolean> facilities) {
+		this.facilities = facilities;
+	}
 }

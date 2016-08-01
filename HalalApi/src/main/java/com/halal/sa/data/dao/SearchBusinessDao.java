@@ -11,5 +11,6 @@ public interface SearchBusinessDao extends Repository<Business, Serializable>{
 
 	  @Query(value="{'address.city' : {$regex : '^?0$', $options: 'i'}, 'profile_id' : ?1}")
 	   public Business findByBusinessCodeAndProfileId(String city, int profile_id);
+	  
 }
 

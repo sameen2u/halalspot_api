@@ -3,6 +3,7 @@ package com.halal.sa.processor.searchbusiness;
 import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -16,6 +17,7 @@ import org.springframework.stereotype.Component;
 import com.halal.sa.common.ApplicationConstant;
 import com.halal.sa.common.CommonUtil;
 import com.halal.sa.controller.vo.BusinessVO;
+import com.halal.sa.controller.vo.KeywordSearchVO;
 import com.halal.sa.controller.vo.response.SearchBusiness;
 import com.halal.sa.controller.vo.response.SearchReport;
 import com.halal.sa.core.AbstractProcessor;
@@ -23,13 +25,15 @@ import com.halal.sa.core.AggregateData;
 import com.halal.sa.core.RequestParameters;
 import com.halal.sa.core.exception.ApiException;
 import com.halal.sa.core.exception.BadRequestException;
-import com.halal.sa.core.exception.DomainErrorConstants;
+import com.halal.sa.core.exception.ErrorConstants;
 import com.halal.sa.core.exception.ErrorConstants;
 import com.halal.sa.core.request.SearchRequestParameters;
+import com.halal.sa.data.dao.RestaurantDao;
 import com.halal.sa.data.dao.SearchBusinessDao;
 import com.halal.sa.data.dao.impl.BusinessDaoImpl;
 import com.halal.sa.data.entities.Address;
 import com.halal.sa.data.entities.Business;
+import com.halal.sa.data.entities.RestaurantInfo;
 import com.halal.sa.service.ThirdPartyService;
 import com.mongodb.DBObject;
 
@@ -50,6 +54,8 @@ public class SearchBusinessProcessor extends AbstractProcessor{
 	@Autowired
 	SearchBusinessDao searchBusinessDao; 
 	
+	@Autowired
+	RestaurantDao restaurantDao;
 
 	@Override
 	public AggregateData retrieveData(RequestParameters requestParameters)
@@ -94,8 +100,8 @@ public class SearchBusinessProcessor extends AbstractProcessor{
 		}
 		else{
 			String errorMsg = ErrorConstants.ERRORDESC_MANDATORY_PARAM_MISSING;
-			LOGGER.error(DomainErrorConstants.ERRCODE_BAD_REQUEST, errorMsg);
-			throw new BadRequestException(DomainErrorConstants.ERRCODE_BAD_REQUEST, errorMsg);
+			LOGGER.error(ErrorConstants.ERRCODE_BAD_REQUEST, errorMsg);
+			throw new BadRequestException(ErrorConstants.ERRCODE_BAD_REQUEST, errorMsg);
 		}
 	}
 	
@@ -264,25 +270,12 @@ public class SearchBusinessProcessor extends AbstractProcessor{
 	/*
 	 * This method will return full business data for the profile id passed
 	 */
-	public BusinessVO searchSingleBusiness(String city, int businessProfileId){
-//		String businessName = "";
-//		String city = "";
-//		if(businessCityCode.contains("-")){
-//			String[] arr = businessCityCode.split("-");
-//			for(int i=0; i<arr.length; i++ ){
-//				
-//				if(i == arr.length-1){
-//					city = arr[i];
-//					break;
-//				}
-//				businessName = businessName.concat(arr[i]+" ");
-//			}
-//		}
-		//trimming the last space concatinated as above
-//		businessName = businessName.trim();
+	public BusinessVO searchSingleBusiness(String city, int businessProfileId) throws ApiException{
 		Business business = searchBusinessDao.findByBusinessCodeAndProfileId(city, businessProfileId);
-		BusinessVO businessVO = new BusinessVO();
-		try {
+		if(business == null){
+			throw new ApiException(ErrorConstants.ERRORDESC_DATA_NOT_FOUND_DB);
+		}
+		/*try {
 			BeanUtils.copyProperties(businessVO, business);
 		} catch (IllegalAccessException e) {
 			// TODO Auto-generated catch block
@@ -290,8 +283,9 @@ public class SearchBusinessProcessor extends AbstractProcessor{
 		} catch (InvocationTargetException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
-		}
-		return businessVO;		
+		}*/
+		
+		return populateBusinessVO(business);		
 	}
 	
 	public String constructProfileUrl(DBObject dbObject, Address address){
@@ -305,5 +299,220 @@ public class SearchBusinessProcessor extends AbstractProcessor{
 		
 		String profileUri = "/"+city.toLowerCase()+"/"+name.toLowerCase()+locality+"/"+profileId;
 		return profileUri;
+	}
+	
+	private BusinessVO populateBusinessVO(Business business){
+		BusinessVO businessVO = new BusinessVO();
+		if(StringUtils.isNotBlank(business.getId())){
+			businessVO.setId(business.getId());
+		}
+		if(StringUtils.isNotBlank(business.getName())){
+			businessVO.setName(business.getName());
+		}
+		if(business.getAddress() != null){
+			businessVO.setAddress(business.getAddress());
+		}
+		if(business.getPhone() > 0){
+			businessVO.setPhone(business.getPhone());
+		}
+		if(StringUtils.isNotBlank(business.getEmail())){
+			businessVO.setEmail(business.getEmail());
+		}
+		if(StringUtils.isNotBlank(business.getOwnerEmail())){
+			businessVO.setOwnerEmail(business.getOwnerEmail());
+		}
+		if(StringUtils.isNotBlank(business.getStatus())){
+			businessVO.setStatus(business.getStatus());
+		}
+		if(StringUtils.isNotBlank(business.getWebsite())){
+			businessVO.setWebsite(business.getWebsite());
+		}
+		if(StringUtils.isNotBlank(business.getStatus())){
+			businessVO.setStatus(business.getStatus());
+		}
+		if(business.getCuisine() != null){
+			businessVO.setCuisine(business.getCuisine());
+		}
+		if(StringUtils.isNotBlank(business.getFacebookPage())){
+			businessVO.setFacebookPage(business.getFacebookPage());
+		}
+		if(StringUtils.isNotBlank(business.getTwitterPage())){
+			businessVO.setTwitterPage(business.getTwitterPage());
+		}
+		
+		if(StringUtils.isNotBlank(business.getOtherInfo())){
+			businessVO.setOtherInfo(business.getOtherInfo());
+		}
+		if(business.getLastUpdated() != null){
+			businessVO.setLastUpdated(business.getLastUpdated());
+		}
+		
+		this.populateWorkingHours(business, businessVO);
+		this.populateFacilities(business, businessVO);
+		
+		if(StringUtils.isNotBlank(business.getAuthenticity())){
+			businessVO.setAuthenticity(business.getAuthenticity());
+		}
+		if(StringUtils.isNotBlank(business.getCreatedBy())){
+			businessVO.setCreatedBy(business.getCreatedBy());
+		}
+		if(StringUtils.isNotBlank(business.getUpdatedBy())){
+			businessVO.setUpdatedBy(business.getUpdatedBy());
+		}
+		return businessVO;
+	}
+	
+	/*
+	 * This method populates working hours with respect to each day in map format{monday{open : 07:00, close : 8:00}, sunday:closed}}
+	 */
+	protected void populateWorkingHours(Business business, BusinessVO businessVO){ 
+		Map<String, Object> workingHoursMap = null;
+		if(StringUtils.isNotBlank(business.getWorkingHours())){
+			workingHoursMap = new HashMap<String, Object>();
+			//example string = "mon=07:00-21:00,tue=07:00-21:00"
+			String weekHours = business.getWorkingHours();
+			String[] arr = weekHours.split(",");
+			for(String dayHours : arr){
+				if(dayHours.contains("mon")){
+					dayHours = dayHours.replace("mon=", "");
+					if(StringUtils.equals(dayHours, "closed")){
+						workingHoursMap.put("monday", dayHours);
+						break;
+					}
+					
+					String[] hours = dayHours.split("-");
+					if(hours != null && hours.length >0){
+						Map<String, String> monday = new HashMap<String, String>();
+						monday.put("open", hours[0]);
+						monday.put("close", hours[1]);
+						workingHoursMap.put("monday", monday);
+					}
+				}
+				if(dayHours.contains("tue")){
+					dayHours = dayHours.replace("tue=", "");
+					if(StringUtils.equals(dayHours, "closed")){
+						workingHoursMap.put("tuesday", dayHours);
+						break;
+					}
+					
+					String[] hours = dayHours.split("-");
+					if(hours != null && hours.length >0){
+						Map<String, String> tuesday = new HashMap<String, String>();
+						tuesday.put("open", hours[0]);
+						tuesday.put("close", hours[1]);
+						workingHoursMap.put("tuesday", tuesday);
+					}
+				}
+				if(dayHours.contains("wed")){
+					dayHours = dayHours.replace("wed=", "");
+					if(StringUtils.equals(dayHours, "closed")){
+						workingHoursMap.put("wednesday", dayHours);
+						break;
+					}
+					
+					String[] hours = dayHours.split("-");
+					if(hours != null && hours.length >0){
+						Map<String, String> wednesday = new HashMap<String, String>();
+						wednesday.put("open", hours[0]);
+						wednesday.put("close", hours[1]);
+						workingHoursMap.put("wednesday", wednesday);
+					}
+				}
+				if(dayHours.contains("thur")){
+					dayHours = dayHours.replace("thur=", "");
+					if(StringUtils.equals(dayHours, "closed")){
+						workingHoursMap.put("thursday", dayHours);
+						break;
+					}
+					
+					String[] hours = dayHours.split("-");
+					if(hours != null && hours.length >0){
+						Map<String, String> thursday = new HashMap<String, String>();
+						thursday.put("open", hours[0]);
+						thursday.put("close", hours[1]);
+						workingHoursMap.put("thursday", thursday);
+					}
+				}
+				if(dayHours.contains("fri")){
+					dayHours = dayHours.replace("fri=", "");
+					String[] hours = dayHours.split("-");
+					if(hours != null && hours.length >0){
+						Map<String, String> friday = new HashMap<String, String>();
+						friday.put("open", hours[0]);
+						friday.put("close", hours[1]);
+						workingHoursMap.put("friday", friday);
+					}
+				}
+				if(dayHours.contains("sat")){
+					dayHours = dayHours.replace("sat=", "");
+					if(StringUtils.equals(dayHours, "closed")){
+						workingHoursMap.put("saturday", dayHours);
+						break;
+					}
+					String[] hours = dayHours.split("-");
+					if(hours != null && hours.length >0){
+						Map<String, String> saturday = new HashMap<String, String>();
+						saturday.put("open", hours[0]);
+						saturday.put("close", hours[1]);
+						workingHoursMap.put("saturday", saturday);
+					}
+				}
+				if(dayHours.contains("sun")){
+					dayHours = dayHours.replace("sun=", "");
+					if(StringUtils.equals(dayHours, "closed")){
+						workingHoursMap.put("sunday", dayHours);
+						break;
+					}
+					String[] hours = dayHours.split("-");
+					if(hours != null && hours.length >0){
+						Map<String, String> sunday = new HashMap<String, String>();
+						sunday.put("open", hours[0]);
+						sunday.put("close", hours[1]);
+						workingHoursMap.put("sunday", sunday);
+					}
+				}
+			}
+		}
+		businessVO.setWorkingHours(workingHoursMap);
+	}
+	
+	
+	private void populateFacilities(Business business, BusinessVO businessVO){
+		Map<String, Boolean> facilitiesMap = null;
+		if(StringUtils.isNotBlank(business.getFacility())){
+			facilitiesMap = new HashMap<String, Boolean>();
+			//"takeaway,mealCoupon,hooka,juiceCenter,creditcardAccepted,indoorSeating" 
+			String facitiliesStr = business.getFacility();
+			String[] arr = facitiliesStr.split(",");
+			for(String facility: arr){
+				facilitiesMap.put(facility, Boolean.TRUE);
+			}
+		
+		}
+		businessVO.setFacilities(facilitiesMap);
+	}
+
+	public KeywordSearchVO searchKeyword(String city, String keywordInitials) {
+		List<RestaurantInfo> responseList = restaurantDao.findCuisineKeywords(keywordInitials);
+		KeywordSearchVO keywordSearchVO = new KeywordSearchVO();
+		keywordSearchVO.setCity(city);
+		List<Map<String, String>> keywordList = new ArrayList<Map<String, String>>();
+		Map<String, String> keywordMap = Collections.emptyMap(); 
+		int sortIndex = 0;
+		for(RestaurantInfo info: responseList){
+			String keyword = info.getName();
+			keywordMap = new HashMap<String, String>();
+			keywordMap.put("keyword", keyword);
+			keywordMap.put("type", info.getType());
+			//this logic is to sort list by keywordinitail passed
+			if(StringUtils.lowerCase(keyword).startsWith(keywordInitials)){
+				keywordList.add(sortIndex, keywordMap);
+				sortIndex++;
+			}else{
+				keywordList.add(keywordMap);
+			}
+		}
+		keywordSearchVO.setKeywords(keywordList);
+		return keywordSearchVO;
 	}
 }

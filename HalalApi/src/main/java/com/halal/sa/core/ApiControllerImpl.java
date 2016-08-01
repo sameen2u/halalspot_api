@@ -3,16 +3,13 @@ package com.halal.sa.core;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Component;
 
-import com.halal.sa.common.delete.ApiLoggingConstants;
 import com.halal.sa.controller.ApiController;
 import com.halal.sa.core.exception.ApiException;
 import com.halal.sa.core.exception.BadRequestException;
 import com.halal.sa.core.exception.ErrorConstants;
-import com.halal.sa.core.exception.ErrorResponse;
 
 @Component
 public class ApiControllerImpl implements ApiController {
@@ -36,7 +33,7 @@ public class ApiControllerImpl implements ApiController {
 					|| apiWorkflow.getApiProcessor() == null
 					|| apiWorkflow.getApiPostprocessor() == null) {
 
-				LOGGER.error(ApiLoggingConstants.API_INVALID_ARGUMENTS
+				LOGGER.error("Invalid Argument"
 						, "Expected input parameters are null");
 				throw new ApiException(ErrorConstants.ERR_ENCOUNTERED_DURING_PROCESSING.toString());
 			} else {

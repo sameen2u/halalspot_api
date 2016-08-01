@@ -24,7 +24,7 @@ import org.springframework.web.client.RestTemplate;
 import com.halal.sa.common.ApplicationConstant;
 import com.halal.sa.common.CommonUtil;
 import com.halal.sa.core.exception.ApiException;
-import com.halal.sa.core.exception.DomainErrorConstants;
+import com.halal.sa.core.exception.ErrorConstants;
 import com.halal.sa.data.dao.impl.MyAccountDaoImpl;
 
 @Component
@@ -115,10 +115,10 @@ public class ThirdPartyService {
 			return response;
 		} catch (RestClientException e) {
 			LOGGER.error("RestClientException - ", e);
-			throw new ApiException(DomainErrorConstants.ERR_GOOGLE_API_HTTP_HOST_CONNECT, e);
+			throw new ApiException(ErrorConstants.ERR_GOOGLE_API_HTTP_HOST_CONNECT, e);
 		} catch (Exception e) {
 			LOGGER.error("Exception in callHttpGetMethod() for Google API call - ", e);
-			throw new ApiException(DomainErrorConstants.ERR_GOOGLE_API_HTTP_EXCEPTION, e);
+			throw new ApiException(ErrorConstants.ERR_GOOGLE_API_HTTP_EXCEPTION, e);
 		}
 		
 	}

@@ -23,7 +23,7 @@ import org.springframework.stereotype.Repository;
 
 import com.halal.sa.common.ApplicationConstant;
 import com.halal.sa.core.exception.ApiException;
-import com.halal.sa.core.exception.DomainErrorConstants;
+import com.halal.sa.core.exception.ErrorConstants;
 import com.halal.sa.data.dao.BusinessDao;
 import com.halal.sa.data.entities.Business;
 import com.halal.sa.service.ThirdPartyService;
@@ -69,7 +69,7 @@ public class BusinessDaoImpl implements BusinessDao{
 	public List searchBusinessByKeyword(String keyword, List ids) throws ApiException {
 		if(ids == null){
 			LOGGER.error("No ids found in search by Lat Lng");
-			throw new ApiException(DomainErrorConstants.ERR_SEARCH_RECORD_NOT_FOUND, "No ids found in search by Lat Lng");
+			throw new ApiException(ErrorConstants.ERRCODE_RECORD_NOT_FOUND, "No ids found in search by Lat Lng");
 		}
 		LOGGER.info("Searching the business with keyword - "+keyword+", in ids count -"+ids.size());
 		int skip = 0;
