@@ -11,5 +11,6 @@ public class ApiConstant {
 	
 	public static final String API_TOKEN_TYPE_SESSION = "session";
 	public static final String API_TOKEN_TYPE_ACTIVITY = "activity";
-
+	
+	public static final int SEARCH_KEYWORD_AUTO_POPULATE_LIMIT = 5;
 }

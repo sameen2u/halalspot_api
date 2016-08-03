@@ -4,16 +4,19 @@ import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
 import org.apache.commons.beanutils.BeanUtils;
+import org.apache.commons.collections.map.LinkedMap;
 import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import com.halal.sa.common.ApiConstant;
 import com.halal.sa.common.ApplicationConstant;
 import com.halal.sa.common.CommonUtil;
 import com.halal.sa.controller.vo.BusinessVO;
@@ -163,7 +166,7 @@ public class SearchBusinessProcessor extends AbstractProcessor{
 				if(dbObject.get("profile_id") != null){
 					searchBusiness.setProfile_id((int)dbObject.get("profile_id"));
 				}
-				String profileUri = constructProfileUrl(dbObject, address);
+				String profileUri = constructProfileUrl(dbObject.get("name"), dbObject.get("profile_id"), address);
 				if(profileUri !=null){
 					searchBusiness.setProfileUri(profileUri);
 				}
@@ -288,14 +291,15 @@ public class SearchBusinessProcessor extends AbstractProcessor{
 		return populateBusinessVO(business);		
 	}
 	
-	public String constructProfileUrl(DBObject dbObject, Address address){
-		String name = (String) dbObject.get("name").toString().replace(" ", "-");
+	public String constructProfileUrl(Object bizName, Object profile_id, Address address){
+		//bizName and profile id are mandatory in DB so no null check for them
+		String name = (String) bizName.toString().replace(" ", "-");
 		String city = address.getCity();
 		String locality = "";
 		if(!StringUtils.isBlank(address.getLocality())){
 			locality = "-"+address.getLocality().toLowerCase().replace(" ", "-");
 		}
-		String profileId = dbObject.get("profile_id").toString();
+		String profileId = profile_id.toString();
 		
 		String profileUri = "/"+city.toLowerCase()+"/"+name.toLowerCase()+locality+"/"+profileId;
 		return profileUri;
@@ -491,27 +495,54 @@ public class SearchBusinessProcessor extends AbstractProcessor{
 		}
 		businessVO.setFacilities(facilitiesMap);
 	}
-
+	
+	/*
+	 * This method gets list of keywords from restaurant names and cuisines.
+	 */
 	public KeywordSearchVO searchKeyword(String city, String keywordInitials) {
-		List<RestaurantInfo> responseList = restaurantDao.findCuisineKeywords(keywordInitials);
+		List<Business> businessList = searchBusinessDao.searchKeywordRestaurantName(city, keywordInitials);
 		KeywordSearchVO keywordSearchVO = new KeywordSearchVO();
 		keywordSearchVO.setCity(city);
 		List<Map<String, String>> keywordList = new ArrayList<Map<String, String>>();
 		Map<String, String> keywordMap = Collections.emptyMap(); 
 		int sortIndex = 0;
-		for(RestaurantInfo info: responseList){
-			String keyword = info.getName();
-			keywordMap = new HashMap<String, String>();
+		//this is the count of the keywords starts with keywordInitials of the auto populate 
+		int matchedKeywordCount = 0;
+		for(Business business: businessList){
+			String profileUri = constructProfileUrl(business.getName(), business.getProfile_id(), business.getAddress());
+			String keyword = business.getName();
+			keywordMap = new LinkedHashMap<String, String>();
 			keywordMap.put("keyword", keyword);
-			keywordMap.put("type", info.getType());
+			keywordMap.put("type", "outlet");
+			keywordMap.put("profileUri", profileUri);
 			//this logic is to sort list by keywordinitail passed
 			if(StringUtils.lowerCase(keyword).startsWith(keywordInitials)){
 				keywordList.add(sortIndex, keywordMap);
 				sortIndex++;
+				matchedKeywordCount++;
 			}else{
 				keywordList.add(keywordMap);
 			}
 		}
+		
+		//if auto populate dropdown doesnt have matched keywords count = 5 then get other keywords than business name
+		if(matchedKeywordCount < ApiConstant.SEARCH_KEYWORD_AUTO_POPULATE_LIMIT){
+			List<RestaurantInfo> responseList = restaurantDao.findCuisineKeywords(keywordInitials);
+			sortIndex = matchedKeywordCount;
+			for(RestaurantInfo info: responseList){	
+				String keyword = info.getName();
+				keywordMap = new HashMap<String, String>();
+				keywordMap.put("keyword", keyword);
+				keywordMap.put("type", info.getType());
+				//this logic is to sort list by keywordinitail passed
+				if(StringUtils.lowerCase(keyword).startsWith(keywordInitials)){
+					keywordList.add(sortIndex, keywordMap);
+					sortIndex++;
+				}else{
+					keywordList.add(keywordMap);
+				}
+			}
+		}		
 		keywordSearchVO.setKeywords(keywordList);
 		return keywordSearchVO;
 	}

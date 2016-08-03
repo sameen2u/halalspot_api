@@ -113,29 +113,19 @@ public class BusinessDaoImpl implements BusinessDao{
 		
 	}
 	
-	@Query(value = "{'name': {$regex : '^?0$', $options: 'i'}}")
-	public Business searchBusinessProfile(String name, String locality, String city){
-		if(name.contains("-")){
-			name = name.replace("-", " ");
-		}
-		String localityQuery="";
-		if(!StringUtils.isBlank(locality)){
-			localityQuery = ", locality:'"+locality+"'";
-		}
-		int subscriptionID;
-
-		String fieldValue;
-		
-//		Query query1 = Query.query(Criteria.where("fieldName").regex(name, "i"));
-		
-		BasicQuery query = new BasicQuery("{name : {$regex : '^?0$', $"+name+": 'i'}"+localityQuery+", address.city :'"+city+"' }");//{ name : "+name+localityQuery+", address.city :"+city+" }
-		Business business = mongoTemplate.findOne(query, Business.class);
-		return business;
-	}
-	
-	@Query(value = "{'name': {$regex : '^?0$', $options: 'i'}}")
-    public void findItemsByNameRegexExactMatch(String name){
-		
-	}
+//	@Query(value = "{'name': {$regex : '^?0$', $options: 'i'}}")
+//	public Business searchBusinessProfile(String name, String locality, String city){
+//		if(name.contains("-")){
+//			name = name.replace("-", " ");
+//		}
+//		String localityQuery="";
+//		if(!StringUtils.isBlank(locality)){
+//			localityQuery = ", locality:'"+locality+"'";
+//		}
+//		
+//		BasicQuery query = new BasicQuery("{name : {$regex : '?0', $"+name+": 'i'}"+localityQuery+", address.city :'"+city+"' }");
+//		Business business = mongoTemplate.findOne(query, Business.class);
+//		return business;
+//	}
 	
 }

@@ -85,4 +85,13 @@ public class BusinessDaoImplTest {
 		Business business = searchBusinessDao.findByBusinessCodeAndProfileId("pune", 5);
 		System.out.println(business.getEmail());
 	}
+	
+	/*
+	 * testing searchKeywordRestaurantName with valid values in parameters
+	 */
+	@Test
+	public void searchKeywordRestaurantName_with_valid_data(){
+		List<Business> businessList = searchBusinessDao.searchKeywordRestaurantName("pune", "ma");
+		System.out.println(businessList.size());
+	}
 }
