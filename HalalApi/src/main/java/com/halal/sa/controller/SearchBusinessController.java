@@ -3,6 +3,7 @@ package com.halal.sa.controller;
 import java.util.List;
 
 import javax.annotation.Resource;
+import javax.servlet.http.HttpServletRequest;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
@@ -14,6 +15,7 @@ import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.halal.sa.controller.vo.BusinessVO;
@@ -53,10 +55,11 @@ public class SearchBusinessController {
 //		return apiController.execute(null, searchBusinessApiWorkflow);
 	}
 	
-	@RequestMapping(value="/search/{city}/key/{keywordInitials}", method=RequestMethod.GET)
-	public ResponseEntity<Object> searchRestaurantKeyword(@PathVariable("city") String city,
-						@PathVariable("keywordInitials") String keywordInitials) throws ApiException{
-		KeywordSearchVO keywordSearchVo = searchBusinessProcessor.searchKeyword(city, keywordInitials);
-		return new ResponseEntity<Object>(keywordSearchVo, HttpStatus.OK);
+	@RequestMapping(value="/search/{city}", method=RequestMethod.GET)
+	public @ResponseBody KeywordSearchVO searchRestaurantKeyword(@PathVariable("city") String city,
+								@RequestParam String term) throws ApiException{
+//		String keywordTerm = term;
+		KeywordSearchVO keywordSearchVo = searchBusinessProcessor.searchKeyword(city, term);
+		return keywordSearchVo;
 	}
 }
