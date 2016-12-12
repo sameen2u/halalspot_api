@@ -19,6 +19,7 @@ import org.springframework.stereotype.Component;
 import com.halal.sa.common.ApiConstant;
 import com.halal.sa.common.ApplicationConstant;
 import com.halal.sa.common.CommonUtil;
+import com.halal.sa.controller.vo.BizCategoryVO;
 import com.halal.sa.controller.vo.BusinessVO;
 import com.halal.sa.controller.vo.KeywordSearchVO;
 import com.halal.sa.controller.vo.response.SearchBusiness;
@@ -90,7 +91,7 @@ public class SearchBusinessProcessor extends AbstractProcessor{
 		if(CommonUtil.convertStringToInt(searchRequestParameters.getPage()) >1){
 			pageParam = CommonUtil.convertStringToInt(searchRequestParameters.getPage());
 		}
-		if(StringUtils.isNotBlank(address) || StringUtils.isNotBlank(lat) && StringUtils.isNotBlank(lng)){
+		if(StringUtils.isNotBlank(address) || (StringUtils.isNotBlank(lat) && StringUtils.isNotBlank(lng))){
 			LOGGER.info("searchProcessor method searching for address - "+address+", distance - "+distance+", keyword - "+keyword);
 			List businesses = this.searchBusinessService(keyword, address, Double.parseDouble(distance), lat, lng);
 			SearchBusinessAggregateData searchBusinessAggregateData = parseIntoJavaBean(businesses, pageParam);
@@ -545,5 +546,62 @@ public class SearchBusinessProcessor extends AbstractProcessor{
 		}		
 		keywordSearchVO.setKeywords(keywordList);
 		return keywordSearchVO;
+	}
+
+	public List<BizCategoryVO> searchBizCategories(String lat, String lng) {
+		Map map1 = new HashMap<String, String>();
+		Map map2 = new HashMap<String, String>();
+		map2.put("id", "restaurant");
+		map2.put("name", "Restaurants");
+		map2.put("count", "17");
+		map2.put("radius", "5");
+		map2.put("radiusUnit", "Mi");
+		map2.put("imageUrl", "testUrl.com");
+		map1.put("bizCat", map2);
+		
+		map2.put("id", "school");
+		map2.put("name", "Islamic Schools");
+		map2.put("count", "6");
+		map2.put("radius", "5");
+		map2.put("radiusUnit", "Mi");
+		map2.put("imageUrl", "testUrl.com");
+		map1.put("bizCat", map2);
+		List list = new ArrayList<BizCategoryVO>();
+		BizCategoryVO bizCategoryVO = new BizCategoryVO();
+		bizCategoryVO.setId("restaurant");
+		bizCategoryVO.setName("Restaurants");
+		bizCategoryVO.setCount(17);
+		bizCategoryVO.setRadius(5);
+		bizCategoryVO.setRadiusUnit("Mi");
+		bizCategoryVO.setImageUrl("testUrl.com");
+		list.add(bizCategoryVO);
+		
+		bizCategoryVO = new BizCategoryVO();
+		bizCategoryVO.setId("masjid");
+		bizCategoryVO.setName("Masjids");
+		bizCategoryVO.setCount(9);
+		bizCategoryVO.setRadius(5);
+		bizCategoryVO.setRadiusUnit("Mi");
+		bizCategoryVO.setImageUrl("testUrl.com");
+		list.add(bizCategoryVO);
+		
+		bizCategoryVO = new BizCategoryVO();
+		bizCategoryVO.setId("school");
+		bizCategoryVO.setName("Islamic Schools");
+		bizCategoryVO.setCount(11);
+		bizCategoryVO.setRadius(5);
+		bizCategoryVO.setRadiusUnit("Mi");
+		bizCategoryVO.setImageUrl("testUrl.com");
+		list.add(bizCategoryVO);
+		
+		bizCategoryVO = new BizCategoryVO();
+		bizCategoryVO.setId("store");
+		bizCategoryVO.setName("Islamic Book Store");
+		bizCategoryVO.setCount(3);
+		bizCategoryVO.setRadius(5);
+		bizCategoryVO.setRadiusUnit("Mi");
+		bizCategoryVO.setImageUrl("testUrl.com");
+		list.add(bizCategoryVO);
+		return list;
 	}
 }

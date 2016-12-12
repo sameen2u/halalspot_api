@@ -22,17 +22,21 @@ public class SearchBusinessPreProcessor extends AbstractPreProcessor{
 	@Override
 	public RequestParameters validate(ApiRequest apiRequest)
 			throws ApiException {
-		if(apiRequest.getRequestParameters().getFirst("address") == null){
+		SearchRequestParameters searchRequestParameters = null;
+		if(apiRequest.getRequestParameters().getFirst("address") != null || (apiRequest.getRequestParameters().getFirst("lat") != null && apiRequest.getRequestParameters().getFirst("lng") != null)){
+			searchRequestParameters = new SearchRequestParameters();
+			searchRequestParameters.setAddress(apiRequest.getRequestParameters().getFirst("address"));
+			searchRequestParameters.setKeyword(apiRequest.getRequestParameters().getFirst("keyword"));
+			searchRequestParameters.setRadius(apiRequest.getRequestParameters().getFirst("distance"));
+			searchRequestParameters.setPage(apiRequest.getRequestParameters().getFirst("page"));
+			searchRequestParameters.setLattitude(apiRequest.getRequestParameters().getFirst("lat"));
+			searchRequestParameters.setLongitude(apiRequest.getRequestParameters().getFirst("lng"));
+			LOGGER.info("Request Parameter for searching the business - "+searchRequestParameters.toString());
+		}
+		
+		else{
 			throw new ApiException("ERROR_BAD_REQUEST","Mandatory parameter \"address\" is missing in the request");
 		}
-		SearchRequestParameters searchRequestParameters = new SearchRequestParameters();
-		searchRequestParameters.setAddress(apiRequest.getRequestParameters().getFirst("address"));
-		searchRequestParameters.setKeyword(apiRequest.getRequestParameters().getFirst("keyword"));
-		searchRequestParameters.setRadius(apiRequest.getRequestParameters().getFirst("distance"));
-		searchRequestParameters.setPage(apiRequest.getRequestParameters().getFirst("page"));
-		searchRequestParameters.setLattitude(apiRequest.getRequestParameters().getFirst("lattitude"));
-		searchRequestParameters.setLongitude(apiRequest.getRequestParameters().getFirst("longitude"));
-		LOGGER.info("Request Parameter for searching the business - "+searchRequestParameters.toString());
 		return searchRequestParameters;
 	}
 

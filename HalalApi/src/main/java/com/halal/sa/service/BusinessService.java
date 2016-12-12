@@ -90,6 +90,9 @@ public class BusinessService extends BaseService{
 		return processResponseEntity(errorMap, HttpStatus.BAD_REQUEST);
 	}
 
+	/*
+	 * This process response for adding the business
+	 */
 	@Override
 	protected Object processResponse(Object model, HttpServletRequest request) {
 		Business business = (Business) model;
