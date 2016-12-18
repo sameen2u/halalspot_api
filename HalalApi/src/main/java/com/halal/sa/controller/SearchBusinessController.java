@@ -43,6 +43,7 @@ public class SearchBusinessController {
 	/*
 	 * endpoint - HalalApi/v1/business/search?address=camp,pune,india&keyword=chinese
 	 * endpoint - HalalApi/v1/business/search?lat=18.345&lng=-80.3242&keyword=chinese
+	 * endpoint search term autopopulate - HalalApi/v1/business/search/pune?term=ch
 	 */
 	@RequestMapping(value="/search", method=RequestMethod.GET)
 	public ResponseEntity<Object> searchBusinessExecute(@RequestParam MultiValueMap<String, String> requestParameters,
@@ -74,7 +75,8 @@ public class SearchBusinessController {
 	}
 	
 	/*
-	 * 
+	 * homepage business category listing endpoint for mobile apps
+	 * /HalalApi/v1/business/search/cat?lat=12&lng=23
 	 */
 	@RequestMapping(value="/search/cat", method=RequestMethod.GET)
 	public ResponseEntity<Object> searchBusinessCategories(@RequestParam(name="lat", required=true) String lat, 
