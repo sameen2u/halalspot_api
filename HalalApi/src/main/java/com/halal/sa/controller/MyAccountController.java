@@ -58,7 +58,7 @@ public class MyAccountController{
 	 * @throws NoSuchAlgorithmException
 	 * @throws ApiException
 	 */
-	@RequestMapping(value="/login", method=RequestMethod.POST, headers = "content-type=application/x-www-form-urlencoded")
+	@RequestMapping(value="/login", method=RequestMethod.POST, consumes = {"application/json"})
 	public <T> ResponseEntity<T> loginAuthentication(@RequestBody LogonVO logonVO,  HttpServletRequest request) throws NoSuchAlgorithmException, ApiException{
 		
 		ResponseEntity<T> response = null;
