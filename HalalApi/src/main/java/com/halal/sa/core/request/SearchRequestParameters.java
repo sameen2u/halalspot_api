@@ -10,7 +10,14 @@ public class SearchRequestParameters implements RequestParameters{
 	private String page;
 	private String lattitude;
 	private String longitude;
+	private String category;
 	
+	public String getCategory() {
+		return category;
+	}
+	public void setCategory(String category) {
+		this.category = category;
+	}
 	public String getLattitude() {
 		return lattitude;
 	}

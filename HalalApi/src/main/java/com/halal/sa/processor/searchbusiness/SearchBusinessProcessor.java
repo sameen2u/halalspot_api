@@ -70,7 +70,7 @@ public class SearchBusinessProcessor extends AbstractProcessor{
 	}
 	
 	/**
-	 * This the main Search method returning the response based on Api request input
+	 * This the main Search method returning the Aggregate data based on Api request input
 	 * @param apiRequest
 	 * @return
 	 * @throws ApiException
@@ -83,7 +83,8 @@ public class SearchBusinessProcessor extends AbstractProcessor{
 		String distance = searchRequestParameters.getRadius();
 		String lat = searchRequestParameters.getLattitude();
 		String lng = searchRequestParameters.getLongitude();
-		
+		String category = searchRequestParameters.getCategory();
+		//is distance not passed, it will be defailted to 5
 		if( distance == null || Integer.parseInt(distance) < Integer.parseInt(ApplicationConstant.BUSINESS_DEFAULT__DISTANCE_RADIUS)){
 			distance = ApplicationConstant.BUSINESS_DEFAULT__DISTANCE_RADIUS;
 		}
@@ -91,9 +92,10 @@ public class SearchBusinessProcessor extends AbstractProcessor{
 		if(CommonUtil.convertStringToInt(searchRequestParameters.getPage()) >1){
 			pageParam = CommonUtil.convertStringToInt(searchRequestParameters.getPage());
 		}
+		
 		if(StringUtils.isNotBlank(address) || (StringUtils.isNotBlank(lat) && StringUtils.isNotBlank(lng))){
 			LOGGER.info("searchProcessor method searching for address - "+address+", distance - "+distance+", keyword - "+keyword);
-			List businesses = this.searchBusinessService(keyword, address, Double.parseDouble(distance), lat, lng);
+			List businesses = this.searchBusinessService(keyword, address, Double.parseDouble(distance), lat, lng, category);
 			SearchBusinessAggregateData searchBusinessAggregateData = parseIntoJavaBean(businesses, pageParam);
 			if(searchBusinessAggregateData.getSearchReport() !=null && keyword !=null){
 				searchBusinessAggregateData.getSearchReport().setKeyword(keyword);
@@ -218,7 +220,7 @@ public class SearchBusinessProcessor extends AbstractProcessor{
 	 * @throws ApiException 
 	 */
 	@SuppressWarnings({ "rawtypes", "unchecked" })
-	public List searchBusinessService(String keyword, String address, double distance, String lat, String lng) throws ApiException {
+	public List searchBusinessService(String keyword, String address, double distance, String lat, String lng, String category) throws ApiException {
 		List businessIds = null;
 		List<DBObject> businessByDistance = null;
 		List<DBObject> businessByKeyword = null;
@@ -242,7 +244,7 @@ public class SearchBusinessProcessor extends AbstractProcessor{
 			LOGGER.error("Google Api not returned the coordinates");
 		}
 		
-		businessByDistance= businessDaoImpl.searchBusinessByLocation(longitude, latitude, distance);
+		businessByDistance= businessDaoImpl.searchBusinessByLocation(longitude, latitude, distance, category);
 		
 		if(businessByDistance !=null && businessByDistance.size()>0 && StringUtils.isNotEmpty(keyword)){
 			businessIds = new ArrayList<>();
@@ -549,23 +551,16 @@ public class SearchBusinessProcessor extends AbstractProcessor{
 	}
 
 	public List<BizCategoryVO> searchBizCategories(String lat, String lng) {
-		Map map1 = new HashMap<String, String>();
-		Map map2 = new HashMap<String, String>();
-		map2.put("id", "restaurant");
-		map2.put("name", "Restaurants");
-		map2.put("count", "17");
-		map2.put("radius", "5");
-		map2.put("radiusUnit", "Mi");
-		map2.put("imageUrl", "testUrl.com");
-		map1.put("bizCat", map2);
-		
-		map2.put("id", "school");
-		map2.put("name", "Islamic Schools");
-		map2.put("count", "6");
-		map2.put("radius", "5");
-		map2.put("radiusUnit", "Mi");
-		map2.put("imageUrl", "testUrl.com");
-		map1.put("bizCat", map2);
+		SearchRequestParameters searchRequestParameters = new SearchRequestParameters();
+		SearchBusinessAggregateData searchBusinessAggregateData;
+		searchRequestParameters.setLattitude(lat);
+		searchRequestParameters.setLongitude(lng);
+		try {
+			searchBusinessAggregateData = searchProcessor(searchRequestParameters);
+		} catch (BadRequestException | ApiException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 		List list = new ArrayList<BizCategoryVO>();
 		BizCategoryVO bizCategoryVO = new BizCategoryVO();
 		bizCategoryVO.setId("restaurant");
@@ -573,7 +568,7 @@ public class SearchBusinessProcessor extends AbstractProcessor{
 		bizCategoryVO.setCount(17);
 		bizCategoryVO.setRadius(5);
 		bizCategoryVO.setRadiusUnit("Mi");
-		bizCategoryVO.setImageUrl("testUrl.com");
+		bizCategoryVO.setImageUrl("http://res.cloudinary.com/sameen2u/image/upload/v1484140454/halalapp/restaurant.jpg");
 		list.add(bizCategoryVO);
 		
 		bizCategoryVO = new BizCategoryVO();
@@ -582,7 +577,7 @@ public class SearchBusinessProcessor extends AbstractProcessor{
 		bizCategoryVO.setCount(9);
 		bizCategoryVO.setRadius(5);
 		bizCategoryVO.setRadiusUnit("Mi");
-		bizCategoryVO.setImageUrl("testUrl.com");
+		bizCategoryVO.setImageUrl("http://res.cloudinary.com/sameen2u/image/upload/v1484140874/halalapp/mosque_pic.jpg");
 		list.add(bizCategoryVO);
 		
 		bizCategoryVO = new BizCategoryVO();
@@ -591,7 +586,7 @@ public class SearchBusinessProcessor extends AbstractProcessor{
 		bizCategoryVO.setCount(11);
 		bizCategoryVO.setRadius(5);
 		bizCategoryVO.setRadiusUnit("Mi");
-		bizCategoryVO.setImageUrl("testUrl.com");
+		bizCategoryVO.setImageUrl("http://res.cloudinary.com/sameen2u/image/upload/v1484140454/halalapp/school.jpg");
 		list.add(bizCategoryVO);
 		
 		bizCategoryVO = new BizCategoryVO();
@@ -600,7 +595,7 @@ public class SearchBusinessProcessor extends AbstractProcessor{
 		bizCategoryVO.setCount(3);
 		bizCategoryVO.setRadius(5);
 		bizCategoryVO.setRadiusUnit("Mi");
-		bizCategoryVO.setImageUrl("testUrl.com");
+		bizCategoryVO.setImageUrl("http://res.cloudinary.com/sameen2u/image/upload/v1484140454/halalapp/book_store.jpg");
 		list.add(bizCategoryVO);
 		return list;
 	}

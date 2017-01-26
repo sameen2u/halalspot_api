@@ -16,6 +16,7 @@ import org.springframework.util.MultiValueMap;
 
 import com.halal.sa.core.apiprocessor.ApiPreProcessor;
 import com.halal.sa.core.exception.ApiException;
+import com.halal.sa.core.exception.BadRequestException;
 import com.halal.sa.core.exception.ErrorConstants;
 
 /**
@@ -30,13 +31,13 @@ public abstract class AbstractPreProcessor implements ApiPreProcessor {
 
 	@Override
 	public RequestParameters preProcess(ApiRequest apiRequest)
-			throws ApiException {
+			throws ApiException, BadRequestException {
 		RequestParameters requestParameters = validate(apiRequest);
 		if(requestParameters == null) {
 //			LOGGER.error(ApiLoggingConstants.API_INVALID_ARGUMENTS , "requestParameters object is null");
 			throw new ApiException(ErrorConstants.ERR_ENCOUNTERED_DURING_PROCESSING.toString());
 		}
-		setDefaultValues(requestParameters);
+//		setDefaultValues(requestParameters);
 
 		return requestParameters;
 	}

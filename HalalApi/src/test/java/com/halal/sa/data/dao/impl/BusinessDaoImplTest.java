@@ -60,7 +60,7 @@ public class BusinessDaoImplTest {
 	 */
 	@Test
 	public void searchBusinessByLocation_with_valid_data() throws ApiException {
-		assertNotNull(businessDaoImpl.searchBusinessByLocation(73.886010, 18.512231, 5));
+		assertNotNull(businessDaoImpl.searchBusinessByLocation(73.886010, 18.512231, 5,""));
 		
 	}
 	
@@ -71,7 +71,7 @@ public class BusinessDaoImplTest {
 	public void searchBusinessByLocation_with_null_data() throws ApiException {
 		double longitude = 0;
 		double latitude = 0;
-		assertNotNull(businessDaoImpl.searchBusinessByLocation(longitude, latitude, 5));
+		assertNotNull(businessDaoImpl.searchBusinessByLocation(longitude, latitude, 5,""));
 		assertTrue(true);
 		
 	}

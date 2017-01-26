@@ -12,6 +12,7 @@ import org.springframework.util.MultiValueMap;
 
 import com.halal.sa.core.ApiRequest;
 import com.halal.sa.core.exception.ApiException;
+import com.halal.sa.core.exception.BadRequestException;
 import com.halal.sa.core.request.SearchRequestParameters;
 
 @RunWith(SpringJUnit4ClassRunner.class)
@@ -25,7 +26,7 @@ public class SearchBusinessPreProcessorTest {
 	 * test validate method 
 	 */
 	@Test
-	public void validate__with_valid_data() throws ApiException {
+	public void validate__with_valid_data() throws ApiException, BadRequestException {
 		ApiRequest request = new ApiRequest();
 		MultiValueMap<String, String> requestParameters = new LinkedMultiValueMap<String, String>();
 		requestParameters.add("address", "camp pune india");
@@ -42,7 +43,7 @@ public class SearchBusinessPreProcessorTest {
 	 * test validate method 
 	 */
 	@Test(expected=ApiException.class)
-	public void validate__with_no_address() throws ApiException {
+	public void validate__with_no_address() throws ApiException, BadRequestException {
 		ApiRequest request = new ApiRequest();
 		MultiValueMap<String, String> requestParameters = new LinkedMultiValueMap<String, String>();
 		requestParameters.add("keyword", "chinese");

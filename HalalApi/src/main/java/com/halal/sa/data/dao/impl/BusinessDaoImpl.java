@@ -98,7 +98,7 @@ public class BusinessDaoImpl implements BusinessDao{
 		}
 	}
 	
-	public List searchBusinessByLocation(double longitude, double latitude, double distance) {
+	public List searchBusinessByLocation(double longitude, double latitude, double distance, String categoty) {
 		LOGGER.info("Searching the business by longitude :"+longitude+", and Latitude :"+latitude);
 		Aggregation  aggregation;
 		NearQuery geoNear = NearQuery.near(longitude,latitude, Metrics.KILOMETERS).maxDistance(distance);
