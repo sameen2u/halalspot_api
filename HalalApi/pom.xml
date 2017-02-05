@@ -41,7 +41,7 @@
 		<dependency>
 	        <groupId>org.springframework.data</groupId>
 	        <artifactId>spring-data-mongodb</artifactId>
-	        <version>1.7.2.RELEASE</version>
+	        <version>1.9.5.RELEASE</version>
 	    </dependency>
 		<!-- when needed then only we will enable the spring security in future -->
 <!--         <dependency>

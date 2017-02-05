@@ -98,10 +98,23 @@ public class BusinessDaoImpl implements BusinessDao{
 		}
 	}
 	
-	public List searchBusinessByLocation(double longitude, double latitude, double distance, String categoty) {
+	/**
+	 * This method gets the business list near the passed lat, lng, distance
+	 * @param longitude
+	 * @param latitude
+	 * @param distance
+	 * @param distanceUnit
+	 * @param categoty
+	 * @return
+	 */
+	public List<DBObject> searchBusinessByLocation(double longitude, double latitude, double distance, String distanceUnit, String categoty) {
 		LOGGER.info("Searching the business by longitude :"+longitude+", and Latitude :"+latitude);
+		Metrics metrics = Metrics.MILES;
+		if(null != distanceUnit && distanceUnit.equalsIgnoreCase("km")){
+			metrics = Metrics.KILOMETERS;
+		}
 		Aggregation  aggregation;
-		NearQuery geoNear = NearQuery.near(longitude,latitude, Metrics.KILOMETERS).maxDistance(distance);
+		NearQuery geoNear = NearQuery.near(longitude,latitude, metrics).maxDistance(distance);
 		
 		//limit and skip are used for pagination logic
 		aggregation = newAggregation(Aggregation.geoNear(geoNear, "distance")); // This might required to limit the records - ,	
@@ -110,7 +123,35 @@ public class BusinessDaoImpl implements BusinessDao{
 		List<DBObject> result = groupResults.getMappedResults();
 		LOGGER.info("Returning the ids searched by Longitude :"+longitude+", and Latitude :"+latitude+", result count - "+result.size());
 		return result;
+	}
+	
+	/**
+	 * This method gets the business count for each category near passed lat, lng, distance
+	 * @param longitude
+	 * @param latitude
+	 * @param distance
+	 * @param distanceUnit
+	 * @param categoty
+	 * @return
+	 */
+	public List searchBusinessCategories(double longitude, double latitude, double distance, String distanceUnit, String categoty) {
+		LOGGER.info("Searching the business by longitude :"+longitude+", and Latitude :"+latitude);
+		Metrics metrics = Metrics.MILES;
+		if(null != distanceUnit && distanceUnit.equalsIgnoreCase("km")){
+			metrics = Metrics.KILOMETERS;
+		}
+		Aggregation  aggregation;
+		NearQuery geoNear = NearQuery.near(longitude,latitude, metrics).maxDistance(distance);
 		
+		
+		
+		//lookup in business_info to get the imageUrl of all cat, here _id is category collumn of group by result which is maped to name column of business_info doc
+		aggregation = newAggregation(Aggregation.geoNear(geoNear, "distance"), Aggregation.group("category").count().as("count"), Aggregation.lookup("business_info", "_id", "name", "data")); // This might required to limit the records - ,	
+		AggregationResults<DBObject> groupResults = mongoTemplate.aggregate(aggregation, Business.class, DBObject.class);
+		
+		List<DBObject> result = groupResults.getMappedResults();
+		LOGGER.info("Returning the ids searched by Longitude :"+longitude+", and Latitude :"+latitude+", result count - "+result.size());
+		return result;
 	}
 	
 //	@Query(value = "{'name': {$regex : '^?0$', $options: 'i'}}")

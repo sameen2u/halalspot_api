@@ -69,8 +69,15 @@ public class ThirdPartyService {
 				if(result.containsKey("geometry")){
 					Map geometry= (Map) result.get("geometry");
 					location.put("coordinates", geometry.get("location"));
-					break;
 				}
+				if(result.containsKey("formatted_address")){
+					String formattedAddr = (String) result.get("formatted_address");
+					//this logic removes the last string from the address i.e country
+					formattedAddr = formattedAddr.substring(0, formattedAddr.lastIndexOf(',')).trim();
+					location.put("formattedAddress", formattedAddr);
+				}
+				break;
+				
 			}
 		}
 		return location;
@@ -90,9 +97,18 @@ public class ThirdPartyService {
 			}
 			if(types.contains("sublocality_level_1")){
 				locality = (String) locationMap.get("long_name");
-				location.put("locality", locality);
+			}else if(types.contains("locality")){
+				locality = (String) locationMap.get("long_name");
 			}
+			if(types.contains("administrative_area_level_1")){
+				String state = (String) locationMap.get("long_name");
+				//this is to append locality e.g Marietta, GA
+				locality = locality+", "+(String) locationMap.get("short_name");
+				location.put("state", state);
+			}
+			
 		}
+		location.put("locality", locality);
 		return location;
 	}
 

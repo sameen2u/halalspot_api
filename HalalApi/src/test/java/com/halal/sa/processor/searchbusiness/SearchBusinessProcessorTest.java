@@ -69,7 +69,7 @@ public class SearchBusinessProcessorTest {
 	 */
 	@Test
 	public void searchBusiness_with_valid_data() throws ApiException {
-		List list = searchBusinessProcessor.searchBusinessService("chinese", "camp pune india", 5,null, null,"");
+		List list = searchBusinessProcessor.searchBusinessService("chinese", "camp pune india", 5.0, "mi",null, null,"");
 		assertTrue(list.size() > 0);
 	}
 	
@@ -78,7 +78,7 @@ public class SearchBusinessProcessorTest {
 	 */
 	@Test
 	public void searchBusiness_with_invalid_data() throws ApiException {
-		List list = searchBusinessProcessor.searchBusinessService("xxx", "aaa", 5, null, null,"");
+		List list = searchBusinessProcessor.searchBusinessService("xxx", "aaa", 5.0, "mi", null, null,"");
 		assertTrue(true);
 	}
 
@@ -103,5 +103,19 @@ public class SearchBusinessProcessorTest {
 		searchBusinessProcessor.populateWorkingHours(business, businessVO);
 		
 		assertNotNull(businessVO.getWorkingHours());
+	}
+	
+	
+	/*
+	 * test searchBusiness method with invalid keyword
+	 */
+	@Test
+	public void searchBizCategories_with_valid_data() {
+//		Business business = new Business();
+//		BusinessVO businessVO = new BusinessVO();
+//		business.setWorkingHours("mon=07:00-21:00,tue=07:00-21:00,wed=07:00-21:00,thur=07:00-21:00,fri=07:00-21:00,sat=10:00-17:00,sun=closed");
+		searchBusinessProcessor.searchBizCategories(33.952602, -84.549933 , 10.0, "India");
+		
+//		assertNotNull(businessVO.getWorkingHours());
 	}
 }

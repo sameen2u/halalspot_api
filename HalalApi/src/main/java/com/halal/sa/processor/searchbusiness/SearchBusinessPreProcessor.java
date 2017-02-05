@@ -35,11 +35,16 @@ public class SearchBusinessPreProcessor extends AbstractPreProcessor{
 			searchRequestParameters.setRadius(apiRequest.getRequestParameters().getFirst("distance"));
 			
 			searchRequestParameters.setPage(apiRequest.getRequestParameters().getFirst("page"));
-			searchRequestParameters.setLattitude(apiRequest.getRequestParameters().getFirst("lat"));
-			searchRequestParameters.setLongitude(apiRequest.getRequestParameters().getFirst("lng"));
+			if(apiRequest.getRequestParameters().getFirst("lat")!=null && apiRequest.getRequestParameters().getFirst("lng")!=null){
+				searchRequestParameters.setLattitude(Double.parseDouble(apiRequest.getRequestParameters().getFirst("lat")));
+				searchRequestParameters.setLongitude(Double.parseDouble(apiRequest.getRequestParameters().getFirst("lng")));
+			}
+			
 			
 			validateCategory(apiRequest.getRequestParameters().getFirst("cat"));
 			searchRequestParameters.setCategory(apiRequest.getRequestParameters().getFirst("cat"));
+			
+			searchRequestParameters.setCountry(apiRequest.getRequestParameters().getFirst("country"));
 			LOGGER.info("Request Parameter for searching the business - "+searchRequestParameters.toString());
 		}
 		

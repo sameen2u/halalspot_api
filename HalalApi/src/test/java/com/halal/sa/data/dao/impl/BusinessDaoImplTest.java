@@ -5,6 +5,7 @@ import static org.junit.Assert.*;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.bson.types.ObjectId;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -15,9 +16,10 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import com.halal.sa.core.exception.ApiException;
 import com.halal.sa.data.dao.SearchBusinessDao;
 import com.halal.sa.data.entities.Business;
+import com.mongodb.DBObject;
 
 @RunWith(SpringJUnit4ClassRunner.class)
-@ContextConfiguration("/WEB-INF/dispatcher-servlet.xml")
+@ContextConfiguration(locations = "classpath:dispatcher-servlet.xml")
 public class BusinessDaoImplTest {
 	
 	@Autowired
@@ -31,9 +33,9 @@ public class BusinessDaoImplTest {
 	@Before
 	public void setUp(){
 		idList = new ArrayList<>();
-		idList.add("5772ce806d855e56c89e67d1");
-		idList.add("5772ceaf6d855e56c89e67d2");
-		idList.add("5772d0236d85f38f51902c82");
+		idList.add(new ObjectId("589726dc431f588008e1f6de"));
+//		idList.add("5772ceaf6d855e56c89e67d2");
+//		idList.add("5772d0236d85f38f51902c82");
 		
 	}
 	
@@ -42,7 +44,7 @@ public class BusinessDaoImplTest {
 	 */
 	@Test
 	public void searchBusinessByKeyword_with_valid_data() throws ApiException {
-		assertNotNull(businessDaoImpl.searchBusinessByKeyword("chaat", idList));
+		assertEquals(1, businessDaoImpl.searchBusinessByKeyword("Api", idList).size());
 		
 	}
 	
@@ -60,8 +62,9 @@ public class BusinessDaoImplTest {
 	 */
 	@Test
 	public void searchBusinessByLocation_with_valid_data() throws ApiException {
-		assertNotNull(businessDaoImpl.searchBusinessByLocation(73.886010, 18.512231, 5,""));
-		
+		List<DBObject> dbObjectList = businessDaoImpl.searchBusinessByLocation(00.0, 90.0, 5, "mi","");
+		DBObject dbObject = dbObjectList.get(0);
+		assertEquals("Do Not Delete", dbObject.get("name"));		
 	}
 	
 	/*
@@ -71,7 +74,7 @@ public class BusinessDaoImplTest {
 	public void searchBusinessByLocation_with_null_data() throws ApiException {
 		double longitude = 0;
 		double latitude = 0;
-		assertNotNull(businessDaoImpl.searchBusinessByLocation(longitude, latitude, 5,""));
+		assertNotNull(businessDaoImpl.searchBusinessByLocation(longitude, latitude, 5,"mi",""));
 		assertTrue(true);
 		
 	}
@@ -82,8 +85,8 @@ public class BusinessDaoImplTest {
 	 */
 	@Test
 	public void searchBusinessProfile_with_valid_data(){
-		Business business = searchBusinessDao.findByBusinessCodeAndProfileId("pune", 5);
-		System.out.println(business.getEmail());
+		Business business = searchBusinessDao.findByBusinessCodeAndProfileId("North Pole", 53);
+		assertEquals("Do Not Delete", business.getName());
 	}
 	
 	/*
@@ -91,7 +94,18 @@ public class BusinessDaoImplTest {
 	 */
 	@Test
 	public void searchKeywordRestaurantName_with_valid_data(){
-		List<Business> businessList = searchBusinessDao.searchKeywordRestaurantName("pune", "ma");
+		List<Business> businessList = searchBusinessDao.searchKeywordBusinessName("North Pole", "do");
+		Business business = businessList.get(0);
+		assertEquals("Do Not Delete", business.getName());
+	}
+	
+	/*
+	 * testing searchKeywordRestaurantName with valid values in parameters
+	 */
+	@Test
+	public void test_searchBusinessCategories_with_valid_data(){
+		List<Business> businessList = businessDaoImpl.searchBusinessCategories( 00.0, 90.0, 5, "mi","");
 		System.out.println(businessList.size());
+		
 	}
 }

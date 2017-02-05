@@ -79,9 +79,11 @@ public class SearchBusinessController {
 	 * /HalalApi/v1/business/search/cat?lat=12&lng=23
 	 */
 	@RequestMapping(value="/search/cat", method=RequestMethod.GET)
-	public ResponseEntity<Object> searchBusinessCategories(@RequestParam(name="lat", required=true) String lat, 
-			@RequestParam(name="lng", required=true) String lng) throws ApiException, BadRequestException{
-		List catList = searchBusinessProcessor.searchBizCategories(lat, lng);
+	public ResponseEntity<Object> searchBusinessCategories(@RequestParam(name="lat", required=true) double lat, 
+			@RequestParam(name="lng", required=true) double lng,
+			@RequestParam(name="distance", required=false) double distance,
+			@RequestParam(name="country", required=true) String country) throws ApiException, BadRequestException{
+		List catList = searchBusinessProcessor.searchBizCategories(lat, lng, distance, country);
 		return new ResponseEntity<Object>(catList, HttpStatus.OK);
 	}
 	

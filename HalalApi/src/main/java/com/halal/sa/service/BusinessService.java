@@ -61,21 +61,32 @@ public class BusinessService extends BaseService{
 			Map locationMap = thirdPartyService.getLongiLatitude(BizAddress);
 			String locality=null;
 			Map coordinateMap = Collections.emptyMap();
+			Address address = business.getAddress();
 			double[] coordinates = null;
 			if(locationMap!=null){
 				locality = (String) locationMap.get("locality");
 				coordinateMap = (Map) locationMap.get("coordinates");
+				if(locationMap.get("state") !=null){
+					address.setState(locationMap.get("state").toString());
+				}
+				if(locationMap.get("country") !=null){
+					address.setCountry(locationMap.get("country").toString());
+				}
+				if(locationMap.get("formattedAddress") !=null){
+					address.setFomattedAddress((String)locationMap.get("formattedAddress"));
+				}
 			}
 			
 			if(coordinateMap!=null){
 				coordinates = new double[]{(double) coordinateMap.get("lng"),(double) coordinateMap.get("lat")};
 			}
-			Address address = business.getAddress();
+			
 			Location location = new Location();
 			location.setType("Point");
 			location.setCoordinates(coordinates);
 			address.setLocality(locality);
 			address.setLocation(location);
+			
 			business.setCreatedDate(new Date());
 			business.setCreatedBy(business.getUserEmail());
 			
@@ -145,8 +156,8 @@ public class BusinessService extends BaseService{
 		if(StringUtils.isNotBlank(business.getAddress().getCity())){
 			address = address+" "+business.getAddress().getCity();
 		}
-		if(business.getAddress().getPincode() >=100000 && business.getAddress().getPincode() <= 999999){
-			address = address+" "+Integer.toString(business.getAddress().getPincode());
+		if(business.getAddress().getZipcode() >=100000 && business.getAddress().getZipcode() <= 999999){
+			address = address+" "+Integer.toString(business.getAddress().getZipcode());
 		}
 		return address = address.replaceAll(" ", "+");
 	}

@@ -5,18 +5,18 @@ package com.halal.sa.controller.vo;
  */
 public class BizCategoryVO {
 	
-	private String id;
+	private String category;
 	private String name;
 	private int count;
-	private int radius;
-	private String radiusUnit;
+	private int distance;
+	private String distanceUnit;
 	private String imageUrl;
 	
-	public String getId() {
-		return id;
+	public String getCategory() {
+		return category;
 	}
-	public void setId(String id) {
-		this.id = id;
+	public void setCategory(String category) {
+		this.category = category;
 	}
 	public String getName() {
 		return name;
@@ -30,17 +30,17 @@ public class BizCategoryVO {
 	public void setCount(int count) {
 		this.count = count;
 	}
-	public int getRadius() {
-		return radius;
+	public int getDistance() {
+		return distance;
 	}
-	public void setRadius(int radius) {
-		this.radius = radius;
+	public void setDistance(int distance) {
+		this.distance = distance;
 	}
-	public String getRadiusUnit() {
-		return radiusUnit;
+	public String getDistanceUnit() {
+		return distanceUnit;
 	}
-	public void setRadiusUnit(String radiusUnit) {
-		this.radiusUnit = radiusUnit;
+	public void setDistanceUnit(String distanceUnit) {
+		this.distanceUnit = distanceUnit;
 	}
 	public String getImageUrl() {
 		return imageUrl;

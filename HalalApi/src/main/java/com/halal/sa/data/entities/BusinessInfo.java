@@ -2,12 +2,14 @@ package com.halal.sa.data.entities;
 
 import org.springframework.data.mongodb.core.mapping.Document;
 
-@Document(collection="restaurant_info")
-public class RestaurantInfo {
+@Document(collection="business_info")
+public class BusinessInfo {
 	
 	private String id;
 	private String name;
 	private String type;
+	private String category;
+	private String imageUrl;
 	public String getId() {
 		return id;
 	}

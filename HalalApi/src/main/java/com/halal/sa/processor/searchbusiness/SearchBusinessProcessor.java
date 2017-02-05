@@ -37,7 +37,7 @@ import com.halal.sa.data.dao.SearchBusinessDao;
 import com.halal.sa.data.dao.impl.BusinessDaoImpl;
 import com.halal.sa.data.entities.Address;
 import com.halal.sa.data.entities.Business;
-import com.halal.sa.data.entities.RestaurantInfo;
+import com.halal.sa.data.entities.BusinessInfo;
 import com.halal.sa.service.ThirdPartyService;
 import com.mongodb.DBObject;
 
@@ -81,9 +81,14 @@ public class SearchBusinessProcessor extends AbstractProcessor{
 		String keyword = searchRequestParameters.getKeyword();
 		String address = searchRequestParameters.getAddress();
 		String distance = searchRequestParameters.getRadius();
-		String lat = searchRequestParameters.getLattitude();
-		String lng = searchRequestParameters.getLongitude();
+		Double lat = searchRequestParameters.getLattitude();
+		Double lng = searchRequestParameters.getLongitude();
 		String category = searchRequestParameters.getCategory();
+		String country = searchRequestParameters.getCountry();
+		String distanceUnit = ApplicationConstant.distanceUnitMap.get(country);
+		if(country != null){
+			
+		}
 		//is distance not passed, it will be defailted to 5
 		if( distance == null || Integer.parseInt(distance) < Integer.parseInt(ApplicationConstant.BUSINESS_DEFAULT__DISTANCE_RADIUS)){
 			distance = ApplicationConstant.BUSINESS_DEFAULT__DISTANCE_RADIUS;
@@ -93,10 +98,10 @@ public class SearchBusinessProcessor extends AbstractProcessor{
 			pageParam = CommonUtil.convertStringToInt(searchRequestParameters.getPage());
 		}
 		
-		if(StringUtils.isNotBlank(address) || (StringUtils.isNotBlank(lat) && StringUtils.isNotBlank(lng))){
+		if(StringUtils.isNotBlank(address) || lat!=null && lng !=null){
 			LOGGER.info("searchProcessor method searching for address - "+address+", distance - "+distance+", keyword - "+keyword);
-			List businesses = this.searchBusinessService(keyword, address, Double.parseDouble(distance), lat, lng, category);
-			SearchBusinessAggregateData searchBusinessAggregateData = parseIntoJavaBean(businesses, pageParam);
+			List businesses = this.searchBusinessService(keyword, address, Double.parseDouble(distance),distanceUnit ,lat, lng, category);
+			SearchBusinessAggregateData searchBusinessAggregateData = parseSearchDatatoJavaBean(businesses, pageParam, distanceUnit);
 			if(searchBusinessAggregateData.getSearchReport() !=null && keyword !=null){
 				searchBusinessAggregateData.getSearchReport().setKeyword(keyword);
 			}
@@ -118,7 +123,7 @@ public class SearchBusinessProcessor extends AbstractProcessor{
 	 * @return
 	 * @throws ApiException
 	 */
-	public SearchBusinessAggregateData parseIntoJavaBean(List modelObject, int pageParam) throws ApiException{
+	public SearchBusinessAggregateData parseSearchDatatoJavaBean(List modelObject, int pageParam, String distanceUnit) throws ApiException{
 		
 		List<DBObject> dbObjectList = (List<DBObject>) modelObject;
 		SearchBusinessAggregateData searchBusinessAggregateData = null;
@@ -150,8 +155,14 @@ public class SearchBusinessProcessor extends AbstractProcessor{
 					if(resultAddress.get("city") != null){
 						address.setCity((String)resultAddress.get("city"));
 					}
-					if(resultAddress.get("pincode") != null){
-						address.setPincode((int) resultAddress.get("pincode"));
+					if(resultAddress.get("zipcode") != null){
+						address.setZipcode((int) resultAddress.get("zipcode"));
+					}
+					if(resultAddress.get("state") != null){
+						address.setState((String) resultAddress.get("state"));
+					}
+					if(resultAddress.get("country") != null){
+						address.setCountry((String) resultAddress.get("country"));
 					}
 					if(resultAddress.get("landmark") != null){
 						address.setLandmark((String)resultAddress.get("landmark"));
@@ -159,12 +170,20 @@ public class SearchBusinessProcessor extends AbstractProcessor{
 					if(resultAddress.get("locality") != null){
 						address.setLocality((String)resultAddress.get("locality"));
 					}
+					if(resultAddress.get("fomattedAddress") != null){
+						address.setFomattedAddress((String) resultAddress.get("fomattedAddress"));
+					}
 					
 					searchBusiness.setAddress(address);
 				}
-				
 				if(dbObject.get("name") != null){
 					searchBusiness.setName((String)dbObject.get("name"));
+				}
+				if(dbObject.get("imageIconUrl") != null){
+					searchBusiness.setImageIconUrl((String)dbObject.get("imageIconUrl"));
+				}
+				if(dbObject.get("category") != null){
+					searchBusiness.setCategory((String)dbObject.get("category"));
 				}
 				if(dbObject.get("profile_id") != null){
 					searchBusiness.setProfile_id((int)dbObject.get("profile_id"));
@@ -173,17 +192,26 @@ public class SearchBusinessProcessor extends AbstractProcessor{
 				if(profileUri !=null){
 					searchBusiness.setProfileUri(profileUri);
 				}
+				if(dbObject.get("serviceType") != null){
+					searchBusiness.setServiceType((String)dbObject.get("serviceType"));
+			    }
+				if(dbObject.get("avgRating") != null){
+					searchBusiness.setAvgRating((Double)dbObject.get("avgRating"));
+			    }
+				if(dbObject.get("totalReviewCount") != null){
+					searchBusiness.setTotalReviewCount((Integer)dbObject.get("totalReviewCount"));
+			    }
 				if(dbObject.get("phone") != null){
-					searchBusiness.setPhone((int)dbObject.get("phone"));
-				}
-				if(dbObject.get("cuisine") != null){
-					searchBusiness.setCuisine((List)dbObject.get("cuisine"));
+					searchBusiness.setPhone((String)dbObject.get("phone"));
 				}
 				if(dbObject.get("authenticity") != null){
 					searchBusiness.setAuthenticity((String)dbObject.get("authenticity"));
 				}
 				if(dbObject.get("status") != null){
 					searchBusiness.setStatus((String)dbObject.get("status"));
+				}
+				if(dbObject.get("cateringServed") != null){
+					searchBusiness.setCateringServed((Boolean)dbObject.get("cateringServed"));
 				}
 				double distance = (double) dbObject.get("distance");
 				
@@ -192,6 +220,7 @@ public class SearchBusinessProcessor extends AbstractProcessor{
 					distance= Math.round(distance * 100.0) / 100.0;
 					searchBusiness.setDistance(Double.toString(distance));
 				}
+				searchBusiness.setDistanceUnit(distanceUnit);
 	//			searchBusiness.setCuisine(dbObject.get("features").toString());
 	//			searchBusiness.setWorkingHours(dbObject.get("working hours").toString());
 				searchBusinesses.add(searchBusiness);
@@ -220,31 +249,32 @@ public class SearchBusinessProcessor extends AbstractProcessor{
 	 * @throws ApiException 
 	 */
 	@SuppressWarnings({ "rawtypes", "unchecked" })
-	public List searchBusinessService(String keyword, String address, double distance, String lat, String lng, String category) throws ApiException {
+	public List searchBusinessService(String keyword, String address, double distance, String distanceUnit, Double lat, Double lng, String category) throws ApiException {
 		List businessIds = null;
 		List<DBObject> businessByDistance = null;
 		List<DBObject> businessByKeyword = null;
 		List<DBObject> resultBusiness= Collections.emptyList();
 		double longitude = 0;
 		double latitude = 0;
-		if(StringUtils.isNotBlank(lat) && StringUtils.isNotBlank(lng)){
-			latitude = Double.parseDouble(lat);
-			longitude = Double.parseDouble(lng);
+		if(lat !=null && lng !=null){
+			latitude = lat;
+			longitude = lng;
 		}
 		else{
 			Map<String,Object> map = thirdPartyService.getLongiLatitude(address);
 			if(map !=null && map.size() >0){
-				if(!StringUtils.equals((String) map.get("country"), "India")){
+				/*if(!StringUtils.equals((String) map.get("country"), "India")){
 					return resultBusiness;
-				}
+				}*/
 				Map coordinate = (Map)map.get("coordinates");
 				longitude = (double) coordinate.get("lng");
 				latitude = (double) coordinate.get("lat");
 			}
-			LOGGER.error("Google Api not returned the coordinates");
+			else
+				LOGGER.error("Google Api not returned the coordinates");
 		}
 		
-		businessByDistance= businessDaoImpl.searchBusinessByLocation(longitude, latitude, distance, category);
+		businessByDistance= businessDaoImpl.searchBusinessByLocation(longitude, latitude, distance, distanceUnit, category);
 		
 		if(businessByDistance !=null && businessByDistance.size()>0 && StringUtils.isNotEmpty(keyword)){
 			businessIds = new ArrayList<>();
@@ -297,14 +327,19 @@ public class SearchBusinessProcessor extends AbstractProcessor{
 	public String constructProfileUrl(Object bizName, Object profile_id, Address address){
 		//bizName and profile id are mandatory in DB so no null check for them
 		String name = (String) bizName.toString().replace(" ", "-");
-		String city = address.getCity();
-		String locality = "";
-		if(!StringUtils.isBlank(address.getLocality())){
-			locality = "-"+address.getLocality().toLowerCase().replace(" ", "-");
-		}
-		String profileId = profile_id.toString();
+		String city = null;
+		String profileUri = null;
+		if(StringUtils.isNotBlank(address.getCity())){
+			city = address.getCity();	
 		
-		String profileUri = "/"+city.toLowerCase()+"/"+name.toLowerCase()+locality+"/"+profileId;
+			/*String locality = "";
+			if(StringUtils.isNotBlank(address.getLocality())){
+				locality = "-"+address.getLocality().toLowerCase().replace(" ", "-");
+			}*/
+			String profileId = profile_id.toString();
+			
+			profileUri = "/"+city.toLowerCase()+"/"+profileId;
+		}
 		return profileUri;
 	}
 	
@@ -319,14 +354,11 @@ public class SearchBusinessProcessor extends AbstractProcessor{
 		if(business.getAddress() != null){
 			businessVO.setAddress(business.getAddress());
 		}
-		if(business.getPhone() > 0){
+/*		if(business.getPhone() > 0){
 			businessVO.setPhone(business.getPhone());
-		}
+		}*/
 		if(StringUtils.isNotBlank(business.getEmail())){
 			businessVO.setEmail(business.getEmail());
-		}
-		if(StringUtils.isNotBlank(business.getOwnerEmail())){
-			businessVO.setOwnerEmail(business.getOwnerEmail());
 		}
 		if(StringUtils.isNotBlank(business.getStatus())){
 			businessVO.setStatus(business.getStatus());
@@ -337,9 +369,9 @@ public class SearchBusinessProcessor extends AbstractProcessor{
 		if(StringUtils.isNotBlank(business.getStatus())){
 			businessVO.setStatus(business.getStatus());
 		}
-		if(business.getCuisine() != null){
-			businessVO.setCuisine(business.getCuisine());
-		}
+//		if(business.getCuisine() != null){
+//			businessVO.setCuisine(business.getCuisine());
+//		}
 		if(StringUtils.isNotBlank(business.getFacebookPage())){
 			businessVO.setFacebookPage(business.getFacebookPage());
 		}
@@ -350,10 +382,6 @@ public class SearchBusinessProcessor extends AbstractProcessor{
 		if(StringUtils.isNotBlank(business.getOtherInfo())){
 			businessVO.setOtherInfo(business.getOtherInfo());
 		}
-		if(business.getLastUpdated() != null){
-			businessVO.setLastUpdated(business.getLastUpdated());
-		}
-		
 		this.populateWorkingHours(business, businessVO);
 		this.populateFacilities(business, businessVO);
 		
@@ -503,7 +531,7 @@ public class SearchBusinessProcessor extends AbstractProcessor{
 	 * This method gets list of keywords from restaurant names and cuisines.
 	 */
 	public KeywordSearchVO searchKeyword(String city, String keywordInitials) {
-		List<Business> businessList = searchBusinessDao.searchKeywordRestaurantName(city, keywordInitials);
+		List<Business> businessList = searchBusinessDao.searchKeywordBusinessName(city, keywordInitials);
 		KeywordSearchVO keywordSearchVO = new KeywordSearchVO();
 		keywordSearchVO.setCity(city);
 		List<Map<String, String>> keywordList = new ArrayList<Map<String, String>>();
@@ -530,9 +558,9 @@ public class SearchBusinessProcessor extends AbstractProcessor{
 		
 		//if auto populate dropdown doesnt have matched keywords count = 5 then get other keywords than business name
 		if(matchedKeywordCount < ApiConstant.SEARCH_KEYWORD_AUTO_POPULATE_LIMIT){
-			List<RestaurantInfo> responseList = restaurantDao.findCuisineKeywords(keywordInitials);
+			List<BusinessInfo> responseList = restaurantDao.findCuisineKeywords(keywordInitials);
 			sortIndex = matchedKeywordCount;
-			for(RestaurantInfo info: responseList){	
+			for(BusinessInfo info: responseList){	
 				String keyword = info.getName();
 				keywordMap = new HashMap<String, String>();
 				keywordMap.put("keyword", keyword);
@@ -550,53 +578,35 @@ public class SearchBusinessProcessor extends AbstractProcessor{
 		return keywordSearchVO;
 	}
 
-	public List<BizCategoryVO> searchBizCategories(String lat, String lng) {
-		SearchRequestParameters searchRequestParameters = new SearchRequestParameters();
-		SearchBusinessAggregateData searchBusinessAggregateData;
-		searchRequestParameters.setLattitude(lat);
-		searchRequestParameters.setLongitude(lng);
-		try {
-			searchBusinessAggregateData = searchProcessor(searchRequestParameters);
-		} catch (BadRequestException | ApiException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+	public List<BizCategoryVO> searchBizCategories(double lat, double lng, double distance, String country) {
+		
+		String distanceUnit = ApplicationConstant.distanceUnitMap.get(country.toLowerCase());
+		//pass no category last param, as we need this count for all cat
+		List<DBObject> businessByDistance = businessDaoImpl.searchBusinessCategories(lng, lat, distance, distanceUnit, "");
+		
+		
+		List catList = new ArrayList<BizCategoryVO>();
+		BizCategoryVO bizCategoryVO;
+		for(DBObject dbObject: businessByDistance){
+			bizCategoryVO = new BizCategoryVO();
+			String category = (String) dbObject.get("_id");
+			if(category != null){
+				bizCategoryVO.setCategory(category);
+				bizCategoryVO.setName(ApplicationConstant.categoryNamesMap.get(category.toLowerCase()));
+				bizCategoryVO.setDistance((int) distance);
+				bizCategoryVO.setDistanceUnit(distanceUnit);
+				if(dbObject.get("count") != null){
+					bizCategoryVO.setCount((Integer)dbObject.get("count"));
+			    }
+				if(dbObject.get("data") != null){
+					List dataList = (List) dbObject.get("data");
+					Map dataMap = (Map) dataList.get(0);
+					String imageUrl = (String) dataMap.get("imageUrl");
+					bizCategoryVO.setImageUrl(imageUrl);
+				}
+		    }
+			catList.add(bizCategoryVO);
 		}
-		List list = new ArrayList<BizCategoryVO>();
-		BizCategoryVO bizCategoryVO = new BizCategoryVO();
-		bizCategoryVO.setId("restaurant");
-		bizCategoryVO.setName("Restaurants");
-		bizCategoryVO.setCount(17);
-		bizCategoryVO.setRadius(5);
-		bizCategoryVO.setRadiusUnit("Mi");
-		bizCategoryVO.setImageUrl("http://res.cloudinary.com/sameen2u/image/upload/v1484140454/halalapp/restaurant.jpg");
-		list.add(bizCategoryVO);
-		
-		bizCategoryVO = new BizCategoryVO();
-		bizCategoryVO.setId("masjid");
-		bizCategoryVO.setName("Masjids");
-		bizCategoryVO.setCount(9);
-		bizCategoryVO.setRadius(5);
-		bizCategoryVO.setRadiusUnit("Mi");
-		bizCategoryVO.setImageUrl("http://res.cloudinary.com/sameen2u/image/upload/v1484140874/halalapp/mosque_pic.jpg");
-		list.add(bizCategoryVO);
-		
-		bizCategoryVO = new BizCategoryVO();
-		bizCategoryVO.setId("school");
-		bizCategoryVO.setName("Islamic Schools");
-		bizCategoryVO.setCount(11);
-		bizCategoryVO.setRadius(5);
-		bizCategoryVO.setRadiusUnit("Mi");
-		bizCategoryVO.setImageUrl("http://res.cloudinary.com/sameen2u/image/upload/v1484140454/halalapp/school.jpg");
-		list.add(bizCategoryVO);
-		
-		bizCategoryVO = new BizCategoryVO();
-		bizCategoryVO.setId("store");
-		bizCategoryVO.setName("Islamic Book Store");
-		bizCategoryVO.setCount(3);
-		bizCategoryVO.setRadius(5);
-		bizCategoryVO.setRadiusUnit("Mi");
-		bizCategoryVO.setImageUrl("http://res.cloudinary.com/sameen2u/image/upload/v1484140454/halalapp/book_store.jpg");
-		list.add(bizCategoryVO);
-		return list;
+		return catList;
 	}
 }

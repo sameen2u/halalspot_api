@@ -16,7 +16,7 @@ public interface SearchBusinessDao extends Repository<Business, Serializable>{
 	  
 	  
 	  @Query(value = "{'address.city' :{ '$regex' : '?0', $options: 'i'}, 'name': { '$regex' : '?1', $options: 'i'}}")
-	  public List<Business> searchKeywordRestaurantName(String city, String keywordInitial);
+	  public List<Business> searchKeywordBusinessName(String city, String keywordInitial);
 	  
 }
 
