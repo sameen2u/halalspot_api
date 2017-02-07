@@ -90,8 +90,8 @@ public class SearchBusinessProcessor extends AbstractProcessor{
 			
 		}
 		//is distance not passed, it will be defailted to 5
-		if( radius == null || Integer.parseInt(radius) < Integer.parseInt(ApplicationConstant.BUSINESS_DEFAULT__DISTANCE_RADIUS)){
-			radius = ApplicationConstant.BUSINESS_DEFAULT__DISTANCE_RADIUS;
+		if( radius == null || Integer.parseInt(radius) < Integer.parseInt(ApplicationConstant.BUSINESS_DEFAULT_DISTANCE_RADIUS)){
+			radius = ApplicationConstant.BUSINESS_DEFAULT_DISTANCE_RADIUS;
 		}
 		if(null != country){
 			//if passed country is found in the map then assign  the unit accordingly otherws set the default unit to "mi"
@@ -583,15 +583,17 @@ public class SearchBusinessProcessor extends AbstractProcessor{
 		return keywordSearchVO;
 	}
 
-	public List<BizCategoryVO> searchBizCategories(double lat, double lng, double distance, String country) {
-		
+	public List<BizCategoryVO> searchBizCategories(double lat, double lng, String radius, String country) {
+		if( radius == null || Integer.parseInt(radius) < Integer.parseInt(ApplicationConstant.BUSINESS_DEFAULT_DISTANCE_RADIUS)){
+			radius = ApplicationConstant.BUSINESS_DEFAULT_DISTANCE_RADIUS;
+		}
 		String distanceUnit = ApplicationConstant.MILES;
 		if(null != country){
 			//if passed country is found in the map then assign  the unit accordingly otherws set the default unit to "mi"
 			distanceUnit = (distanceUnit = ApplicationConstant.DISTANCE_UNIT_MAP.get(country.toLowerCase())) !=null? distanceUnit : ApplicationConstant.MILES;
 		}
 		//pass no category last param, as we need this count for all cat
-		List<DBObject> businessByDistance = businessDaoImpl.searchBusinessCategories(lng, lat, distance, distanceUnit, "");
+		List<DBObject> businessByDistance = businessDaoImpl.searchBusinessCategories(lng, lat, Double.parseDouble(radius), distanceUnit, "");
 		
 		
 		List catList = new ArrayList<BizCategoryVO>();
@@ -602,7 +604,7 @@ public class SearchBusinessProcessor extends AbstractProcessor{
 			if(category != null){
 				bizCategoryVO.setCategory(category);
 				bizCategoryVO.setName(ApplicationConstant.CATEGORY_NAME_MAP.get(category.toLowerCase()));
-				bizCategoryVO.setDistance((int) distance);
+				bizCategoryVO.setDistance(Double.parseDouble(radius));
 				bizCategoryVO.setDistanceUnit(distanceUnit);
 				if(dbObject.get("count") != null){
 					bizCategoryVO.setCount((Integer)dbObject.get("count"));

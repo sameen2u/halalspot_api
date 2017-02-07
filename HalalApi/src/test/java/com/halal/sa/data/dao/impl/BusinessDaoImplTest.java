@@ -104,7 +104,7 @@ public class BusinessDaoImplTest {
 	 */
 	@Test
 	public void test_searchBusinessCategories_with_valid_data(){
-		List<Business> businessList = businessDaoImpl.searchBusinessCategories( 00.0, 90.0, 5, "mi","");
+		List<Business> businessList = businessDaoImpl.searchBusinessCategories( 00.0, 90.0, 5.0, "mi","");
 		System.out.println(businessList.size());
 		
 	}

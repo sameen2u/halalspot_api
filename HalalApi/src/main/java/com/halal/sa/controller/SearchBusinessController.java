@@ -81,9 +81,9 @@ public class SearchBusinessController {
 	@RequestMapping(value="/search/cat", method=RequestMethod.GET)
 	public ResponseEntity<Object> searchBusinessCategories(@RequestParam(name="lat", required=true) double lat, 
 			@RequestParam(name="lng", required=true) double lng,
-			@RequestParam(name="distance", required=false) double distance,
+			@RequestParam(name="radius", required=false) String radius,
 			@RequestParam(name="country", required=true) String country) throws ApiException, BadRequestException{
-		List catList = searchBusinessProcessor.searchBizCategories(lat, lng, distance, country);
+		List catList = searchBusinessProcessor.searchBizCategories(lat, lng, radius, country);
 		return new ResponseEntity<Object>(catList, HttpStatus.OK);
 	}
 	

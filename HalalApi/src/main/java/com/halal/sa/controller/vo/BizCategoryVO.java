@@ -8,7 +8,7 @@ public class BizCategoryVO {
 	private String category;
 	private String name;
 	private int count;
-	private int distance;
+	private double distance;
 	private String distanceUnit;
 	private String imageUrl;
 	
@@ -30,10 +30,10 @@ public class BizCategoryVO {
 	public void setCount(int count) {
 		this.count = count;
 	}
-	public int getDistance() {
+	public double getDistance() {
 		return distance;
 	}
-	public void setDistance(int distance) {
+	public void setDistance(double distance) {
 		this.distance = distance;
 	}
 	public String getDistanceUnit() {

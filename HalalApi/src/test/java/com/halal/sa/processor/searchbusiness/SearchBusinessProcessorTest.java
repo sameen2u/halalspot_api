@@ -114,7 +114,7 @@ public class SearchBusinessProcessorTest {
 //		Business business = new Business();
 //		BusinessVO businessVO = new BusinessVO();
 //		business.setWorkingHours("mon=07:00-21:00,tue=07:00-21:00,wed=07:00-21:00,thur=07:00-21:00,fri=07:00-21:00,sat=10:00-17:00,sun=closed");
-		searchBusinessProcessor.searchBizCategories(33.952602, -84.549933 , 10.0, "India");
+		searchBusinessProcessor.searchBizCategories(33.952602, -84.549933 , "10", "India");
 		
 //		assertNotNull(businessVO.getWorkingHours());
 	}

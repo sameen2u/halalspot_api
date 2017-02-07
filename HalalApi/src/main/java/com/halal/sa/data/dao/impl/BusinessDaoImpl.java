@@ -139,7 +139,7 @@ public class BusinessDaoImpl implements BusinessDao{
 	 * @param categoty
 	 * @return
 	 */
-	public List searchBusinessCategories(double longitude, double latitude, double distance, String distanceUnit, String categoty) {
+	public List searchBusinessCategories(double longitude, double latitude, Double distance, String distanceUnit, String categoty) {
 		LOGGER.info("Searching the business by longitude :"+longitude+", and Latitude :"+latitude);
 		Metrics metrics = Metrics.MILES;
 		if(null != distanceUnit && distanceUnit.equalsIgnoreCase("km")){
