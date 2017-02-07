@@ -23,14 +23,14 @@ public class ApplicationConstant {
 	public static final String CATEGORY_NAME_STORE = "Islamic Clothing/Book Stores";
 	
 
-	public static final Map<String, String> distanceUnitMap;
-	public static final Map<String, String> categoryNamesMap;
+	public static final Map<String, String> DISTANCE_UNIT_MAP;
+	public static final Map<String, String> CATEGORY_NAME_MAP;
 	
 	static{
 		Map map = new HashMap<String, String>();
 		map.put("united states", MILES);
 		map.put("india", KILOMETRES);
-		distanceUnitMap = Collections.unmodifiableMap(map);
+		DISTANCE_UNIT_MAP = Collections.unmodifiableMap(map);
 		
 		
 		Map map2 = new HashMap<String, String>();
@@ -38,7 +38,7 @@ public class ApplicationConstant {
 		map2.put("mosque", CATEGORY_NAME_MOSQUE);
 		map2.put("school", CATEGORY_NAME_SCHOOL);
 		map2.put("store", CATEGORY_NAME_STORE);
-		categoryNamesMap = Collections.unmodifiableMap(map2);
+		CATEGORY_NAME_MAP = Collections.unmodifiableMap(map2);
 	}
 
 

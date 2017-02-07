@@ -17,6 +17,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.geo.Metrics;
 import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.data.mongodb.core.query.BasicQuery;
+import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.data.mongodb.core.query.NearQuery;
 import org.springframework.data.mongodb.repository.Query;
 import org.springframework.stereotype.Repository;
@@ -102,22 +103,26 @@ public class BusinessDaoImpl implements BusinessDao{
 	 * This method gets the business list near the passed lat, lng, distance
 	 * @param longitude
 	 * @param latitude
-	 * @param distance
+	 * @param radius
 	 * @param distanceUnit
 	 * @param categoty
 	 * @return
 	 */
-	public List<DBObject> searchBusinessByLocation(double longitude, double latitude, double distance, String distanceUnit, String categoty) {
+	public List<DBObject> searchBusinessByLocation(double longitude, double latitude, double radius, String distanceUnit, String categoty) {
 		LOGGER.info("Searching the business by longitude :"+longitude+", and Latitude :"+latitude);
 		Metrics metrics = Metrics.MILES;
-		if(null != distanceUnit && distanceUnit.equalsIgnoreCase("km")){
+		if(null != distanceUnit && distanceUnit.equalsIgnoreCase(ApplicationConstant.KILOMETRES)){
 			metrics = Metrics.KILOMETERS;
 		}
 		Aggregation  aggregation;
-		NearQuery geoNear = NearQuery.near(longitude,latitude, metrics).maxDistance(distance);
+		NearQuery geoNear = NearQuery.near(longitude,latitude, metrics).maxDistance(radius);
 		
-		//limit and skip are used for pagination logic
-		aggregation = newAggregation(Aggregation.geoNear(geoNear, "distance")); // This might required to limit the records - ,	
+		if(categoty !=null){
+			aggregation = newAggregation(Aggregation.geoNear(geoNear, "distance"), Aggregation.match(Criteria.where("category").in(categoty)));
+		}else{
+			aggregation = newAggregation(Aggregation.geoNear(geoNear, "distance"));
+		}
+		
 		AggregationResults<DBObject> groupResults = mongoTemplate.aggregate(aggregation, Business.class, DBObject.class);
 		
 		List<DBObject> result = groupResults.getMappedResults();

@@ -12,14 +12,22 @@ public class SearchReport {
 	
 	private Integer currentPage;
 	
+	private Integer radius;
+	
 	private String keyword;
 	
 	private String sortBy;
 	
 	private String sortOrder;
 	
-	
-	
+	public Integer getRadius() {
+		return radius;
+	}
+
+	public void setRadius(Integer radius) {
+		this.radius = radius;
+	}
+
 	public Integer getTotalRecords() {
 		return totalRecords;
 	}

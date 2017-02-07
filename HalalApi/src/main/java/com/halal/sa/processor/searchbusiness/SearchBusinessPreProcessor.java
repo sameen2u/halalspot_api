@@ -31,8 +31,8 @@ public class SearchBusinessPreProcessor extends AbstractPreProcessor{
 			searchRequestParameters.setAddress(apiRequest.getRequestParameters().getFirst("address"));
 			searchRequestParameters.setKeyword(apiRequest.getRequestParameters().getFirst("keyword"));
 			
-			validateDistance(apiRequest.getRequestParameters().getFirst("distance"));
-			searchRequestParameters.setRadius(apiRequest.getRequestParameters().getFirst("distance"));
+			validateRadius(apiRequest.getRequestParameters().getFirst("radius"));
+			searchRequestParameters.setRadius(apiRequest.getRequestParameters().getFirst("radius"));
 			
 			searchRequestParameters.setPage(apiRequest.getRequestParameters().getFirst("page"));
 			if(apiRequest.getRequestParameters().getFirst("lat")!=null && apiRequest.getRequestParameters().getFirst("lng")!=null){
@@ -54,7 +54,7 @@ public class SearchBusinessPreProcessor extends AbstractPreProcessor{
 		return searchRequestParameters;
 	}
 	
-	private void validateDistance(String distance) throws BadRequestException{
+	private void validateRadius(String distance) throws BadRequestException{
 		if(StringUtils.isNotBlank(distance) && !StringUtils.isNumeric(distance)){
 			throw new BadRequestException("ERROR_BAD_REQUEST","distance param should be numeric");
 		}

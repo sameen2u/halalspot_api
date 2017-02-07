@@ -80,18 +80,22 @@ public class SearchBusinessProcessor extends AbstractProcessor{
 	public SearchBusinessAggregateData searchProcessor(SearchRequestParameters searchRequestParameters) throws BadRequestException, ApiException{
 		String keyword = searchRequestParameters.getKeyword();
 		String address = searchRequestParameters.getAddress();
-		String distance = searchRequestParameters.getRadius();
+		String radius = searchRequestParameters.getRadius();
 		Double lat = searchRequestParameters.getLattitude();
 		Double lng = searchRequestParameters.getLongitude();
 		String category = searchRequestParameters.getCategory();
 		String country = searchRequestParameters.getCountry();
-		String distanceUnit = ApplicationConstant.distanceUnitMap.get(country);
+		String distanceUnit = ApplicationConstant.MILES;
 		if(country != null){
 			
 		}
 		//is distance not passed, it will be defailted to 5
-		if( distance == null || Integer.parseInt(distance) < Integer.parseInt(ApplicationConstant.BUSINESS_DEFAULT__DISTANCE_RADIUS)){
-			distance = ApplicationConstant.BUSINESS_DEFAULT__DISTANCE_RADIUS;
+		if( radius == null || Integer.parseInt(radius) < Integer.parseInt(ApplicationConstant.BUSINESS_DEFAULT__DISTANCE_RADIUS)){
+			radius = ApplicationConstant.BUSINESS_DEFAULT__DISTANCE_RADIUS;
+		}
+		if(null != country){
+			//if passed country is found in the map then assign  the unit accordingly otherws set the default unit to "mi"
+			distanceUnit = (distanceUnit = ApplicationConstant.DISTANCE_UNIT_MAP.get(country.toLowerCase())) !=null? distanceUnit : ApplicationConstant.MILES;
 		}
 		int pageParam = 1;
 		if(CommonUtil.convertStringToInt(searchRequestParameters.getPage()) >1){
@@ -99,9 +103,9 @@ public class SearchBusinessProcessor extends AbstractProcessor{
 		}
 		
 		if(StringUtils.isNotBlank(address) || lat!=null && lng !=null){
-			LOGGER.info("searchProcessor method searching for address - "+address+", distance - "+distance+", keyword - "+keyword);
-			List businesses = this.searchBusinessService(keyword, address, Double.parseDouble(distance),distanceUnit ,lat, lng, category);
-			SearchBusinessAggregateData searchBusinessAggregateData = parseSearchDatatoJavaBean(businesses, pageParam, distanceUnit);
+			LOGGER.info("searchProcessor method searching for address - "+address+", distance - "+radius+", keyword - "+keyword);
+			List businesses = this.searchBusinessService(keyword, address, Double.parseDouble(radius),distanceUnit ,lat, lng, category);
+			SearchBusinessAggregateData searchBusinessAggregateData = parseSearchDatatoJavaBean(businesses, pageParam, distanceUnit, Integer.parseInt(radius));
 			if(searchBusinessAggregateData.getSearchReport() !=null && keyword !=null){
 				searchBusinessAggregateData.getSearchReport().setKeyword(keyword);
 			}
@@ -123,7 +127,7 @@ public class SearchBusinessProcessor extends AbstractProcessor{
 	 * @return
 	 * @throws ApiException
 	 */
-	public SearchBusinessAggregateData parseSearchDatatoJavaBean(List modelObject, int pageParam, String distanceUnit) throws ApiException{
+	public SearchBusinessAggregateData parseSearchDatatoJavaBean(List modelObject, int pageParam, String distanceUnit, Integer radius) throws ApiException{
 		
 		List<DBObject> dbObjectList = (List<DBObject>) modelObject;
 		SearchBusinessAggregateData searchBusinessAggregateData = null;
@@ -236,6 +240,7 @@ public class SearchBusinessProcessor extends AbstractProcessor{
 		//logic for pagination( if number of records > recordLimit means one more page can be retrieved and next page pagination should be shown on UI
 		searchReport.setRecordsPerPage(ApplicationConstant.BUSINESS_RECORDS_PER_PAGE);
 		searchReport.setTotalRecords(totalRecords);
+		searchReport.setRadius(radius);
 		searchBusinessAggregateData.setSearchReport(searchReport);
 		return searchBusinessAggregateData;
 	}
@@ -249,7 +254,7 @@ public class SearchBusinessProcessor extends AbstractProcessor{
 	 * @throws ApiException 
 	 */
 	@SuppressWarnings({ "rawtypes", "unchecked" })
-	public List searchBusinessService(String keyword, String address, double distance, String distanceUnit, Double lat, Double lng, String category) throws ApiException {
+	public List searchBusinessService(String keyword, String address, double radius, String distanceUnit, Double lat, Double lng, String category) throws ApiException {
 		List businessIds = null;
 		List<DBObject> businessByDistance = null;
 		List<DBObject> businessByKeyword = null;
@@ -274,7 +279,7 @@ public class SearchBusinessProcessor extends AbstractProcessor{
 				LOGGER.error("Google Api not returned the coordinates");
 		}
 		
-		businessByDistance= businessDaoImpl.searchBusinessByLocation(longitude, latitude, distance, distanceUnit, category);
+		businessByDistance= businessDaoImpl.searchBusinessByLocation(longitude, latitude, radius, distanceUnit, category);
 		
 		if(businessByDistance !=null && businessByDistance.size()>0 && StringUtils.isNotEmpty(keyword)){
 			businessIds = new ArrayList<>();
@@ -299,7 +304,7 @@ public class SearchBusinessProcessor extends AbstractProcessor{
 			}
 		}
 		
-		LOGGER.info("searchBusinessService method searching for address - "+address+", distance - "+distance+", keyword - "+keyword+", SearchResult count - "+resultBusiness.size());
+		LOGGER.info("searchBusinessService method searching for address - "+address+", distance - "+radius+", keyword - "+keyword+", SearchResult count - "+resultBusiness.size());
 		return resultBusiness;		
 	}
 	
@@ -580,7 +585,11 @@ public class SearchBusinessProcessor extends AbstractProcessor{
 
 	public List<BizCategoryVO> searchBizCategories(double lat, double lng, double distance, String country) {
 		
-		String distanceUnit = ApplicationConstant.distanceUnitMap.get(country.toLowerCase());
+		String distanceUnit = ApplicationConstant.MILES;
+		if(null != country){
+			//if passed country is found in the map then assign  the unit accordingly otherws set the default unit to "mi"
+			distanceUnit = (distanceUnit = ApplicationConstant.DISTANCE_UNIT_MAP.get(country.toLowerCase())) !=null? distanceUnit : ApplicationConstant.MILES;
+		}
 		//pass no category last param, as we need this count for all cat
 		List<DBObject> businessByDistance = businessDaoImpl.searchBusinessCategories(lng, lat, distance, distanceUnit, "");
 		
@@ -592,7 +601,7 @@ public class SearchBusinessProcessor extends AbstractProcessor{
 			String category = (String) dbObject.get("_id");
 			if(category != null){
 				bizCategoryVO.setCategory(category);
-				bizCategoryVO.setName(ApplicationConstant.categoryNamesMap.get(category.toLowerCase()));
+				bizCategoryVO.setName(ApplicationConstant.CATEGORY_NAME_MAP.get(category.toLowerCase()));
 				bizCategoryVO.setDistance((int) distance);
 				bizCategoryVO.setDistanceUnit(distanceUnit);
 				if(dbObject.get("count") != null){

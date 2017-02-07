@@ -23,7 +23,7 @@ public class MyAccountPreProcessor extends AbstractPreProcessor{
 		SearchRequestParameters searchRequestParameters = new SearchRequestParameters();
 		searchRequestParameters.setAddress(apiRequest.getRequestParameters().getFirst("address"));
 		searchRequestParameters.setKeyword(apiRequest.getRequestParameters().getFirst("keyword"));
-		searchRequestParameters.setRadius(apiRequest.getRequestParameters().getFirst("distance"));
+		searchRequestParameters.setRadius(apiRequest.getRequestParameters().getFirst("radius"));
 		searchRequestParameters.setPage(apiRequest.getRequestParameters().getFirst("page"));
 		return searchRequestParameters;
 	}
