@@ -164,12 +164,6 @@ public class Business implements Serializable{
 	public void setMenuUrls(String menuUrls) {
 		this.menuUrls = menuUrls;
 	}
-	public String getGooglePLaceId() {
-		return googlePlaceId;
-	}
-	public void setGooglePLaceId(String googlePLaceId) {
-		this.googlePlaceId = googlePLaceId;
-	}
 	public String getTopGoogleReviews() {
 		return topGoogleReviews;
 	}

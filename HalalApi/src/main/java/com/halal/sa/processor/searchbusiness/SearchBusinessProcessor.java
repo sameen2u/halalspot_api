@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
@@ -276,7 +277,7 @@ public class SearchBusinessProcessor extends AbstractProcessor{
 				latitude = (double) coordinate.get("lat");
 			}
 			else
-				LOGGER.error("Google Api not returned the coordinates");
+				LOGGER.error("Yelp Api not returned the coordinates");
 		}
 		
 		businessByDistance= businessDaoImpl.searchBusinessByLocation(longitude, latitude, radius, distanceUnit, category);
@@ -353,15 +354,33 @@ public class SearchBusinessProcessor extends AbstractProcessor{
 		if(StringUtils.isNotBlank(business.getId())){
 			businessVO.setId(business.getId());
 		}
+		if(business.getProfile_id() > 0){
+			businessVO.setProfile_id(business.getProfile_id());
+		}
 		if(StringUtils.isNotBlank(business.getName())){
 			businessVO.setName(business.getName());
+		}
+		if(StringUtils.isNotBlank(business.getCategory())){
+			businessVO.setCategory(business.getCategory());
+		}
+		if(StringUtils.isNotBlank(business.getServiceType())){
+			businessVO.setServiceType(business.getServiceType());
+		}
+		if(StringUtils.isNotBlank(business.getDescription())){
+			businessVO.setDescription(business.getDescription());
 		}
 		if(business.getAddress() != null){
 			businessVO.setAddress(business.getAddress());
 		}
-/*		if(business.getPhone() > 0){
+		if(StringUtils.isNotBlank(business.getHalalAuthenticity())){
+			businessVO.setHalalAuthenticity(business.getHalalAuthenticity());
+		}
+		if(business.getAlchoholServed()!=null){
+			businessVO.setAlchoholServed(business.getAlchoholServed());
+		}
+		if(StringUtils.isNotBlank(business.getPhone())){
 			businessVO.setPhone(business.getPhone());
-		}*/
+		}
 		if(StringUtils.isNotBlank(business.getEmail())){
 			businessVO.setEmail(business.getEmail());
 		}
@@ -374,9 +393,62 @@ public class SearchBusinessProcessor extends AbstractProcessor{
 		if(StringUtils.isNotBlank(business.getStatus())){
 			businessVO.setStatus(business.getStatus());
 		}
-//		if(business.getCuisine() != null){
-//			businessVO.setCuisine(business.getCuisine());
-//		}
+		if(StringUtils.isNotBlank(business.getMenuPresent())){
+			businessVO.setMenuPresent(business.getMenuPresent());
+		}
+		if(StringUtils.isNotBlank(business.getMenuUrls())){
+			businessVO.setMenuUrls(business.getMenuUrls());
+		}
+		if(business.getAvgRating()!=null){
+			businessVO.setAvgRating(business.getAvgRating());
+		}
+		//#tobe review count will be added later
+		/*if(business.getrevie!=null){
+			businessVO.setAvgRating(business.getAvgRating());
+		}*/
+		if(StringUtils.isNotBlank(business.getGooglePlaceId())){
+			businessVO.setGooglePlaceId(business.getGooglePlaceId());
+		}
+		if(business.getGoogleRating() != null){
+			businessVO.setGoogleRating(business.getGoogleRating());
+		}
+		if(business.getGoogleReviewCount() > 0){
+			businessVO.setGoogleReviewCount(business.getGoogleReviewCount());
+		}
+		if(StringUtils.isNotBlank(business.getTopGoogleReviews())){
+			businessVO.setTopGoogleReviews(business.getTopGoogleReviews());
+		}
+		
+		if(business.getYelpRating() != null){
+			businessVO.setYelpRating(business.getYelpRating());
+		}
+		if(business.getYelpReviewCount() > 0){
+			businessVO.setYelpReviewCount(business.getYelpReviewCount());
+		}
+		if(StringUtils.isNotBlank(business.getTopYelpReviews())){
+			businessVO.setTopYelpReviews(business.getTopYelpReviews());
+		}
+		
+		if(business.getGreatSchoolRating() != null){
+			businessVO.setGreatSchoolRating(business.getGreatSchoolRating());
+		}
+		if(business.getGreatSchoolReviewCount() > 0){
+			businessVO.setGreatSchoolReviewCount(business.getGreatSchoolReviewCount());
+		}
+		if(StringUtils.isNotBlank(business.getTopGreatSchoolReviews())){
+			businessVO.setTopGreatSchoolReviews(business.getTopGreatSchoolReviews());
+		}
+		
+		if(business.getFacebookRating() != null){
+			businessVO.setFacebookRating(business.getFacebookRating());
+		}
+		if(business.getFacebookReviewCount() > 0){
+			businessVO.setFacebookReviewCount(business.getFacebookReviewCount());
+		}
+		if(StringUtils.isNotBlank(business.getTopFacebookReviews())){
+			businessVO.setTopFacebookReviews(business.getTopFacebookReviews());
+		}
+		
 		if(StringUtils.isNotBlank(business.getFacebookPage())){
 			businessVO.setFacebookPage(business.getFacebookPage());
 		}
@@ -387,18 +459,14 @@ public class SearchBusinessProcessor extends AbstractProcessor{
 		if(StringUtils.isNotBlank(business.getOtherInfo())){
 			businessVO.setOtherInfo(business.getOtherInfo());
 		}
-		this.populateWorkingHours(business, businessVO);
-		this.populateFacilities(business, businessVO);
-		
-		if(StringUtils.isNotBlank(business.getAuthenticity())){
-			businessVO.setAuthenticity(business.getAuthenticity());
-		}
 		if(StringUtils.isNotBlank(business.getCreatedBy())){
 			businessVO.setCreatedBy(business.getCreatedBy());
 		}
 		if(StringUtils.isNotBlank(business.getUpdatedBy())){
 			businessVO.setUpdatedBy(business.getUpdatedBy());
 		}
+		this.populateWorkingHours(business, businessVO);
+		this.populateFacilities(business, businessVO);
 		return businessVO;
 	}
 	
@@ -595,27 +663,26 @@ public class SearchBusinessProcessor extends AbstractProcessor{
 		//pass no category last param, as we need this count for all cat
 		List<DBObject> businessByDistance = businessDaoImpl.searchBusinessCategories(lng, lat, Double.parseDouble(radius), distanceUnit, "");
 		
+		Map<String, Integer> countMap = new HashMap<String, Integer>();
+		for(DBObject dbObject: businessByDistance){
+			countMap.put((String) dbObject.get("_id"), (Integer)dbObject.get("count"));
+		}
 		
 		List catList = new ArrayList<BizCategoryVO>();
 		BizCategoryVO bizCategoryVO;
-		for(DBObject dbObject: businessByDistance){
+		for(Map.Entry<String, String> entry: ApplicationConstant.CATEGORY_IMAGE_URL_MAP.entrySet()){
 			bizCategoryVO = new BizCategoryVO();
-			String category = (String) dbObject.get("_id");
-			if(category != null){
-				bizCategoryVO.setCategory(category);
-				bizCategoryVO.setName(ApplicationConstant.CATEGORY_NAME_MAP.get(category.toLowerCase()));
-				bizCategoryVO.setDistance(Double.parseDouble(radius));
-				bizCategoryVO.setDistanceUnit(distanceUnit);
-				if(dbObject.get("count") != null){
-					bizCategoryVO.setCount((Integer)dbObject.get("count"));
-			    }
-				if(dbObject.get("data") != null){
-					List dataList = (List) dbObject.get("data");
-					Map dataMap = (Map) dataList.get(0);
-					String imageUrl = (String) dataMap.get("imageUrl");
-					bizCategoryVO.setImageUrl(imageUrl);
-				}
-		    }
+			String category = entry.getKey();
+			bizCategoryVO.setCategory(category);
+			bizCategoryVO.setName(ApplicationConstant.CATEGORY_NAME_MAP.get(category.toLowerCase()));
+			bizCategoryVO.setImageUrl(entry.getValue());
+			bizCategoryVO.setDistance(Integer.parseInt(radius));
+			bizCategoryVO.setDistanceUnit(distanceUnit);
+			int count =0;
+			if(countMap.get(category) !=null){
+				count = countMap.get(category);
+			}
+			bizCategoryVO.setCount(count);
 			catList.add(bizCategoryVO);
 		}
 		return catList;

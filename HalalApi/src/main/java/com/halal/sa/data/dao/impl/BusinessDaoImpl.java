@@ -151,7 +151,7 @@ public class BusinessDaoImpl implements BusinessDao{
 		
 		
 		//lookup in business_info to get the imageUrl of all cat, here _id is category collumn of group by result which is maped to name column of business_info doc
-		aggregation = newAggregation(Aggregation.geoNear(geoNear, "distance"), Aggregation.group("category").count().as("count"), Aggregation.lookup("business_info", "_id", "name", "data")); // This might required to limit the records - ,	
+		aggregation = newAggregation(Aggregation.geoNear(geoNear, "distance"), Aggregation.group("category").count().as("count"));//, Aggregation.lookup("business_info", "_id", "name", "data")); // This might required to limit the records - ,	
 		AggregationResults<DBObject> groupResults = mongoTemplate.aggregate(aggregation, Business.class, DBObject.class);
 		
 		List<DBObject> result = groupResults.getMappedResults();

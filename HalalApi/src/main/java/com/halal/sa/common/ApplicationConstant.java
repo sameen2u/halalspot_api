@@ -2,6 +2,7 @@ package com.halal.sa.common;
 
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.ResourceBundle;
 
@@ -25,6 +26,7 @@ public class ApplicationConstant {
 
 	public static final Map<String, String> DISTANCE_UNIT_MAP;
 	public static final Map<String, String> CATEGORY_NAME_MAP;
+	public static final Map<String, String> CATEGORY_IMAGE_URL_MAP;
 	
 	static{
 		Map map = new HashMap<String, String>();
@@ -39,6 +41,13 @@ public class ApplicationConstant {
 		map2.put("school", CATEGORY_NAME_SCHOOL);
 		map2.put("store", CATEGORY_NAME_STORE);
 		CATEGORY_NAME_MAP = Collections.unmodifiableMap(map2);
+		
+		Map map3 = new LinkedHashMap<String, String>();
+		map3.put("restaurant", "http://res.cloudinary.com/sameen2u/image/upload/v1484140454/halalapp/restaurant.jpg");
+		map3.put("mosque", "http://res.cloudinary.com/sameen2u/image/upload/v1484140874/halalapp/mosque_pic.jpg");
+		map3.put("school", "http://res.cloudinary.com/sameen2u/image/upload/v1484140454/halalapp/school.jpg");
+		map3.put("store", "http://res.cloudinary.com/sameen2u/image/upload/v1484140454/halalapp/book_store.jpg");
+		CATEGORY_IMAGE_URL_MAP = Collections.unmodifiableMap(map3);
 	}
 
 

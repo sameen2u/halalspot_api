@@ -20,7 +20,7 @@ import com.halal.sa.core.request.SearchRequestParameters;
 import com.halal.sa.data.entities.Business;
 
 @RunWith(SpringJUnit4ClassRunner.class)
-@ContextConfiguration("/WEB-INF/dispatcher-servlet.xml")
+@ContextConfiguration(locations = "classpath:dispatcher-servlet.xml")
 public class SearchBusinessProcessorTest {
 
 	@Autowired
@@ -114,7 +114,7 @@ public class SearchBusinessProcessorTest {
 //		Business business = new Business();
 //		BusinessVO businessVO = new BusinessVO();
 //		business.setWorkingHours("mon=07:00-21:00,tue=07:00-21:00,wed=07:00-21:00,thur=07:00-21:00,fri=07:00-21:00,sat=10:00-17:00,sun=closed");
-		searchBusinessProcessor.searchBizCategories(33.952602, -84.549933 , "10", "India");
+		searchBusinessProcessor.searchBizCategories(33.952602, -84.549933 , "10", "United States");
 		
 //		assertNotNull(businessVO.getWorkingHours());
 	}

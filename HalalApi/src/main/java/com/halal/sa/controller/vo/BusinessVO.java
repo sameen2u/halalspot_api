@@ -4,35 +4,64 @@ import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
+import javax.validation.Valid;
+
+import org.hibernate.validator.constraints.NotEmpty;
+
 import com.halal.sa.data.entities.Address;
 
 public class BusinessVO {
 	
+
 	private String id;
-	private int profile_id;
+	private Integer profile_id;
 	private String name;
+	private String category;
+	private String serviceType;
+	private String description;
 	private Address address;
-	private int phone;
+	private String imageIconUrl;
+	private String phone;
+	private String halalAuthenticity;
+	private Boolean alchoholServed;
 	private String email;
-	private String ownerEmail;
-	private String status;
 	private String website;
-	private List<String> cuisine;
+	private String status;
+	private String userEmail;
+	private String menuPresent;
+	private String menuUrls;
+	private Double avgRating;
+	private Integer totalReviewCount;
+	private String googlePlaceId;
+	private Double googleRating;
+	private Integer googleReviewCount;
+	private String topGoogleReviews;
+	private Double yelpRating;
+	private Integer yelpReviewCount;
+	private String topYelpReviews;
+	private Double greatSchoolRating;
+	private Integer greatSchoolReviewCount;
+	private String topGreatSchoolReviews;
+	private Double facebookRating;
+	private Integer facebookReviewCount;
+	private String topFacebookReviews;
 	private String facebookPage;
 	private String twitterPage;
 	private String otherInfo;
-	private Date lastUpdated;
-	private Map<String, Object> workingHours;
-	private Map<String, Boolean> facilities;
-	private String authenticity;
+	private String features;	
 	private String createdBy;
 	private String updatedBy;
+	private Date createdDate;
+	private Date updatedDate;	
+	private Map<String, Object> workingHours;
+	private Map<String, Boolean> facilities;
 	
-	public int getProfile_id() {
-		return profile_id;
+	
+	public Integer getTotalReviewCount() {
+		return totalReviewCount;
 	}
-	public void setProfile_id(int profile_id) {
-		this.profile_id = profile_id;
+	public void setTotalReviewCount(Integer totalReviewCount) {
+		this.totalReviewCount = totalReviewCount;
 	}
 	public String getId() {
 		return id;
@@ -40,11 +69,35 @@ public class BusinessVO {
 	public void setId(String id) {
 		this.id = id;
 	}
+	public Integer getProfile_id() {
+		return profile_id;
+	}
+	public void setProfile_id(Integer profile_id) {
+		this.profile_id = profile_id;
+	}
 	public String getName() {
 		return name;
 	}
 	public void setName(String name) {
 		this.name = name;
+	}
+	public String getCategory() {
+		return category;
+	}
+	public void setCategory(String category) {
+		this.category = category;
+	}
+	public String getServiceType() {
+		return serviceType;
+	}
+	public void setServiceType(String serviceType) {
+		this.serviceType = serviceType;
+	}
+	public String getDescription() {
+		return description;
+	}
+	public void setDescription(String description) {
+		this.description = description;
 	}
 	public Address getAddress() {
 		return address;
@@ -52,11 +105,29 @@ public class BusinessVO {
 	public void setAddress(Address address) {
 		this.address = address;
 	}
-	public int getPhone() {
+	public String getImageIconUrl() {
+		return imageIconUrl;
+	}
+	public void setImageIconUrl(String imageIconUrl) {
+		this.imageIconUrl = imageIconUrl;
+	}
+	public String getPhone() {
 		return phone;
 	}
-	public void setPhone(int phone) {
+	public void setPhone(String phone) {
 		this.phone = phone;
+	}
+	public String getHalalAuthenticity() {
+		return halalAuthenticity;
+	}
+	public void setHalalAuthenticity(String halalAuthenticity) {
+		this.halalAuthenticity = halalAuthenticity;
+	}
+	public Boolean getAlchoholServed() {
+		return alchoholServed;
+	}
+	public void setAlchoholServed(Boolean alchoholServed) {
+		this.alchoholServed = alchoholServed;
 	}
 	public String getEmail() {
 		return email;
@@ -64,11 +135,11 @@ public class BusinessVO {
 	public void setEmail(String email) {
 		this.email = email;
 	}
-	public String getOwnerEmail() {
-		return ownerEmail;
+	public String getWebsite() {
+		return website;
 	}
-	public void setOwnerEmail(String ownerEmail) {
-		this.ownerEmail = ownerEmail;
+	public void setWebsite(String website) {
+		this.website = website;
 	}
 	public String getStatus() {
 		return status;
@@ -76,17 +147,107 @@ public class BusinessVO {
 	public void setStatus(String status) {
 		this.status = status;
 	}
-	public String getWebsite() {
-		return website;
+	public String getUserEmail() {
+		return userEmail;
 	}
-	public void setWebsite(String website) {
-		this.website = website;
+	public void setUserEmail(String userEmail) {
+		this.userEmail = userEmail;
 	}
-	public List<String> getCuisine() {
-		return cuisine;
+	public String getMenuPresent() {
+		return menuPresent;
 	}
-	public void setCuisine(List<String> cuisine) {
-		this.cuisine = cuisine;
+	public void setMenuPresent(String menuPresent) {
+		this.menuPresent = menuPresent;
+	}
+	public String getMenuUrls() {
+		return menuUrls;
+	}
+	public void setMenuUrls(String menuUrls) {
+		this.menuUrls = menuUrls;
+	}
+	public Double getAvgRating() {
+		return avgRating;
+	}
+	public void setAvgRating(Double avgRating) {
+		this.avgRating = avgRating;
+	}
+	public String getGooglePlaceId() {
+		return googlePlaceId;
+	}
+	public void setGooglePlaceId(String googlePlaceId) {
+		this.googlePlaceId = googlePlaceId;
+	}
+	public Double getGoogleRating() {
+		return googleRating;
+	}
+	public void setGoogleRating(Double googleRating) {
+		this.googleRating = googleRating;
+	}
+	public Integer getGoogleReviewCount() {
+		return googleReviewCount;
+	}
+	public void setGoogleReviewCount(Integer googleReviewCount) {
+		this.googleReviewCount = googleReviewCount;
+	}
+	public String getTopGoogleReviews() {
+		return topGoogleReviews;
+	}
+	public void setTopGoogleReviews(String topGoogleReviews) {
+		this.topGoogleReviews = topGoogleReviews;
+	}
+	public Double getYelpRating() {
+		return yelpRating;
+	}
+	public void setYelpRating(Double yelpRating) {
+		this.yelpRating = yelpRating;
+	}
+	public Integer getYelpReviewCount() {
+		return yelpReviewCount;
+	}
+	public void setYelpReviewCount(Integer yelpReviewCount) {
+		this.yelpReviewCount = yelpReviewCount;
+	}
+	public String getTopYelpReviews() {
+		return topYelpReviews;
+	}
+	public void setTopYelpReviews(String topYelpReviews) {
+		this.topYelpReviews = topYelpReviews;
+	}
+	public Double getGreatSchoolRating() {
+		return greatSchoolRating;
+	}
+	public void setGreatSchoolRating(Double greatSchoolRating) {
+		this.greatSchoolRating = greatSchoolRating;
+	}
+	public Integer getGreatSchoolReviewCount() {
+		return greatSchoolReviewCount;
+	}
+	public void setGreatSchoolReviewCount(Integer greatSchoolReviewCount) {
+		this.greatSchoolReviewCount = greatSchoolReviewCount;
+	}
+	public String getTopGreatSchoolReviews() {
+		return topGreatSchoolReviews;
+	}
+	public void setTopGreatSchoolReviews(String topGreatSchoolReviews) {
+		this.topGreatSchoolReviews = topGreatSchoolReviews;
+	}
+	public Double getFacebookRating() {
+		return facebookRating;
+	}
+	public void setFacebookRating(Double facebookRating) {
+		this.facebookRating = facebookRating;
+	}
+	public Integer getFacebookReviewCount() {
+		return facebookReviewCount;
+	}
+	public void setFacebookReviewCount(Integer facebookReviewCount) {
+		this.facebookReviewCount = facebookReviewCount;
+	}
+	public String getTopFacebookReviews() {
+		return topFacebookReviews;
+	}
+	public void setTopFacebookReviews(String topFacebookReviews) {
+		this.topFacebookReviews = topFacebookReviews;
 	}
 	public String getFacebookPage() {
 		return facebookPage;
@@ -106,17 +267,11 @@ public class BusinessVO {
 	public void setOtherInfo(String otherInfo) {
 		this.otherInfo = otherInfo;
 	}
-	public Date getLastUpdated() {
-		return lastUpdated;
+	public String getFeatures() {
+		return features;
 	}
-	public void setLastUpdated(Date lastUpdated) {
-		this.lastUpdated = lastUpdated;
-	}
-	public String getAuthenticity() {
-		return authenticity;
-	}
-	public void setAuthenticity(String authenticity) {
-		this.authenticity = authenticity;
+	public void setFeatures(String features) {
+		this.features = features;
 	}
 	public String getCreatedBy() {
 		return createdBy;
@@ -129,6 +284,18 @@ public class BusinessVO {
 	}
 	public void setUpdatedBy(String updatedBy) {
 		this.updatedBy = updatedBy;
+	}
+	public Date getCreatedDate() {
+		return createdDate;
+	}
+	public void setCreatedDate(Date createdDate) {
+		this.createdDate = createdDate;
+	}
+	public Date getUpdatedDate() {
+		return updatedDate;
+	}
+	public void setUpdatedDate(Date updatedDate) {
+		this.updatedDate = updatedDate;
 	}
 	public Map<String, Object> getWorkingHours() {
 		return workingHours;

@@ -8,7 +8,7 @@ public class BizCategoryVO {
 	private String category;
 	private String name;
 	private int count;
-	private double distance;
+	private int distance;
 	private String distanceUnit;
 	private String imageUrl;
 	
@@ -30,10 +30,10 @@ public class BizCategoryVO {
 	public void setCount(int count) {
 		this.count = count;
 	}
-	public double getDistance() {
+	public int getDistance() {
 		return distance;
 	}
-	public void setDistance(double distance) {
+	public void setDistance(int distance) {
 		this.distance = distance;
 	}
 	public String getDistanceUnit() {
@@ -48,5 +48,10 @@ public class BizCategoryVO {
 	public void setImageUrl(String imageUrl) {
 		this.imageUrl = imageUrl;
 	}
-
+	@Override
+	public String toString() {
+		return "BizCategoryVO [category=" + category + ", name=" + name + ", count=" + count + ", distance=" + distance
+				+ ", distanceUnit=" + distanceUnit + ", imageUrl=" + imageUrl + "]";
+	}
+	
 }
